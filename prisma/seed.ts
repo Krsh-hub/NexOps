@@ -1,5 +1,6 @@
 import { PrismaClient } from "../src/generated/prisma/client.js";
 
+// @ts-ignore
 const prisma = new PrismaClient({ log: ["error"] });
 
 async function main() {

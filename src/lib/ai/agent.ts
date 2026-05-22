@@ -116,7 +116,7 @@ export async function runAgent(userMessage: string, conversationHistory: AgentMe
     messages.push({
       role: "assistant",
       content: assistantMessage.content || "",
-      tool_calls: assistantMessage.tool_calls?.map((tc) => ({
+      tool_calls: assistantMessage.tool_calls?.map((tc: any) => ({
         id: tc.id,
         type: "function" as const,
         function: {
@@ -135,7 +135,7 @@ export async function runAgent(userMessage: string, conversationHistory: AgentMe
     }
 
     // Execute tool calls
-    for (const toolCall of assistantMessage.tool_calls) {
+    for (const toolCall of assistantMessage.tool_calls as any[]) {
       const toolName = toolCall.function.name;
       const toolArgs = JSON.parse(toolCall.function.arguments);
       
