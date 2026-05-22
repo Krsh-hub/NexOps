@@ -1,11 +1,4 @@
-import { 
-  TrendingUp, 
-  TrendingDown, 
-  Package, 
-  FileText, 
-  AlertCircle,
-  IndianRupee 
-} from "lucide-react";
+import { TrendingUp, TrendingDown, IndianRupee, Package, AlertCircle, FileText } from "lucide-react";
 
 interface StatCardsProps {
   revenue: { amount: number; change: number };
@@ -16,76 +9,71 @@ interface StatCardsProps {
 
 export function StatCards({ revenue, lowStockCount, overdueInvoices, activeOrders }: StatCardsProps) {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-      {/* Revenue Card */}
-      <div className="kpi-card group">
-        <div className="flex justify-between items-start mb-4">
-          <div className="p-2 rounded-lg bg-[var(--accent-primary-glow)] text-[var(--accent-primary)] group-hover:shadow-[var(--shadow-glow)] transition-all">
-            <IndianRupee size={20} />
-          </div>
-          <div className={`flex items-center gap-1 text-sm font-medium ${revenue.change >= 0 ? "text-[var(--success)]" : "text-[var(--danger)]"}`}>
-            {revenue.change >= 0 ? <TrendingUp size={16} /> : <TrendingDown size={16} />}
-            <span>{Math.abs(revenue.change)}%</span>
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      {/* Revenue */}
+      <div className="bg-[var(--bg-surface)] border border-[var(--border-subtle)] rounded-xl p-4 flex flex-col justify-between h-[100px] hover:border-[var(--border-default)] transition-colors shadow-sm">
+        <div className="flex justify-between items-start">
+          <span className="text-xs font-semibold text-[var(--text-secondary)] uppercase tracking-wider">Revenue</span>
+          <div className={`flex items-center gap-1 text-[11px] font-semibold px-1.5 py-0.5 rounded ${revenue.change >= 0 ? "bg-[var(--success-bg)] text-[var(--success)]" : "bg-[var(--danger-bg)] text-[var(--danger)]"}`}>
+            {revenue.change >= 0 ? <TrendingUp size={12} /> : <TrendingDown size={12} />}
+            {Math.abs(revenue.change)}%
           </div>
         </div>
-        <div>
-          <h3 className="text-[var(--text-muted)] text-sm font-medium mb-1">Today's Revenue</h3>
-          <p className="text-2xl font-semibold text-white tracking-tight">
-            ₹{revenue.amount.toLocaleString("en-IN")}
-          </p>
+        <div className="flex items-baseline gap-1">
+          <span className="text-sm text-[var(--text-muted)] font-medium">₹</span>
+          <span className="text-2xl font-bold text-[var(--text-primary)] tracking-tight">
+            {revenue.amount.toLocaleString("en-IN")}
+          </span>
         </div>
       </div>
 
-      {/* Low Stock Card */}
-      <div className="kpi-card group">
-        <div className="flex justify-between items-start mb-4">
-          <div className="p-2 rounded-lg bg-[var(--warning-glow)] text-[var(--warning)] group-hover:shadow-[0_0_15px_var(--warning-glow)] transition-all">
-            <Package size={20} />
-          </div>
-          {lowStockCount > 0 && (
-            <span className="badge badge-warning animate-pulse">Critical</span>
+      {/* Inventory Risk */}
+      <div className="bg-[var(--bg-surface)] border border-[var(--border-subtle)] rounded-xl p-4 flex flex-col justify-between h-[100px] hover:border-[var(--border-default)] transition-colors shadow-sm">
+        <div className="flex justify-between items-start">
+          <span className="text-xs font-semibold text-[var(--text-secondary)] uppercase tracking-wider">Low Stock</span>
+          {lowStockCount > 0 ? (
+            <div className="w-2 h-2 rounded-full bg-[var(--warning)]" />
+          ) : (
+            <div className="w-2 h-2 rounded-full bg-[var(--success)]" />
           )}
         </div>
-        <div>
-          <h3 className="text-[var(--text-muted)] text-sm font-medium mb-1">Low Stock Items</h3>
-          <p className="text-2xl font-semibold text-white tracking-tight">
-            {lowStockCount} <span className="text-sm font-normal text-[var(--text-muted)]">items</span>
-          </p>
+        <div className="flex items-baseline gap-1.5">
+          <span className="text-2xl font-bold text-[var(--text-primary)] tracking-tight">
+            {lowStockCount}
+          </span>
+          <span className="text-[11px] font-medium text-[var(--text-muted)] uppercase tracking-wider">Items</span>
         </div>
       </div>
 
       {/* Overdue Invoices */}
-      <div className="kpi-card group">
-        <div className="flex justify-between items-start mb-4">
-          <div className="p-2 rounded-lg bg-[var(--danger-glow)] text-[var(--danger)] group-hover:shadow-[0_0_15px_var(--danger-glow)] transition-all">
-            <AlertCircle size={20} />
-          </div>
-          <span className="text-[var(--danger)] text-sm font-medium">Action Required</span>
+      <div className="bg-[var(--bg-surface)] border border-[var(--border-subtle)] rounded-xl p-4 flex flex-col justify-between h-[100px] hover:border-[var(--border-default)] transition-colors shadow-sm">
+        <div className="flex justify-between items-start">
+          <span className="text-xs font-semibold text-[var(--text-secondary)] uppercase tracking-wider">Overdue</span>
+          {overdueInvoices.count > 0 && (
+             <div className="w-2 h-2 rounded-full bg-[var(--danger)]" />
+          )}
         </div>
-        <div>
-          <h3 className="text-[var(--text-muted)] text-sm font-medium mb-1">Overdue Invoices</h3>
-          <p className="text-2xl font-semibold text-white tracking-tight flex items-baseline gap-2">
-            {overdueInvoices.count} 
-            <span className="text-sm font-normal text-[var(--text-muted)]">
-              (₹{overdueInvoices.total.toLocaleString("en-IN")})
-            </span>
-          </p>
+        <div className="flex items-baseline gap-2">
+          <span className="text-2xl font-bold text-[var(--text-primary)] tracking-tight">
+            {overdueInvoices.count}
+          </span>
+          <span className="text-sm font-medium text-[var(--text-muted)]">
+            (₹{overdueInvoices.total.toLocaleString("en-IN")})
+          </span>
         </div>
       </div>
 
       {/* Active Orders */}
-      <div className="kpi-card group">
-        <div className="flex justify-between items-start mb-4">
-          <div className="p-2 rounded-lg bg-[var(--accent-secondary-glow)] text-[var(--accent-secondary)] group-hover:shadow-[0_0_15px_var(--accent-secondary-glow)] transition-all">
-            <FileText size={20} />
-          </div>
-          <span className="badge badge-info">Processing</span>
+      <div className="bg-[var(--bg-surface)] border border-[var(--border-subtle)] rounded-xl p-4 flex flex-col justify-between h-[100px] hover:border-[var(--border-default)] transition-colors shadow-sm">
+        <div className="flex justify-between items-start">
+          <span className="text-xs font-semibold text-[var(--text-secondary)] uppercase tracking-wider">Active POs</span>
+          <div className="w-2 h-2 rounded-full bg-[var(--info)]" />
         </div>
-        <div>
-          <h3 className="text-[var(--text-muted)] text-sm font-medium mb-1">Active Purchase Orders</h3>
-          <p className="text-2xl font-semibold text-white tracking-tight">
-            {activeOrders} <span className="text-sm font-normal text-[var(--text-muted)]">pending</span>
-          </p>
+        <div className="flex items-baseline gap-1.5">
+          <span className="text-2xl font-bold text-[var(--text-primary)] tracking-tight">
+            {activeOrders}
+          </span>
+          <span className="text-[11px] font-medium text-[var(--text-muted)] uppercase tracking-wider">Pending</span>
         </div>
       </div>
     </div>
