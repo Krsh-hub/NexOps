@@ -93,6 +93,7 @@ export default async function DashboardPage() {
   const data = await getDashboardData();
 
   return (
+<<<<<<< HEAD
     <div className="px-6 md:px-8 py-8 w-full max-w-[1600px] mx-auto space-y-8 min-h-screen flex flex-col">
       {/* Header */}
       <header className="flex flex-col md:flex-row md:items-end justify-between gap-4 shrink-0">
@@ -106,6 +107,21 @@ export default async function DashboardPage() {
             Manual Override
           </button>
           <button className="bg-[var(--text-primary)] text-[var(--bg-base)] px-3 py-1.5 rounded-md text-[13px] font-medium hover:bg-white shadow-sm transition-all">
+=======
+    <div className="p-6 md:p-8 max-w-7xl mx-auto space-y-8 h-full flex flex-col">
+      {/* Header */}
+      <header className="flex flex-col md:flex-row md:items-end justify-between gap-4 shrink-0">
+        <div>
+          <h1 className="text-2xl md:text-3xl font-semibold tracking-tight text-[var(--text-primary)]">Operations Overview</h1>
+          <p className="text-[var(--text-secondary)] mt-1.5 text-sm">Review your business operations and insights for today.</p>
+        </div>
+        
+        <div className="flex items-center gap-3">
+          <button className="px-4 py-2 rounded-md text-sm font-medium hover:bg-[var(--bg-hover)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors border border-[var(--border-default)]">
+            Manual Override
+          </button>
+          <button className="bg-[var(--text-primary)] text-black px-4 py-2 rounded-md text-sm font-medium hover:bg-white shadow-sm transition-all">
+>>>>>>> cc131e69d7b544ffbf288f7ac8c855fbdcb15055
             Generate Report
           </button>
         </div>
@@ -121,6 +137,7 @@ export default async function DashboardPage() {
         />
       </div>
 
+<<<<<<< HEAD
       {/* AI Command Bar */}
       <div className="w-full shrink-0">
         <AICommandBar />
@@ -134,6 +151,23 @@ export default async function DashboardPage() {
             <InventoryRisk products={data.lowStockProducts.slice(0, 5)} />
             <FinanceInsights />
           </div>
+=======
+      {/* Main Content Grid */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 flex-1 min-h-[600px] pb-6">
+        {/* Left Column: AI Command Center & Inventory */}
+        <div className="lg:col-span-2 flex flex-col gap-6 h-full">
+          <div className="flex-1 min-h-[300px]">
+            <AICommandCenter />
+          </div>
+          <div className="flex-1 min-h-[250px]">
+            <InventoryTable products={data.lowStockProducts.slice(0, 3)} />
+          </div>
+        </div>
+
+        {/* Right Column: Operations Feed */}
+        <div className="h-full">
+          <OperationsFeed activities={data.activities} />
+>>>>>>> cc131e69d7b544ffbf288f7ac8c855fbdcb15055
         </div>
 
         {/* Right Column: Operations Feed */}
