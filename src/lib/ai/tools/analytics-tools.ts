@@ -2,7 +2,7 @@
 // NexOps Analytics Tool Implementations
 // ============================================
 
-import { prisma } from "@/lib/prisma";
+import { supabase } from "@/lib/supabase";
 
 const BUSINESS_ID = "biz_demo_001";
 
@@ -17,84 +17,85 @@ export async function generateSummary(args: {
     : new Date(now.getFullYear(), now.getMonth(), now.getDate());
 
   // Revenue data
-  const paidInvoices = await prisma.invoice.findMany({
-    where: {
-      businessId: BUSINESS_ID,
-      status: "PAID",
-      paidAt: { gte: startDate },
-    },
-  });
+  const { data: paidInvoices } = await supabase
+    .from("invoices")
+    .select("*")
+    .eq("businessId", BUSINESS_ID)
+    .eq("status", "PAID")
+    .gte("paidAt", startDate.toISOString());
 
-  const totalRevenue = paidInvoices.reduce((sum, i) => sum + i.total, 0);
+  const totalRevenue = (paidInvoices || []).reduce((sum, i) => sum + i.total, 0);
 
   // Previous period for comparison
   const prevStart = period === "weekly"
     ? new Date(startDate.getTime() - 7 * 86400000)
     : new Date(startDate.getTime() - 86400000);
 
-  const prevPaidInvoices = await prisma.invoice.findMany({
-    where: {
-      businessId: BUSINESS_ID,
-      status: "PAID",
-      paidAt: { gte: prevStart, lt: startDate },
-    },
-  });
+  const { data: prevPaidInvoices } = await supabase
+    .from("invoices")
+    .select("*")
+    .eq("businessId", BUSINESS_ID)
+    .eq("status", "PAID")
+    .gte("paidAt", prevStart.toISOString())
+    .lt("paidAt", startDate.toISOString());
 
-  const prevRevenue = prevPaidInvoices.reduce((sum, i) => sum + i.total, 0);
+  const prevRevenue = (prevPaidInvoices || []).reduce((sum, i) => sum + i.total, 0);
   const revenueChange = prevRevenue > 0
     ? Math.round(((totalRevenue - prevRevenue) / prevRevenue) * 100)
     : 0;
 
   // Expenses
-  const expenses = await prisma.expense.findMany({
-    where: {
-      businessId: BUSINESS_ID,
-      date: { gte: startDate },
-    },
-  });
-  const totalExpenses = expenses.reduce((sum, e) => sum + e.amount, 0);
+  const { data: expenses } = await supabase
+    .from("expenses")
+    .select("*")
+    .eq("businessId", BUSINESS_ID)
+    .gte("date", startDate.toISOString());
+    
+  const totalExpenses = (expenses || []).reduce((sum, e) => sum + e.amount, 0);
 
   // Overdue invoices
-  const overdueInvoices = await prisma.invoice.findMany({
-    where: { businessId: BUSINESS_ID, status: "OVERDUE" },
-  });
-  const overdueTotal = overdueInvoices.reduce((sum, i) => sum + i.total, 0);
+  const { data: overdueInvoices } = await supabase
+    .from("invoices")
+    .select("*")
+    .eq("businessId", BUSINESS_ID)
+    .eq("status", "OVERDUE");
+    
+  const overdueTotal = (overdueInvoices || []).reduce((sum, i) => sum + i.total, 0);
 
   // Low stock items
-  const lowStockProducts = await prisma.product.findMany({
-    where: {
-      businessId: BUSINESS_ID,
-      isActive: true,
-      reorderThreshold: { gt: 0 },
-    },
-  });
-  const criticalItems = lowStockProducts.filter(
+  const { data: lowStockProducts } = await supabase
+    .from("products")
+    .select("*")
+    .eq("businessId", BUSINESS_ID)
+    .eq("isActive", true)
+    .gt("reorderThreshold", 0);
+    
+  const criticalItems = (lowStockProducts || []).filter(
     (p) => p.currentStock <= p.reorderThreshold
   );
 
   // Recent activities
-  const activities = await prisma.aIActivity.findMany({
-    where: {
-      businessId: BUSINESS_ID,
-      createdAt: { gte: startDate },
-    },
-    orderBy: { createdAt: "desc" },
-    take: 10,
-  });
+  const { data: activities } = await supabase
+    .from("ai_activities")
+    .select("*")
+    .eq("businessId", BUSINESS_ID)
+    .gte("createdAt", startDate.toISOString())
+    .order("createdAt", { ascending: false })
+    .limit(10);
 
   const summary = {
     period,
     revenue: {
       total: totalRevenue,
       change: revenueChange,
-      invoiceCount: paidInvoices.length,
+      invoiceCount: (paidInvoices || []).length,
     },
     expenses: {
       total: totalExpenses,
     },
     profit: totalRevenue - totalExpenses,
     overdueInvoices: {
-      count: overdueInvoices.length,
+      count: (overdueInvoices || []).length,
       total: overdueTotal,
     },
     inventoryAlerts: {
@@ -105,7 +106,7 @@ export async function generateSummary(args: {
         threshold: p.reorderThreshold,
       })),
     },
-    activityCount: activities.length,
+    activityCount: (activities || []).length,
     highlights: [] as string[],
   };
 
@@ -113,7 +114,7 @@ export async function generateSummary(args: {
   if (revenueChange > 0) {
     summary.highlights.push(`Revenue ${revenueChange > 0 ? "increased" : "decreased"} ${Math.abs(revenueChange)}% ${period === "daily" ? "today" : "this week"}.`);
   }
-  if (overdueInvoices.length > 0) {
+  if (overdueInvoices && overdueInvoices.length > 0) {
     summary.highlights.push(`${overdueInvoices.length} invoice(s) overdue — ₹${overdueTotal.toLocaleString("en-IN")} outstanding.`);
   }
   if (criticalItems.length > 0) {
@@ -121,15 +122,13 @@ export async function generateSummary(args: {
   }
 
   // Log AI activity
-  await prisma.aIActivity.create({
-    data: {
-      type: "DAILY_SUMMARY",
-      status: "COMPLETED",
-      title: `${period === "weekly" ? "Weekly" : "Daily"} operations summary`,
-      description: summary.highlights.join(" "),
-      toolUsed: "generate_summary",
-      businessId: BUSINESS_ID,
-    },
+  await supabase.from("ai_activities").insert({
+    type: "DAILY_SUMMARY",
+    status: "COMPLETED",
+    title: `${period === "weekly" ? "Weekly" : "Daily"} operations summary`,
+    description: summary.highlights.join(" "),
+    toolUsed: "generate_summary",
+    businessId: BUSINESS_ID,
   });
 
   return JSON.stringify(summary);

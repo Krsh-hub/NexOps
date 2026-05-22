@@ -2,7 +2,7 @@ import { StatCards } from "@/components/dashboard/StatCards";
 import { OperationsFeed } from "@/components/dashboard/OperationsFeed";
 import { InventoryTable } from "@/components/dashboard/InventoryTable";
 import { AICommandCenter } from "@/components/dashboard/AICommandCenter";
-import { prisma } from "@/lib/prisma";
+import { supabase } from "@/lib/supabase";
 
 // Revalidate every 60 seconds or on demand
 export const revalidate = 60;
@@ -17,23 +17,24 @@ async function getDashboardData() {
   yesterday.setDate(yesterday.getDate() - 1);
 
   // 1. Revenue
-  const todayInvoices = await prisma.invoice.findMany({
-    where: {
-      businessId: BUSINESS_ID,
-      status: "PAID",
-      paidAt: { gte: today }
-    }
-  });
-  const todayRevenue = todayInvoices.reduce((sum, inv) => sum + inv.total, 0);
+  const { data: todayInvoices } = await supabase
+    .from("invoices")
+    .select("*")
+    .eq("businessId", BUSINESS_ID)
+    .eq("status", "PAID")
+    .gte("paidAt", today.toISOString());
+    
+  const todayRevenue = (todayInvoices || []).reduce((sum, inv) => sum + inv.total, 0);
 
-  const yesterdayInvoices = await prisma.invoice.findMany({
-    where: {
-      businessId: BUSINESS_ID,
-      status: "PAID",
-      paidAt: { gte: yesterday, lt: today }
-    }
-  });
-  const yesterdayRevenue = yesterdayInvoices.reduce((sum, inv) => sum + inv.total, 0);
+  const { data: yesterdayInvoices } = await supabase
+    .from("invoices")
+    .select("*")
+    .eq("businessId", BUSINESS_ID)
+    .eq("status", "PAID")
+    .gte("paidAt", yesterday.toISOString())
+    .lt("paidAt", today.toISOString());
+
+  const yesterdayRevenue = (yesterdayInvoices || []).reduce((sum, inv) => sum + inv.total, 0);
   
   let revenueChange = 0;
   if (yesterdayRevenue > 0) {
@@ -43,46 +44,47 @@ async function getDashboardData() {
   }
 
   // 2. Low Stock
-  const lowStockProducts = await prisma.product.findMany({
-    where: {
-      businessId: BUSINESS_ID,
-      isActive: true,
-      currentStock: { lte: prisma.product.fields.reorderThreshold }
-    },
-    include: { vendor: true },
-    orderBy: { currentStock: 'asc' }
-  });
+  // Supabase doesn't support col <= col directly without RPC, so we filter in JS for MVP
+  const { data: allProducts } = await supabase
+    .from("products")
+    .select("*, vendor:vendors(*)")
+    .eq("businessId", BUSINESS_ID)
+    .eq("isActive", true);
+    
+  const lowStockProducts = (allProducts || [])
+    .filter(p => p.currentStock <= p.reorderThreshold)
+    .sort((a, b) => a.currentStock - b.currentStock);
 
   // 3. Overdue Invoices
-  const overdueInvoicesData = await prisma.invoice.findMany({
-    where: {
-      businessId: BUSINESS_ID,
-      status: "OVERDUE"
-    }
-  });
-  const overdueTotal = overdueInvoicesData.reduce((sum, inv) => sum + inv.total, 0);
+  const { data: overdueInvoicesData } = await supabase
+    .from("invoices")
+    .select("*")
+    .eq("businessId", BUSINESS_ID)
+    .eq("status", "OVERDUE");
+    
+  const overdueTotal = (overdueInvoicesData || []).reduce((sum, inv) => sum + inv.total, 0);
 
   // 4. Active Orders
-  const activeOrdersCount = await prisma.purchaseOrder.count({
-    where: {
-      businessId: BUSINESS_ID,
-      status: { in: ["DRAFT", "SENT"] }
-    }
-  });
+  const { count: activeOrdersCount } = await supabase
+    .from("purchase_orders")
+    .select("*", { count: "exact", head: true })
+    .eq("businessId", BUSINESS_ID)
+    .in("status", ["DRAFT", "SENT"]);
 
   // 5. Activities
-  const activities = await prisma.aIActivity.findMany({
-    where: { businessId: BUSINESS_ID },
-    orderBy: { createdAt: 'desc' },
-    take: 15
-  });
+  const { data: activities } = await supabase
+    .from("ai_activities")
+    .select("*")
+    .eq("businessId", BUSINESS_ID)
+    .order("createdAt", { ascending: false })
+    .limit(15);
 
   return {
     revenue: { amount: todayRevenue || 12450, change: revenueChange || 12 }, // Fallbacks for demo
     lowStockCount: lowStockProducts.length,
-    overdueInvoices: { count: overdueInvoicesData.length, total: overdueTotal },
-    activeOrders: activeOrdersCount,
-    activities,
+    overdueInvoices: { count: (overdueInvoicesData || []).length, total: overdueTotal },
+    activeOrders: activeOrdersCount || 0,
+    activities: activities || [],
     lowStockProducts
   };
 }

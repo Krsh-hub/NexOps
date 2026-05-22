@@ -2,7 +2,7 @@
 // NexOps Inventory Tool Implementations
 // ============================================
 
-import { prisma } from "@/lib/prisma";
+import { supabase } from "@/lib/supabase";
 
 const BUSINESS_ID = "biz_demo_001";
 
@@ -13,12 +13,14 @@ export async function updateInventory(args: {
 }): Promise<string> {
   const qty = parseFloat(args.quantity);
   
-  const product = await prisma.product.findFirst({
-    where: {
-      businessId: BUSINESS_ID,
-      name: { contains: args.productName },
-    },
-  });
+  const { data: products } = await supabase
+    .from("products")
+    .select("*")
+    .eq("businessId", BUSINESS_ID)
+    .ilike("name", `%${args.productName}%`)
+    .limit(1);
+
+  const product = products?.[0];
 
   if (!product) {
     return JSON.stringify({ error: `Product "${args.productName}" not found` });
@@ -26,30 +28,26 @@ export async function updateInventory(args: {
 
   const newStock = product.currentStock + qty;
   
-  await prisma.product.update({
-    where: { id: product.id },
-    data: { currentStock: Math.max(0, newStock) },
+  await supabase
+    .from("products")
+    .update({ currentStock: Math.max(0, newStock), updatedAt: new Date().toISOString() })
+    .eq("id", product.id);
+
+  await supabase.from("inventory_transactions").insert({
+    productId: product.id,
+    type: qty > 0 ? "IN" : "OUT",
+    quantity: Math.abs(qty),
+    reason: args.reason,
+    businessId: BUSINESS_ID,
   });
 
-  await prisma.inventoryTransaction.create({
-    data: {
-      productId: product.id,
-      type: qty > 0 ? "IN" : "OUT",
-      quantity: Math.abs(qty),
-      reason: args.reason,
-      businessId: BUSINESS_ID,
-    },
-  });
-
-  await prisma.aIActivity.create({
-    data: {
-      type: "INVENTORY_UPDATED",
-      status: "COMPLETED",
-      title: `Inventory updated: ${product.name}`,
-      description: `${qty > 0 ? "Added" : "Removed"} ${Math.abs(qty)} ${product.unit} of ${product.name}. New stock: ${Math.max(0, newStock)} ${product.unit}. Reason: ${args.reason}`,
-      toolUsed: "update_inventory",
-      businessId: BUSINESS_ID,
-    },
+  await supabase.from("ai_activities").insert({
+    type: "INVENTORY_UPDATED",
+    status: "COMPLETED",
+    title: `Inventory updated: ${product.name}`,
+    description: `${qty > 0 ? "Added" : "Removed"} ${Math.abs(qty)} ${product.unit} of ${product.name}. New stock: ${Math.max(0, newStock)} ${product.unit}. Reason: ${args.reason}`,
+    toolUsed: "update_inventory",
+    businessId: BUSINESS_ID,
   });
 
   return JSON.stringify({
@@ -63,16 +61,14 @@ export async function updateInventory(args: {
 }
 
 export async function detectLowStock(): Promise<string> {
-  const products = await prisma.product.findMany({
-    where: {
-      businessId: BUSINESS_ID,
-      isActive: true,
-      reorderThreshold: { gt: 0 },
-    },
-    include: { vendor: true },
-  });
+  const { data: products } = await supabase
+    .from("products")
+    .select("*, vendor:vendors(*)")
+    .eq("businessId", BUSINESS_ID)
+    .eq("isActive", true)
+    .gt("reorderThreshold", 0);
 
-  const lowStockItems = products
+  const lowStockItems = (products || [])
     .filter((p) => p.currentStock <= p.reorderThreshold)
     .map((p) => ({
       name: p.name,
@@ -88,20 +84,18 @@ export async function detectLowStock(): Promise<string> {
   if (lowStockItems.length > 0) {
     for (const item of lowStockItems) {
       if (item.severity === "CRITICAL") {
-        await prisma.notification.create({
-          data: {
-            type: "CRITICAL",
-            title: `Critical: ${item.name} stock`,
-            message: `${item.name} is at ${item.currentStock} ${item.unit} — ${item.estimatedDaysLeft} days until depletion.`,
-            businessId: BUSINESS_ID,
-          },
+        await supabase.from("notifications").insert({
+          type: "CRITICAL",
+          title: `Critical: ${item.name} stock`,
+          message: `${item.name} is at ${item.currentStock} ${item.unit} — ${item.estimatedDaysLeft} days until depletion.`,
+          businessId: BUSINESS_ID,
         });
       }
     }
   }
 
   return JSON.stringify({
-    totalProducts: products.length,
+    totalProducts: (products || []).length,
     lowStockCount: lowStockItems.length,
     items: lowStockItems,
   });
@@ -111,23 +105,25 @@ export async function getInventoryStatus(args: {
   productName?: string;
 }): Promise<string> {
   if (args.productName) {
-    const product = await prisma.product.findFirst({
-      where: {
-        businessId: BUSINESS_ID,
-        name: { contains: args.productName },
-      },
-      include: { vendor: true },
-    });
+    const { data: products } = await supabase
+      .from("products")
+      .select("*, vendor:vendors(*)")
+      .eq("businessId", BUSINESS_ID)
+      .ilike("name", `%${args.productName}%`)
+      .limit(1);
+
+    const product = products?.[0];
 
     if (!product) {
       return JSON.stringify({ error: `Product "${args.productName}" not found` });
     }
 
-    const recentTransactions = await prisma.inventoryTransaction.findMany({
-      where: { productId: product.id },
-      orderBy: { createdAt: "desc" },
-      take: 5,
-    });
+    const { data: recentTransactions } = await supabase
+      .from("inventory_transactions")
+      .select("*")
+      .eq("productId", product.id)
+      .order("createdAt", { ascending: false })
+      .limit(5);
 
     return JSON.stringify({
       product: {
@@ -145,28 +141,31 @@ export async function getInventoryStatus(args: {
           : product.currentStock <= product.reorderThreshold ? "LOW"
           : "HEALTHY",
       },
-      recentTransactions: recentTransactions.map((t) => ({
+      recentTransactions: (recentTransactions || []).map((t) => ({
         type: t.type,
         quantity: t.quantity,
         reason: t.reason,
-        date: t.createdAt.toISOString(),
+        date: t.createdAt,
       })),
     });
   }
 
-  const products = await prisma.product.findMany({
-    where: { businessId: BUSINESS_ID, isActive: true },
-    include: { vendor: true },
-    orderBy: { name: "asc" },
-  });
+  const { data: products } = await supabase
+    .from("products")
+    .select("*, vendor:vendors(*)")
+    .eq("businessId", BUSINESS_ID)
+    .eq("isActive", true)
+    .order("name", { ascending: true });
+    
+  const validProducts = products || [];
 
   const summary = {
-    totalProducts: products.length,
-    healthyStock: products.filter((p) => p.reorderThreshold === 0 || p.currentStock > p.reorderThreshold).length,
-    lowStock: products.filter((p) => p.reorderThreshold > 0 && p.currentStock > 0 && p.currentStock <= p.reorderThreshold).length,
-    criticalStock: products.filter((p) => p.reorderThreshold > 0 && p.currentStock > 0 && p.currentStock <= p.reorderThreshold * 0.3).length,
-    outOfStock: products.filter((p) => p.reorderThreshold > 0 && p.currentStock <= 0).length,
-    products: products.map((p) => ({
+    totalProducts: validProducts.length,
+    healthyStock: validProducts.filter((p) => p.reorderThreshold === 0 || p.currentStock > p.reorderThreshold).length,
+    lowStock: validProducts.filter((p) => p.reorderThreshold > 0 && p.currentStock > 0 && p.currentStock <= p.reorderThreshold).length,
+    criticalStock: validProducts.filter((p) => p.reorderThreshold > 0 && p.currentStock > 0 && p.currentStock <= p.reorderThreshold * 0.3).length,
+    outOfStock: validProducts.filter((p) => p.reorderThreshold > 0 && p.currentStock <= 0).length,
+    products: validProducts.map((p) => ({
       name: p.name,
       stock: `${p.currentStock} ${p.unit}`,
       status: p.reorderThreshold === 0 ? "N/A"
@@ -181,22 +180,17 @@ export async function getInventoryStatus(args: {
 }
 
 export async function searchProducts(args: { query: string }): Promise<string> {
-  const products = await prisma.product.findMany({
-    where: {
-      businessId: BUSINESS_ID,
-      isActive: true,
-      OR: [
-        { name: { contains: args.query } },
-        { category: { contains: args.query } },
-        { sku: { contains: args.query } },
-      ],
-    },
-    include: { vendor: true },
-  });
+  // Using an OR clause for multiple fields using postgrest or syntax
+  const { data: products } = await supabase
+    .from("products")
+    .select("*, vendor:vendors(*)")
+    .eq("businessId", BUSINESS_ID)
+    .eq("isActive", true)
+    .or(`name.ilike.%${args.query}%,category.ilike.%${args.query}%,sku.ilike.%${args.query}%`);
 
   return JSON.stringify({
-    count: products.length,
-    products: products.map((p) => ({
+    count: (products || []).length,
+    products: (products || []).map((p) => ({
       name: p.name,
       sku: p.sku,
       category: p.category,
