@@ -1,4 +1,4 @@
-# NexOps AI Operations Platform
+hy is gthe # NexOps AI Operations Platform
 
 NexOps is an AI-native operational platform for SMBs. This project uses Next.js 15, Prisma ORM, and Supabase PostgreSQL.
 
