@@ -1,0 +1,268 @@
+// ============================================
+// NexOps Database Schema
+// AI-Native Operations Platform for SMBs
+// ============================================
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+// ============================================
+// Business & Users
+// ============================================
+
+model Business {
+  id        String   @id @default(cuid())
+  name      String
+  type      String   @default("cafe") // cafe, restaurant, retail, wholesale, etc.
+  currency  String   @default("INR")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  products              Product[]
+  vendors               Vendor[]
+  customers             Customer[]
+  invoices              Invoice[]
+  expenses              Expense[]
+  inventoryTransactions InventoryTransaction[]
+  purchaseOrders        PurchaseOrder[]
+  aiActivities          AIActivity[]
+  notifications         Notification[]
+
+  @@map("businesses")
+}
+
+// ============================================
+// Inventory Module
+// ============================================
+
+model Product {
+  id               String   @id @default(cuid())
+  name             String
+  sku              String
+  category         String
+  unit             String   @default("pcs") // pcs, kg, liters, etc.
+  currentStock     Float    @default(0)
+  reorderThreshold Float    @default(10)
+  reorderQuantity  Float    @default(50)
+  costPrice        Float    @default(0)
+  sellingPrice     Float    @default(0)
+  isActive         Boolean  @default(true)
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  businessId String
+  business   Business @relation(fields: [businessId], references: [id])
+
+  vendorId String?
+  vendor   Vendor? @relation(fields: [vendorId], references: [id])
+
+  inventoryTransactions InventoryTransaction[]
+  invoiceItems          InvoiceItem[]
+  purchaseOrderItems    PurchaseOrderItem[]
+
+  @@unique([sku, businessId])
+  @@map("products")
+}
+
+model InventoryTransaction {
+  id        String   @id @default(cuid())
+  type      String // IN, OUT, ADJUSTMENT
+  quantity  Float
+  reason    String
+  notes     String?
+  createdAt DateTime @default(now())
+
+  productId String
+  product   Product @relation(fields: [productId], references: [id])
+
+  businessId String
+  business   Business @relation(fields: [businessId], references: [id])
+
+  @@map("inventory_transactions")
+}
+
+// ============================================
+// Vendors & Procurement
+// ============================================
+
+model Vendor {
+  id        String   @id @default(cuid())
+  name      String
+  email     String?
+  phone     String?
+  address   String?
+  createdAt DateTime @default(now())
+
+  businessId String
+  business   Business @relation(fields: [businessId], references: [id])
+
+  products       Product[]
+  purchaseOrders PurchaseOrder[]
+
+  @@map("vendors")
+}
+
+model PurchaseOrder {
+  id        String   @id @default(cuid())
+  orderNumber String
+  status    String   @default("DRAFT") // DRAFT, SENT, RECEIVED, CANCELLED
+  total     Float    @default(0)
+  notes     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  vendorId String
+  vendor   Vendor @relation(fields: [vendorId], references: [id])
+
+  businessId String
+  business   Business @relation(fields: [businessId], references: [id])
+
+  items PurchaseOrderItem[]
+
+  @@map("purchase_orders")
+}
+
+model PurchaseOrderItem {
+  id       String @id @default(cuid())
+  quantity Float
+  unitCost Float
+  total    Float
+
+  purchaseOrderId String
+  purchaseOrder   PurchaseOrder @relation(fields: [purchaseOrderId], references: [id])
+
+  productId String
+  product   Product @relation(fields: [productId], references: [id])
+
+  @@map("purchase_order_items")
+}
+
+// ============================================
+// Finance Module
+// ============================================
+
+model Customer {
+  id        String   @id @default(cuid())
+  name      String
+  email     String?
+  phone     String?
+  address   String?
+  createdAt DateTime @default(now())
+
+  businessId String
+  business   Business @relation(fields: [businessId], references: [id])
+
+  invoices Invoice[]
+
+  @@map("customers")
+}
+
+model Invoice {
+  id            String   @id @default(cuid())
+  invoiceNumber String
+  status        String   @default("DRAFT") // DRAFT, SENT, PAID, OVERDUE, CANCELLED
+  subtotal      Float    @default(0)
+  tax           Float    @default(0)
+  total         Float    @default(0)
+  dueDate       DateTime
+  paidAt        DateTime?
+  notes         String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  customerId String
+  customer   Customer @relation(fields: [customerId], references: [id])
+
+  businessId String
+  business   Business @relation(fields: [businessId], references: [id])
+
+  items    InvoiceItem[]
+  payments Payment[]
+
+  @@unique([invoiceNumber, businessId])
+  @@map("invoices")
+}
+
+model InvoiceItem {
+  id        String @id @default(cuid())
+  quantity  Float
+  unitPrice Float
+  total     Float
+
+  invoiceId String
+  invoice   Invoice @relation(fields: [invoiceId], references: [id])
+
+  productId String
+  product   Product @relation(fields: [productId], references: [id])
+
+  @@map("invoice_items")
+}
+
+model Payment {
+  id     String   @id @default(cuid())
+  amount Float
+  method String   @default("CASH") // CASH, UPI, BANK_TRANSFER, CARD
+  paidAt DateTime @default(now())
+  notes  String?
+
+  invoiceId String
+  invoice   Invoice @relation(fields: [invoiceId], references: [id])
+
+  @@map("payments")
+}
+
+model Expense {
+  id          String   @id @default(cuid())
+  category    String
+  description String
+  amount      Float
+  date        DateTime @default(now())
+  createdAt   DateTime @default(now())
+
+  businessId String
+  business   Business @relation(fields: [businessId], references: [id])
+
+  @@map("expenses")
+}
+
+// ============================================
+// AI Operations
+// ============================================
+
+model AIActivity {
+  id          String   @id @default(cuid())
+  type        String // INVOICE_CREATED, INVENTORY_UPDATED, LOW_STOCK_ALERT, etc.
+  status      String   @default("COMPLETED") // PENDING, EXECUTING, COMPLETED, FAILED
+  title       String
+  description String
+  toolUsed    String?
+  result      String?
+  metadata    String?  // JSON string for additional data
+  createdAt   DateTime @default(now())
+
+  businessId String
+  business   Business @relation(fields: [businessId], references: [id])
+
+  @@map("ai_activities")
+}
+
+model Notification {
+  id        String   @id @default(cuid())
+  type      String   @default("INFO") // INFO, WARNING, CRITICAL, SUCCESS
+  title     String
+  message   String
+  read      Boolean  @default(false)
+  actionUrl String?
+  createdAt DateTime @default(now())
+
+  businessId String
+  business   Business @relation(fields: [businessId], references: [id])
+
+  @@map("notifications")
+}
