@@ -1,103 +1,88 @@
 "use client";
 
 import { useState } from "react";
-import { Sparkles, Loader2, ArrowRight, CornerDownLeft } from "lucide-react";
-
-interface Message {
-  role: "user" | "assistant";
-  content: string;
-}
+import { Sparkles, Loader2, CornerDownLeft, X } from "lucide-react";
 
 export function AICommandBar() {
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [insight, setInsight] = useState<Message | null>(null);
+  const [response, setResponse] = useState<string | null>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!input.trim() || isLoading) return;
-
-    const userMessage = input.trim();
+    const msg = input.trim();
     setInput("");
     setIsLoading(true);
-    setInsight({ role: "user", content: userMessage });
+    setResponse(null);
 
     try {
-      const response = await fetch("/api/chat", {
+      const res = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: userMessage, history: [] }),
+        body: JSON.stringify({ message: msg, history: [] }),
       });
-
-      const data = await response.json();
-
-      if (data.error) throw new Error(data.error);
-
-      setInsight({ role: "assistant", content: data.message });
-    } catch (error) {
-      console.error("Chat error:", error);
-      setInsight({ 
-        role: "assistant", 
-        content: "Error processing request. Please try again." 
-      });
+      const data = await res.json();
+      setResponse(data.error ? "Something went wrong. Try again." : data.message);
+    } catch {
+      setResponse("Connection error. Please try again.");
     } finally {
       setIsLoading(false);
     }
   };
 
   return (
-    <div className="flex flex-col gap-3">
-      {/* Command Input */}
-      <form 
-        onSubmit={handleSubmit} 
-        className="relative flex items-center bg-[var(--bg-surface)] border border-[var(--border-subtle)] rounded-xl shadow-sm transition-all focus-within:border-[var(--border-active)] focus-within:ring-1 focus-within:ring-[var(--border-active)]"
-      >
-        <div className="absolute left-4 text-[var(--text-muted)] flex items-center justify-center">
-          <Sparkles className="w-4 h-4 text-[var(--text-secondary)]" />
+    <div className="space-y-3">
+      <form onSubmit={handleSubmit} className="relative">
+        <div className="absolute left-4 top-1/2 -translate-y-1/2 text-[var(--text-quaternary)]">
+          <Sparkles className="w-4 h-4" />
         </div>
         <input
           type="text"
           value={input}
           onChange={(e) => setInput(e.target.value)}
-          placeholder="Ask AI to query operations, generate reports, or automate tasks..."
-          className="w-full bg-transparent border-none py-4 pl-12 pr-16 text-sm text-[var(--text-primary)] placeholder:text-[var(--text-muted)] focus:outline-none focus:ring-0"
+          placeholder="Ask NexOps to manage operations…"
           disabled={isLoading}
+          className="w-full h-12 bg-[var(--bg-secondary)] border border-[var(--border-primary)] rounded-xl pl-11 pr-14 text-[13px] text-[var(--text-primary)] placeholder:text-[var(--text-quaternary)] focus:outline-none focus:border-[var(--border-secondary)] focus:ring-1 focus:ring-[var(--border-secondary)] transition-all duration-200 disabled:opacity-50"
         />
-        <div className="absolute right-4 flex items-center gap-2">
+        <div className="absolute right-4 top-1/2 -translate-y-1/2">
           {isLoading ? (
-            <Loader2 className="w-4 h-4 text-[var(--text-muted)] animate-spin" />
+            <Loader2 className="w-4 h-4 text-[var(--text-quaternary)] animate-spin" />
           ) : (
-            <kbd className="hidden sm:inline-flex items-center gap-1 px-2 py-1 bg-[var(--bg-hover)] border border-[var(--border-subtle)] rounded text-[10px] font-semibold text-[var(--text-muted)] font-mono">
+            <kbd className="hidden sm:inline-flex items-center px-1.5 py-0.5 bg-[var(--bg-hover)] border border-[var(--border-primary)] rounded-md text-[10px] font-semibold text-[var(--text-quaternary)]">
               <CornerDownLeft className="w-3 h-3" />
             </kbd>
           )}
         </div>
       </form>
 
-      {/* Transient Insight Stream */}
-      {insight && (
-        <div className="bg-[var(--bg-surface)] border border-[var(--border-subtle)] rounded-xl p-4 shadow-sm animate-fade-in">
+      {/* AI Response */}
+      {(response || isLoading) && (
+        <div className="card-surface p-4 animate-fade-in">
           <div className="flex items-start gap-3">
-            <div className="w-6 h-6 rounded bg-[var(--bg-hover)] border border-[var(--border-default)] flex items-center justify-center shrink-0 mt-0.5">
-              <Sparkles className="w-3 h-3 text-[var(--text-primary)]" />
+            <div className="w-6 h-6 rounded-lg bg-gradient-to-br from-[var(--accent)] to-[var(--purple)] flex items-center justify-center shrink-0 mt-0.5">
+              <Sparkles className="w-3 h-3 text-white" />
             </div>
             <div className="flex-1 min-w-0">
               {isLoading ? (
-                <div className="space-y-2 py-1">
-                  <div className="h-4 bg-[var(--bg-hover)] rounded animate-pulse w-1/3"></div>
-                  <div className="h-4 bg-[var(--bg-hover)] rounded animate-pulse w-1/2"></div>
+                <div className="space-y-2">
+                  <div className="h-3.5 rounded-md animate-shimmer w-2/3" />
+                  <div className="h-3.5 rounded-md animate-shimmer w-1/2" />
                 </div>
               ) : (
-                <div 
-                  className="prose prose-invert prose-sm max-w-none text-[var(--text-primary)] leading-relaxed"
-                  dangerouslySetInnerHTML={{ 
-                    __html: insight.content
-                      .replace(/\n/g, "<br/>")
-                      .replace(/\*\*(.*?)\*\*/g, "<strong class='font-semibold text-white'>$1</strong>")
-                  }} 
-                />
+                <p className="text-[13px] text-[var(--text-secondary)] leading-relaxed whitespace-pre-wrap">
+                  {response}
+                </p>
               )}
             </div>
+            {response && !isLoading && (
+              <button
+                onClick={() => setResponse(null)}
+                className="w-5 h-5 flex items-center justify-center rounded-md text-[var(--text-quaternary)] hover:text-[var(--text-secondary)] hover:bg-[var(--bg-hover)] transition-all shrink-0"
+              >
+                <X className="w-3 h-3" />
+              </button>
+            )}
           </div>
         </div>
       )}

@@ -1,62 +1,43 @@
 @import "tailwindcss";
 
-/* ============================================
-   NexOps Design System — Premium SaaS
-   ============================================ */
+/* ─── NexOps Design System · Apple-Inspired Dark ─── */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 
 :root {
-  /* Background layers - Matte Dark Neutral */
-  --bg-base: #0A0A0B;
-  --bg-surface: #111113;
-  --bg-elevated: #161618;
-  --bg-overlay: #1C1C1F;
-  --bg-hover: #222225;
+  --bg-primary: #000000;
+  --bg-secondary: #0a0a0a;
+  --bg-tertiary: #111111;
+  --bg-elevated: #161616;
+  --bg-hover: #1a1a1a;
+  --bg-active: #222222;
 
-  /* Accent — Subtle Blue/Teal */
-  --accent-primary: #3b82f6;
-  --accent-primary-dim: #2563eb;
-  --accent-secondary: #0ea5e9;
+  --text-primary: #f5f5f7;
+  --text-secondary: #86868b;
+  --text-tertiary: #6e6e73;
+  --text-quaternary: #48484a;
 
-  /* Semantic colors - Muted but readable */
-  --success: #10b981;
-  --success-bg: rgba(16, 185, 129, 0.1);
-  --warning: #f59e0b;
-  --warning-bg: rgba(245, 158, 11, 0.1);
-  --danger: #ef4444;
-  --danger-bg: rgba(239, 68, 68, 0.1);
-  --info: #3b82f6;
-  --info-bg: rgba(59, 130, 246, 0.1);
+  --border-primary: #1d1d1f;
+  --border-secondary: #2d2d2f;
+  --border-hover: #3a3a3c;
 
-  /* Text - High Contrast / Muted */
-  --text-primary: #EDEDEF;
-  --text-secondary: #A0A0AB;
-  --text-muted: #70707B;
+  --accent: #2997ff;
+  --accent-hover: #0077ed;
+  --accent-subtle: rgba(41, 151, 255, 0.08);
 
-  /* Borders - Very subtle */
-  --border-subtle: #27272A;
-  --border-default: #3F3F46;
-  --border-active: #52525B;
+  --green: #30d158;
+  --green-subtle: rgba(48, 209, 88, 0.1);
+  --red: #ff453a;
+  --red-subtle: rgba(255, 69, 58, 0.1);
+  --orange: #ff9f0a;
+  --orange-subtle: rgba(255, 159, 10, 0.1);
+  --purple: #bf5af2;
+  --purple-subtle: rgba(191, 90, 242, 0.1);
 
-  /* Shadows - Soft and elegant */
-  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
-  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4), 0 2px 4px -2px rgba(0, 0, 0, 0.4);
-  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.4), 0 4px 6px -4px rgba(0, 0, 0, 0.4);
-
-  /* Radius - Modern slightly rounded */
-  --radius-sm: 4px;
-  --radius-md: 8px;
-  --radius-lg: 12px;
-  --radius-xl: 16px;
-  --radius-full: 9999px;
-
-  /* Transitions */
-  --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
-  --transition-default: 250ms cubic-bezier(0.4, 0, 0.2, 1);
+  --radius: 12px;
+  --radius-sm: 8px;
+  --radius-lg: 16px;
 }
-
-/* ============================================
-   Base Styles
-   ============================================ */
 
 * {
   box-sizing: border-box;
@@ -66,127 +47,92 @@
 
 html {
   color-scheme: dark;
+  height: 100%;
 }
 
 body {
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  background: var(--bg-base);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', sans-serif;
+  background: var(--bg-primary);
   color: var(--text-primary);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  overflow-x: hidden;
+  height: 100%;
+  overflow: hidden;
 }
 
-/* ============================================
-   Scrollbar Styling
-   ============================================ */
+/* ─── Scrollbar ─── */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border-secondary); border-radius: 999px; }
+::-webkit-scrollbar-thumb:hover { background: var(--border-hover); }
+.scrollbar-hide::-webkit-scrollbar { display: none; }
+.scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
 
-::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
-}
-
-::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-::-webkit-scrollbar-thumb {
-  background: var(--border-default);
-  border-radius: var(--radius-full);
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: var(--border-active);
-}
-
-/* ============================================
-   Card & Panel Utilities
-   ============================================ */
-
-.card {
-  background: var(--bg-surface);
-  border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-sm);
-  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
-}
-
-.card:hover {
-  border-color: var(--border-default);
-}
-
-.panel {
-  background: var(--bg-elevated);
-  border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-lg);
-}
-
-/* ============================================
-   Animations
-   ============================================ */
-
+/* ─── Animations ─── */
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(4px); }
+  from { opacity: 0; transform: translateY(6px); }
   to { opacity: 1; transform: translateY(0); }
 }
-
-.animate-fade-in {
-  animation: fadeIn 0.3s ease-out forwards;
+@keyframes fadeInSoft {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+@keyframes pulse-soft {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
 }
 
-/* ============================================
-   Component Utilities
-   ============================================ */
-
-.status-dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  display: inline-block;
+.animate-fade-in { animation: fadeIn 0.4s ease-out forwards; }
+.animate-fade-soft { animation: fadeInSoft 0.3s ease-out forwards; }
+.animate-pulse-soft { animation: pulse-soft 2s ease-in-out infinite; }
+.animate-shimmer {
+  background: linear-gradient(90deg, transparent 25%, var(--bg-hover) 50%, transparent 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
 }
 
-.status-dot-success { background: var(--success); }
-.status-dot-warning { background: var(--warning); }
-.status-dot-danger { background: var(--danger); }
-.status-dot-info { background: var(--info); }
-
-/* Command Input */
-.command-input {
-  background: var(--bg-base);
-  border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-md);
-  transition: all var(--transition-fast);
+/* ─── Utilities ─── */
+.glass {
+  background: rgba(10, 10, 10, 0.8);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
 }
 
-.command-input:focus-within {
-  border-color: var(--accent-primary);
-  box-shadow: 0 0 0 1px var(--accent-primary);
+.card-surface {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-primary);
+  border-radius: var(--radius);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+.card-surface:hover {
+  border-color: var(--border-secondary);
 }
 
-/* Activity Timeline */
-.timeline-line {
-  position: absolute;
-  left: 11px; /* 12px for centering on a 24x24 icon */
-  top: 24px;
-  bottom: -8px;
-  width: 1px;
-  background: var(--border-subtle);
+.card-elevated {
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-primary);
+  border-radius: var(--radius);
+  transition: all 0.25s ease;
+}
+.card-elevated:hover {
+  border-color: var(--border-secondary);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
 }
 
-/* Badge variants */
-.badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  padding: 2px 8px;
-  border-radius: var(--radius-full);
-  font-size: 0.75rem;
-  font-weight: 500;
-  letter-spacing: 0.02em;
+/* ─── Focus ─── */
+*:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: 4px;
 }
 
-.badge-success { background: var(--success-bg); color: var(--success); }
-.badge-warning { background: var(--warning-bg); color: var(--warning); }
-.badge-danger { background: var(--danger-bg); color: var(--danger); }
-.badge-info { background: var(--info-bg); color: var(--info); }
-.badge-neutral { background: var(--bg-hover); color: var(--text-secondary); }
+/* ─── Selection ─── */
+::selection {
+  background: var(--accent-subtle);
+  color: var(--accent);
+}

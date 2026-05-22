@@ -11,66 +11,52 @@ interface Product {
 }
 
 export function InventoryRisk({ products }: { products: Product[] }) {
-  if (products.length === 0) {
-    return (
-      <div className="card p-5 h-full flex flex-col border border-[var(--border-subtle)] shadow-sm">
-        <h3 className="text-sm font-semibold text-[var(--text-primary)]">Inventory Risk</h3>
-        <div className="flex-1 flex items-center justify-center">
-          <span className="text-sm text-[var(--text-muted)]">Inventory levels healthy.</span>
-        </div>
-      </div>
-    );
-  }
-
   return (
-    <div className="card flex flex-col border border-[var(--border-subtle)] shadow-sm overflow-hidden h-full">
-      <div className="p-4 border-b border-[var(--border-subtle)] flex items-center justify-between bg-[var(--bg-surface)]">
-        <div className="flex items-center gap-2">
-          <AlertTriangle className="w-4 h-4 text-[var(--warning)]" />
-          <h3 className="text-sm font-semibold text-[var(--text-primary)]">Critical Stock</h3>
-        </div>
-        <span className="text-[10px] uppercase font-semibold tracking-wider text-[var(--text-muted)]">
-          {products.length} Items
-        </span>
+    <div className="card-surface flex flex-col h-full overflow-hidden">
+      <div className="px-4 py-3.5 flex items-center gap-2 border-b border-[var(--border-primary)]">
+        <AlertTriangle className="w-4 h-4 text-[var(--orange)]" strokeWidth={1.8} />
+        <span className="text-[13px] font-semibold text-[var(--text-primary)]">Stock Alerts</span>
+        <span className="ml-auto text-[11px] text-[var(--text-quaternary)] font-medium">{products.length}</span>
       </div>
-      
-      <div className="flex-1 overflow-y-auto bg-[var(--bg-base)]">
-        <ul className="divide-y divide-[var(--border-subtle)]">
-          {products.map((product) => {
-            const isStockOut = product.currentStock === 0;
-            return (
-              <li key={product.id} className="p-4 hover:bg-[var(--bg-hover)] transition-colors group flex items-center justify-between">
-                <div>
-                  <div className="flex items-center gap-2 mb-1">
-                    <span className="text-sm font-medium text-[var(--text-primary)]">{product.name}</span>
-                    {isStockOut && (
-                      <span className="px-1.5 py-0.5 rounded text-[9px] uppercase font-bold tracking-wider bg-[var(--danger-bg)] text-[var(--danger)]">
-                        Out
-                      </span>
-                    )}
-                  </div>
-                  <div className="text-[11px] text-[var(--text-muted)] font-mono">
-                    {product.sku} <span className="mx-1">•</span> {product.vendor?.name || 'No Vendor'}
-                  </div>
-                </div>
-                
-                <div className="flex items-center gap-4">
-                  <div className="text-right">
-                    <div className={`text-sm font-bold ${isStockOut ? 'text-[var(--danger)]' : 'text-[var(--warning)]'}`}>
-                      {product.currentStock} <span className="text-[10px] font-medium text-[var(--text-muted)]">{product.unit}</span>
+
+      <div className="flex-1 overflow-y-auto scrollbar-hide">
+        {products.length === 0 ? (
+          <div className="flex items-center justify-center h-full">
+            <p className="text-[13px] text-[var(--text-quaternary)]">All stock levels healthy</p>
+          </div>
+        ) : (
+          <div className="divide-y divide-[var(--border-primary)]">
+            {products.map((p) => {
+              const isOut = p.currentStock === 0;
+              return (
+                <div key={p.id} className="px-4 py-3 hover:bg-[var(--bg-hover)] transition-colors duration-150 group flex items-center gap-3">
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2">
+                      <span className="text-[13px] font-medium text-[var(--text-primary)] truncate">{p.name}</span>
+                      {isOut && (
+                        <span className="text-[9px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded-md bg-[var(--red-subtle)] text-[var(--red)]">
+                          Out
+                        </span>
+                      )}
                     </div>
-                    <div className="text-[10px] text-[var(--text-muted)]">
-                      Min: {product.reorderThreshold}
+                    <div className="text-[11px] text-[var(--text-quaternary)] font-mono mt-0.5">
+                      {p.sku} · {p.vendor?.name || "No vendor"}
                     </div>
                   </div>
-                  <button className="w-6 h-6 flex items-center justify-center rounded-md bg-[var(--bg-surface)] border border-[var(--border-default)] text-[var(--text-secondary)] opacity-0 group-hover:opacity-100 transition-all hover:border-[var(--text-primary)] hover:text-[var(--text-primary)]">
+                  <div className="text-right shrink-0">
+                    <div className={`text-[13px] font-semibold ${isOut ? "text-[var(--red)]" : "text-[var(--orange)]"}`}>
+                      {p.currentStock} <span className="text-[10px] text-[var(--text-quaternary)] font-normal">{p.unit}</span>
+                    </div>
+                    <div className="text-[10px] text-[var(--text-quaternary)]">min {p.reorderThreshold}</div>
+                  </div>
+                  <button className="w-6 h-6 rounded-md flex items-center justify-center text-[var(--text-quaternary)] opacity-0 group-hover:opacity-100 hover:bg-[var(--bg-active)] hover:text-[var(--text-secondary)] transition-all duration-200 shrink-0">
                     <ArrowRight className="w-3 h-3" />
                   </button>
                 </div>
-              </li>
-            );
-          })}
-        </ul>
+              );
+            })}
+          </div>
+        )}
       </div>
     </div>
   );

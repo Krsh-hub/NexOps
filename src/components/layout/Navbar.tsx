@@ -1,39 +1,51 @@
+"use client";
+
 import { Search, Bell, Command } from "lucide-react";
+import { usePathname } from "next/navigation";
+
+const titles: Record<string, string> = {
+  "/": "Dashboard",
+  "/inventory": "Inventory",
+  "/finance": "Finance",
+  "/ai": "AI Operations",
+  "/vendors": "Vendors",
+  "/reports": "Reports",
+  "/settings": "Settings",
+};
 
 export function Navbar() {
+  const pathname = usePathname();
+  const page = titles[pathname] || "NexOps";
+
   return (
-    <header className="h-16 border-b border-[var(--border-subtle)] bg-[var(--bg-base)] flex items-center justify-between px-6 shrink-0">
-      <div className="flex items-center gap-4 flex-1">
-        <div className="flex items-center text-sm font-medium text-[var(--text-secondary)]">
-          Brew & Bite Café
-          <span className="mx-2 text-[var(--border-default)]">/</span>
-          <span className="text-[var(--text-primary)]">Dashboard</span>
-        </div>
+    <header className="h-14 flex items-center justify-between px-6 border-b border-[var(--border-primary)] bg-[var(--bg-primary)] shrink-0">
+      {/* Breadcrumb */}
+      <div className="flex items-center text-[13px]">
+        <span className="text-[var(--text-quaternary)] font-medium">Brew & Bite Café</span>
+        <span className="mx-2.5 text-[var(--text-quaternary)]">/</span>
+        <span className="text-[var(--text-primary)] font-medium">{page}</span>
       </div>
 
-      <div className="flex items-center gap-4">
-        {/* Search / Command Bar Hint */}
-        <div className="hidden md:flex items-center gap-2 px-3 py-1.5 bg-[var(--bg-surface)] border border-[var(--border-subtle)] rounded-md text-[var(--text-muted)] text-sm w-64 hover:border-[var(--border-default)] transition-colors cursor-pointer">
-          <Search className="w-4 h-4" />
-          <span className="flex-1">Search or jump to...</span>
-          <div className="flex items-center gap-1 text-xs font-semibold bg-[var(--bg-hover)] px-1.5 py-0.5 rounded">
-            <Command className="w-3 h-3" />
-            <span>K</span>
+      {/* Right */}
+      <div className="flex items-center gap-2">
+        {/* Search */}
+        <button className="hidden md:flex items-center gap-2 h-8 px-3 bg-[var(--bg-secondary)] border border-[var(--border-primary)] rounded-[10px] text-[13px] text-[var(--text-quaternary)] hover:border-[var(--border-secondary)] hover:text-[var(--text-tertiary)] transition-all duration-200 w-52">
+          <Search className="w-3.5 h-3.5" />
+          <span className="flex-1 text-left">Search…</span>
+          <div className="flex items-center gap-0.5 text-[10px] font-semibold text-[var(--text-quaternary)] bg-[var(--bg-hover)] px-1.5 py-0.5 rounded-md">
+            <Command className="w-2.5 h-2.5" />K
           </div>
-        </div>
-
-        <button className="relative p-2 text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors rounded-md hover:bg-[var(--bg-hover)]">
-          <Bell className="w-5 h-5" />
-          <span className="absolute top-1.5 right-2 w-2 h-2 bg-[var(--accent-primary)] rounded-full border border-[var(--bg-base)]"></span>
         </button>
 
-        {/* Profile Avatar */}
-        <div className="w-8 h-8 rounded-full bg-[var(--bg-hover)] border border-[var(--border-default)] flex items-center justify-center overflow-hidden cursor-pointer">
-          <img 
-            src="https://api.dicebear.com/7.x/notionists/svg?seed=Felix&backgroundColor=transparent" 
-            alt="Profile"
-            className="w-full h-full object-cover"
-          />
+        {/* Notifications */}
+        <button className="relative w-8 h-8 flex items-center justify-center rounded-[10px] text-[var(--text-tertiary)] hover:text-[var(--text-secondary)] hover:bg-[var(--bg-hover)] transition-all duration-200">
+          <Bell className="w-4 h-4" strokeWidth={1.8} />
+          <span className="absolute top-1.5 right-1.5 w-[6px] h-[6px] bg-[var(--accent)] rounded-full" />
+        </button>
+
+        {/* Avatar */}
+        <div className="w-7 h-7 rounded-full bg-gradient-to-br from-[var(--accent)] to-[var(--purple)] flex items-center justify-center text-[11px] font-semibold text-white cursor-pointer">
+          K
         </div>
       </div>
     </header>

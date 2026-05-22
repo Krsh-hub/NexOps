@@ -4,7 +4,10 @@ import "./globals.css";
 import { Sidebar } from "@/components/layout/Sidebar";
 import { Navbar } from "@/components/layout/Navbar";
 
-const inter = Inter({ subsets: ["latin"] });
+const inter = Inter({
+  subsets: ["latin"],
+  weight: ["300", "400", "500", "600", "700"],
+});
 
 export const metadata: Metadata = {
   title: "NexOps | AI Operations",
@@ -13,16 +16,14 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
   children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+}: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className="dark h-full antialiased">
-      <body className={`${inter.className} h-full flex overflow-hidden bg-[var(--bg-base)] text-[var(--text-primary)]`}>
+    <html lang="en" className="dark h-full">
+      <body className={`${inter.className} h-full flex bg-[var(--bg-primary)] text-[var(--text-primary)] overflow-hidden`}>
         <Sidebar />
         <div className="flex flex-col flex-1 min-w-0 h-full">
           <Navbar />
-          <main className="flex-1 overflow-y-auto">
+          <main className="flex-1 overflow-y-auto scrollbar-hide">
             {children}
           </main>
         </div>
