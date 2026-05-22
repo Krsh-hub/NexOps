@@ -1,4 +1,4 @@
-import { PrismaClient } from "../src/generated/prisma/client.js";
+import { PrismaClient } from "../src/generated/prisma/index.js";
 
 // @ts-ignore
 const prisma = new PrismaClient({ log: ["error"] });
