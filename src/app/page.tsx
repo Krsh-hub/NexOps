@@ -93,54 +93,49 @@ export default async function DashboardPage() {
   const data = await getDashboardData();
 
   return (
-    <div className="min-h-screen bg-[var(--bg-base)] text-white p-4 md:p-8 font-sans bg-grid">
-      <div className="max-w-7xl mx-auto space-y-8">
+    <div className="p-6 md:p-8 max-w-7xl mx-auto space-y-8 h-full flex flex-col">
+      {/* Header */}
+      <header className="flex flex-col md:flex-row md:items-end justify-between gap-4 shrink-0">
+        <div>
+          <h1 className="text-2xl md:text-3xl font-semibold tracking-tight text-[var(--text-primary)]">Operations Overview</h1>
+          <p className="text-[var(--text-secondary)] mt-1.5 text-sm">Review your business operations and insights for today.</p>
+        </div>
         
-        {/* Header */}
-        <header className="flex flex-col md:flex-row md:items-end justify-between gap-4">
-          <div>
-            <div className="flex items-center gap-2 mb-1">
-              <div className="w-2 h-2 rounded-full bg-[var(--accent-primary)] shadow-[var(--shadow-glow)] animate-pulse-glow"></div>
-              <span className="text-[var(--accent-primary)] font-medium text-sm tracking-wider uppercase">NexOps AI Platform</span>
-            </div>
-            <h1 className="text-3xl md:text-4xl font-bold tracking-tight text-glow">Operations Overview</h1>
-            <p className="text-[var(--text-muted)] mt-1">Brew & Bite Café — Autonomous Mode Active</p>
-          </div>
-          
-          <div className="flex items-center gap-3">
-            <button className="glass px-4 py-2 rounded-full text-sm font-medium hover:bg-white/5 transition-colors border border-[var(--border-default)]">
-              Manual Override
-            </button>
-            <button className="bg-[var(--accent-primary)] text-black px-4 py-2 rounded-full text-sm font-medium hover:bg-[var(--accent-primary-dim)] shadow-[var(--shadow-glow)] transition-all">
-              Generate Report
-            </button>
-          </div>
-        </header>
+        <div className="flex items-center gap-3">
+          <button className="px-4 py-2 rounded-md text-sm font-medium hover:bg-[var(--bg-hover)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors border border-[var(--border-default)]">
+            Manual Override
+          </button>
+          <button className="bg-[var(--text-primary)] text-black px-4 py-2 rounded-md text-sm font-medium hover:bg-white shadow-sm transition-all">
+            Generate Report
+          </button>
+        </div>
+      </header>
 
-        {/* Stats Row */}
+      {/* Stats Row */}
+      <div className="shrink-0">
         <StatCards 
           revenue={data.revenue}
           lowStockCount={data.lowStockCount}
           overdueInvoices={data.overdueInvoices}
           activeOrders={data.activeOrders}
         />
+      </div>
 
-        {/* Main Content Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 h-[600px]">
-          {/* Left Column: AI Command Center & Inventory */}
-          <div className="lg:col-span-2 flex flex-col gap-6 h-full">
-            <div className="flex-1 min-h-0">
-              <AICommandCenter />
-            </div>
-            <div className="h-1/3 min-h-[200px]">
-              <InventoryTable products={data.lowStockProducts.slice(0, 3)} />
-            </div>
+      {/* Main Content Grid */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 flex-1 min-h-[600px] pb-6">
+        {/* Left Column: AI Command Center & Inventory */}
+        <div className="lg:col-span-2 flex flex-col gap-6 h-full">
+          <div className="flex-1 min-h-[300px]">
+            <AICommandCenter />
           </div>
+          <div className="flex-1 min-h-[250px]">
+            <InventoryTable products={data.lowStockProducts.slice(0, 3)} />
+          </div>
+        </div>
 
-          {/* Right Column: Operations Feed */}
-          <div className="h-full">
-            <OperationsFeed activities={data.activities} />
-          </div>
+        {/* Right Column: Operations Feed */}
+        <div className="h-full">
+          <OperationsFeed activities={data.activities} />
         </div>
       </div>
     </div>
