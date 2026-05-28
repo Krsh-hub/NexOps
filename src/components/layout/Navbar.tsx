@@ -18,33 +18,33 @@ export function Navbar() {
   const page = titles[pathname] || "NexOps";
 
   return (
-    <header className="h-14 flex items-center justify-between px-6 border-b border-[var(--border-primary)] bg-[var(--bg-primary)] shrink-0">
+    <header className="h-14 flex items-center justify-between px-6 border-b border-[var(--border-primary)]/50 bg-[var(--bg-secondary)]/70 backdrop-blur-md shrink-0 z-20 sticky top-0">
       {/* Breadcrumb */}
-      <div className="flex items-center text-[13px]">
-        <span className="text-[var(--text-quaternary)] font-medium">Brew & Bite Café</span>
-        <span className="mx-2.5 text-[var(--text-quaternary)]">/</span>
-        <span className="text-[var(--text-primary)] font-medium">{page}</span>
+      <div className="flex items-center text-[13px] tracking-wide select-none">
+        <span className="text-[var(--text-tertiary)] font-bold uppercase text-[10px]">Brew & Bite Café</span>
+        <span className="mx-2 text-[var(--text-quaternary)]">/</span>
+        <span className="text-[var(--text-primary)] font-semibold">{page}</span>
       </div>
 
       {/* Right */}
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-3">
         {/* Search */}
-        <button className="hidden md:flex items-center gap-2 h-8 px-3 bg-[var(--bg-secondary)] border border-[var(--border-primary)] rounded-[10px] text-[13px] text-[var(--text-quaternary)] hover:border-[var(--border-secondary)] hover:text-[var(--text-tertiary)] transition-all duration-200 w-52">
-          <Search className="w-3.5 h-3.5" />
-          <span className="flex-1 text-left">Search…</span>
-          <div className="flex items-center gap-0.5 text-[10px] font-semibold text-[var(--text-quaternary)] bg-[var(--bg-hover)] px-1.5 py-0.5 rounded-md">
+        <button className="hidden md:flex items-center gap-2 h-8 px-3 bg-[var(--bg-primary)]/60 border border-[var(--border-primary)] rounded-xl text-[12px] text-[var(--text-tertiary)] hover:border-[var(--border-hover)] hover:text-[var(--text-secondary)] hover:bg-[var(--bg-primary)] transition-all duration-300 w-56 cursor-pointer group shadow-sm">
+          <Search className="w-3.5 h-3.5 text-[var(--text-tertiary)] group-hover:scale-105 transition-transform" />
+          <span className="flex-1 text-left font-medium">Quick search…</span>
+          <div className="flex items-center gap-0.5 text-[10px] font-bold text-[var(--text-tertiary)] bg-[var(--border-primary)] border border-[var(--border-secondary)]/35 px-1.5 py-0.5 rounded-md">
             <Command className="w-2.5 h-2.5" />K
           </div>
         </button>
 
         {/* Notifications */}
-        <button className="relative w-8 h-8 flex items-center justify-center rounded-[10px] text-[var(--text-tertiary)] hover:text-[var(--text-secondary)] hover:bg-[var(--bg-hover)] transition-all duration-200">
-          <Bell className="w-4 h-4" strokeWidth={1.8} />
-          <span className="absolute top-1.5 right-1.5 w-[6px] h-[6px] bg-[var(--accent)] rounded-full" />
+        <button className="relative w-8 h-8 flex items-center justify-center rounded-xl text-[var(--text-secondary)] hover:text-white hover:bg-[var(--bg-hover)] transition-all duration-300 cursor-pointer shadow-sm">
+          <Bell className="w-4 h-4" strokeWidth={2} />
+          <span className="absolute top-2 right-2 w-[5px] h-[5px] bg-[var(--red)] rounded-full animate-pulse shadow-md shadow-[var(--red)]/40" />
         </button>
 
         {/* Avatar */}
-        <div className="w-7 h-7 rounded-full bg-gradient-to-br from-[var(--accent)] to-[var(--purple)] flex items-center justify-center text-[11px] font-semibold text-white cursor-pointer">
+        <div className="w-7 h-7 rounded-full bg-gradient-to-br from-[var(--accent)] to-[var(--purple)] flex items-center justify-center text-[11px] font-bold text-white cursor-pointer shadow-md shadow-[var(--accent)]/10 hover:shadow-[var(--accent)]/30 hover:scale-105 hover:rotate-6 transition-all duration-300">
           K
         </div>
       </div>

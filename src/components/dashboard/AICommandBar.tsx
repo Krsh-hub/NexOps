@@ -43,7 +43,7 @@ export function AICommandBar() {
           onChange={(e) => setInput(e.target.value)}
           placeholder="Ask NexOps to manage operations…"
           disabled={isLoading}
-          className="w-full h-12 bg-[var(--bg-secondary)] border border-[var(--border-primary)] rounded-xl pl-11 pr-14 text-[13px] text-[var(--text-primary)] placeholder:text-[var(--text-quaternary)] focus:outline-none focus:border-[var(--border-secondary)] focus:ring-1 focus:ring-[var(--border-secondary)] transition-all duration-200 disabled:opacity-50"
+          className="w-full h-11 bg-[var(--bg-secondary)] border border-[var(--border-primary)] rounded-xl pl-11 pr-14 text-[13px] text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)] focus:outline-none focus:border-[var(--accent)]/45 focus:ring-2 focus:ring-[var(--accent)]/10 hover:border-[var(--border-secondary)] transition-all duration-300 disabled:opacity-50 shadow-sm"
         />
         <div className="absolute right-4 top-1/2 -translate-y-1/2">
           {isLoading ? (
