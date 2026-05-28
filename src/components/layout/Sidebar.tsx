@@ -27,7 +27,7 @@ export function Sidebar() {
   const pathname = usePathname();
 
   return (
-    <aside className="w-[220px] h-full flex flex-col border-r border-[var(--border-primary)] bg-[var(--bg-secondary)] shrink-0 z-30 shadow-2xl shadow-black/40">
+    <aside className="hidden md:flex w-[220px] h-full flex-col border-r border-[var(--border-primary)] bg-[var(--bg-secondary)] shrink-0 z-30 shadow-2xl shadow-black/40">
       {/* Logo */}
       <div className="h-14 flex items-center px-5 border-b border-[var(--border-primary)]/40 bg-[var(--bg-primary)]/30 backdrop-blur-sm">
         <Link href="/" className="flex items-center gap-2.5 group">

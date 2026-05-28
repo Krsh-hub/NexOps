@@ -1,6 +1,6 @@
 "use client";
 
-import { Search, Bell, Command } from "lucide-react";
+import { Search, Bell, Command, Menu } from "lucide-react";
 import { usePathname } from "next/navigation";
 
 const titles: Record<string, string> = {
@@ -19,11 +19,16 @@ export function Navbar() {
 
   return (
     <header className="h-14 flex items-center justify-between px-6 border-b border-[var(--border-primary)]/50 bg-[var(--bg-secondary)]/70 backdrop-blur-md shrink-0 z-20 sticky top-0">
-      {/* Breadcrumb */}
-      <div className="flex items-center text-[13px] tracking-wide select-none">
-        <span className="text-[var(--text-tertiary)] font-bold uppercase text-[10px]">Brew & Bite Café</span>
-        <span className="mx-2 text-[var(--text-quaternary)]">/</span>
-        <span className="text-[var(--text-primary)] font-semibold">{page}</span>
+      {/* Mobile Menu & Breadcrumb */}
+      <div className="flex items-center gap-3">
+        <button className="md:hidden text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors">
+          <Menu className="w-5 h-5" />
+        </button>
+        <div className="flex items-center text-[13px] tracking-wide select-none">
+          <span className="hidden sm:inline text-[var(--text-tertiary)] font-bold uppercase text-[10px]">Brew & Bite Café</span>
+          <span className="hidden sm:inline mx-2 text-[var(--text-quaternary)]">/</span>
+          <span className="text-[var(--text-primary)] font-semibold">{page}</span>
+        </div>
       </div>
 
       {/* Right */}
