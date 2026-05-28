@@ -13,18 +13,18 @@ async function getData() {
   const yesterday = new Date(today); yesterday.setDate(yesterday.getDate() - 1);
 
   const { data: ti } = await supabase.from("invoices").select("*").eq("businessId", BIZ).eq("status", "PAID").gte("paidAt", today.toISOString());
-  const tr = (ti || []).reduce((s, i) => s + i.total, 0);
+  const tr = (ti || []).reduce((s: number, i: any) => s + i.total, 0);
   const { data: yi } = await supabase.from("invoices").select("*").eq("businessId", BIZ).eq("status", "PAID").gte("paidAt", yesterday.toISOString()).lt("paidAt", today.toISOString());
-  const yr = (yi || []).reduce((s, i) => s + i.total, 0);
+  const yr = (yi || []).reduce((s: number, i: any) => s + i.total, 0);
   let rc = 0;
   if (yr > 0) rc = Math.round(((tr - yr) / yr) * 100);
   else if (tr > 0) rc = 100;
 
   const { data: prods } = await supabase.from("products").select("*, vendor:vendors(*)").eq("businessId", BIZ).eq("isActive", true);
-  const low = (prods || []).filter(p => p.currentStock <= p.reorderThreshold).sort((a, b) => a.currentStock - b.currentStock);
+  const low = (prods || []).filter((p: any) => p.currentStock <= p.reorderThreshold).sort((a: any, b: any) => a.currentStock - b.currentStock);
 
   const { data: od } = await supabase.from("invoices").select("*").eq("businessId", BIZ).eq("status", "OVERDUE");
-  const ot = (od || []).reduce((s, i) => s + i.total, 0);
+  const ot = (od || []).reduce((s: number, i: any) => s + i.total, 0);
 
   const { count: ao } = await supabase.from("purchase_orders").select("*", { count: "exact", head: true }).eq("businessId", BIZ).in("status", ["DRAFT", "SENT"]);
 

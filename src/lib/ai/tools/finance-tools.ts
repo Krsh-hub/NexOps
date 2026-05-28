@@ -86,7 +86,7 @@ export async function createInvoice(args: {
     });
   }
 
-  const subtotal = invoiceItems.reduce((sum, item) => sum + item.total, 0);
+  const subtotal = invoiceItems.reduce((sum: number, item: any) => sum + item.total, 0);
   const tax = Math.round(subtotal * 0.18); // 18% GST
   const total = subtotal + tax;
 
@@ -217,14 +217,14 @@ export async function getFinancialOverview(args: {
   const validInvoices = invoices || [];
   const validExpenses = expenses || [];
 
-  const paidInvoices = validInvoices.filter((i) => i.status === "PAID");
-  const overdueInvoices = validInvoices.filter((i) => i.status === "OVERDUE");
-  const pendingInvoices = validInvoices.filter((i) => i.status === "SENT" || i.status === "DRAFT");
+  const paidInvoices = validInvoices.filter((i: any) => i.status === "PAID");
+  const overdueInvoices = validInvoices.filter((i: any) => i.status === "OVERDUE");
+  const pendingInvoices = validInvoices.filter((i: any) => i.status === "SENT" || i.status === "DRAFT");
 
-  const totalRevenue = paidInvoices.reduce((sum, i) => sum + i.total, 0);
-  const totalExpenses = validExpenses.reduce((sum, e) => sum + e.amount, 0);
-  const totalOverdue = overdueInvoices.reduce((sum, i) => sum + i.total, 0);
-  const totalPending = pendingInvoices.reduce((sum, i) => sum + i.total, 0);
+  const totalRevenue = paidInvoices.reduce((sum: number, i: any) => sum + i.total, 0);
+  const totalExpenses = validExpenses.reduce((sum: number, e: any) => sum + e.amount, 0);
+  const totalOverdue = overdueInvoices.reduce((sum: number, i: any) => sum + i.total, 0);
+  const totalPending = pendingInvoices.reduce((sum: number, i: any) => sum + i.total, 0);
 
   return JSON.stringify({
     period,
@@ -239,11 +239,11 @@ export async function getFinancialOverview(args: {
     },
     overdueAmount: totalOverdue,
     pendingAmount: totalPending,
-    topExpenseCategories: validExpenses.reduce((acc, e) => {
+    topExpenseCategories: validExpenses.reduce((acc: Record<string, number>, e: any) => {
       acc[e.category] = (acc[e.category] || 0) + e.amount;
       return acc;
     }, {} as Record<string, number>),
-    overdueDetails: overdueInvoices.map((i) => ({
+    overdueDetails: overdueInvoices.map((i: any) => ({
       invoiceNumber: i.invoiceNumber,
       customer: i.customer.name,
       amount: i.total,
@@ -266,8 +266,8 @@ export async function getOverdueInvoices(): Promise<string> {
 
   return JSON.stringify({
     count: validInvoices.length,
-    totalAmount: validInvoices.reduce((sum, i) => sum + i.total, 0),
-    invoices: validInvoices.map((inv) => ({
+    totalAmount: validInvoices.reduce((sum: number, i: any) => sum + i.total, 0),
+    invoices: validInvoices.map((inv: any) => ({
       invoiceNumber: inv.invoiceNumber,
       customer: inv.customer.name,
       total: inv.total,
@@ -340,7 +340,7 @@ export async function createPurchaseOrder(args: {
     });
   }
 
-  const total = poItems.reduce((sum, item) => sum + item.total, 0);
+  const total = poItems.reduce((sum: number, item: any) => sum + item.total, 0);
 
   // Create PO
   const { data: po } = await supabase

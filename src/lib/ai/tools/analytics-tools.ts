@@ -24,7 +24,7 @@ export async function generateSummary(args: {
     .eq("status", "PAID")
     .gte("paidAt", startDate.toISOString());
 
-  const totalRevenue = (paidInvoices || []).reduce((sum, i) => sum + i.total, 0);
+  const totalRevenue = (paidInvoices || []).reduce((sum: number, i: any) => sum + i.total, 0);
 
   // Previous period for comparison
   const prevStart = period === "weekly"
@@ -39,7 +39,7 @@ export async function generateSummary(args: {
     .gte("paidAt", prevStart.toISOString())
     .lt("paidAt", startDate.toISOString());
 
-  const prevRevenue = (prevPaidInvoices || []).reduce((sum, i) => sum + i.total, 0);
+  const prevRevenue = (prevPaidInvoices || []).reduce((sum: number, i: any) => sum + i.total, 0);
   const revenueChange = prevRevenue > 0
     ? Math.round(((totalRevenue - prevRevenue) / prevRevenue) * 100)
     : 0;
@@ -51,7 +51,7 @@ export async function generateSummary(args: {
     .eq("businessId", BUSINESS_ID)
     .gte("date", startDate.toISOString());
     
-  const totalExpenses = (expenses || []).reduce((sum, e) => sum + e.amount, 0);
+  const totalExpenses = (expenses || []).reduce((sum: number, e: any) => sum + e.amount, 0);
 
   // Overdue invoices
   const { data: overdueInvoices } = await supabase
@@ -60,7 +60,7 @@ export async function generateSummary(args: {
     .eq("businessId", BUSINESS_ID)
     .eq("status", "OVERDUE");
     
-  const overdueTotal = (overdueInvoices || []).reduce((sum, i) => sum + i.total, 0);
+  const overdueTotal = (overdueInvoices || []).reduce((sum: number, i: any) => sum + i.total, 0);
 
   // Low stock items
   const { data: lowStockProducts } = await supabase
@@ -71,7 +71,7 @@ export async function generateSummary(args: {
     .gt("reorderThreshold", 0);
     
   const criticalItems = (lowStockProducts || []).filter(
-    (p) => p.currentStock <= p.reorderThreshold
+    (p: any) => p.currentStock <= p.reorderThreshold
   );
 
   // Recent activities
@@ -100,7 +100,7 @@ export async function generateSummary(args: {
     },
     inventoryAlerts: {
       criticalItems: criticalItems.length,
-      items: criticalItems.map((p) => ({
+      items: criticalItems.map((p: any) => ({
         name: p.name,
         stock: `${p.currentStock} ${p.unit}`,
         threshold: p.reorderThreshold,
@@ -118,7 +118,7 @@ export async function generateSummary(args: {
     summary.highlights.push(`${overdueInvoices.length} invoice(s) overdue — ₹${overdueTotal.toLocaleString("en-IN")} outstanding.`);
   }
   if (criticalItems.length > 0) {
-    summary.highlights.push(`${criticalItems.length} item(s) need restocking: ${criticalItems.map((p) => p.name).join(", ")}.`);
+    summary.highlights.push(`${criticalItems.length} item(s) need restocking: ${criticalItems.map((p: any) => p.name).join(", ")}.`);
   }
 
   // Log AI activity

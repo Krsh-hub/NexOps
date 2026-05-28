@@ -1,41 +1,54 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 @import "tailwindcss";
 
 /* ─── NexOps Design System · Apple-Inspired Dark ─── */
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 
 :root {
-  --bg-primary: #000000;
-  --bg-secondary: #0a0a0a;
-  --bg-tertiary: #111111;
-  --bg-elevated: #161616;
-  --bg-hover: #1a1a1a;
-  --bg-active: #222222;
+  /* Comfort & Clean Dark Mode */
+  --bg-primary: #0f1115;      /* Deep Slate */
+  --bg-secondary: #16181d;    /* Soft Slate */
+  --bg-tertiary: #1c1f26;     /* Elevated Slate */
+  --bg-elevated: #232730;     /* Popovers/Cards */
+  --bg-hover: rgba(255, 255, 255, 0.04);
+  --bg-active: rgba(255, 255, 255, 0.08);
 
-  --text-primary: #f5f5f7;
-  --text-secondary: #86868b;
-  --text-tertiary: #6e6e73;
-  --text-quaternary: #48484a;
+  /* Variables utilized by AICommandCenter.tsx */
+  --bg-base: var(--bg-primary);
+  --bg-surface: var(--bg-secondary);
+  --border-default: #2a2d36;
+  --border-subtle: #22252d;
+  --text-muted: #828794;
+  --info: #3b82f6;            /* Soft Blue */
+  --info-bg: rgba(59, 130, 246, 0.1);
+  --success: #10b981;         /* Sage */
+  --accent-primary: #3b82f6;
 
-  --border-primary: #1d1d1f;
-  --border-secondary: #2d2d2f;
-  --border-hover: #3a3a3c;
+  --text-primary: #f1f3f5;
+  --text-secondary: #a0a5b1;
+  --text-tertiary: #757a85;
+  --text-quaternary: #4b4f58;
 
-  --accent: #2997ff;
-  --accent-hover: #0077ed;
-  --accent-subtle: rgba(41, 151, 255, 0.08);
+  --border-primary: #2a2d36;
+  --border-secondary: #323642;
+  --border-hover: #404552;
 
-  --green: #30d158;
-  --green-subtle: rgba(48, 209, 88, 0.1);
-  --red: #ff453a;
-  --red-subtle: rgba(255, 69, 58, 0.1);
-  --orange: #ff9f0a;
-  --orange-subtle: rgba(255, 159, 10, 0.1);
-  --purple: #bf5af2;
-  --purple-subtle: rgba(191, 90, 242, 0.1);
+  /* Comfortable, ordinary hues (non-neon) */
+  --accent: #3b82f6;          /* Muted Blue */
+  --accent-hover: #2563eb;
+  --accent-subtle: rgba(59, 130, 246, 0.12);
+
+  --green: #059669;           /* Muted Emerald */
+  --green-subtle: rgba(5, 150, 105, 0.12);
+  --red: #e11d48;             /* Muted Rose */
+  --red-subtle: rgba(225, 29, 72, 0.12);
+  --orange: #d97706;          /* Muted Amber */
+  --orange-subtle: rgba(217, 119, 6, 0.12);
+  --purple: #7c3aed;          /* Muted Violet */
+  --purple-subtle: rgba(124, 58, 237, 0.12);
 
   --radius: 12px;
-  --radius-sm: 8px;
+  --radius-sm: 6px;
   --radius-lg: 16px;
 }
 
@@ -97,31 +110,50 @@ body {
 
 /* ─── Utilities ─── */
 .glass {
-  background: rgba(10, 10, 10, 0.8);
+  background: rgba(15, 21, 36, 0.7);
   backdrop-filter: blur(20px) saturate(180%);
   -webkit-backdrop-filter: blur(20px) saturate(180%);
 }
 
+.card,
 .card-surface {
   background: var(--bg-secondary);
   border: 1px solid var(--border-primary);
   border-radius: var(--radius);
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.15);
 }
+.card:hover,
 .card-surface:hover {
   border-color: var(--border-secondary);
+  box-shadow: 0 8px 30px -4px rgba(0, 0, 0, 0.3);
 }
 
 .card-elevated {
   background: var(--bg-tertiary);
   border: 1px solid var(--border-primary);
   border-radius: var(--radius);
-  transition: all 0.25s ease;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 6px 24px -4px rgba(0, 0, 0, 0.25);
 }
 .card-elevated:hover {
   border-color: var(--border-secondary);
-  transform: translateY(-1px);
-  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 40px -8px rgba(0, 0, 0, 0.45);
+}
+
+.glass-card {
+  background: rgba(22, 31, 51, 0.4);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: var(--radius);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+  transition: all 0.3s ease;
+}
+.glass-card:hover {
+  border-color: rgba(255, 255, 255, 0.1);
+  background: rgba(22, 31, 51, 0.55);
 }
 
 /* ─── Focus ─── */

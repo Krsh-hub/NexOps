@@ -68,7 +68,7 @@ export async function detectLowStock(): Promise<string> {
     .eq("isActive", true)
     .gt("reorderThreshold", 0);
 
-  const lowStockItems = (products || [])
+  const lowStockItems = ((products as any[]) || [])
     .filter((p) => p.currentStock <= p.reorderThreshold)
     .map((p) => ({
       name: p.name,
@@ -141,7 +141,7 @@ export async function getInventoryStatus(args: {
           : product.currentStock <= product.reorderThreshold ? "LOW"
           : "HEALTHY",
       },
-      recentTransactions: (recentTransactions || []).map((t) => ({
+      recentTransactions: ((recentTransactions as any[]) || []).map((t) => ({
         type: t.type,
         quantity: t.quantity,
         reason: t.reason,
@@ -157,7 +157,7 @@ export async function getInventoryStatus(args: {
     .eq("isActive", true)
     .order("name", { ascending: true });
     
-  const validProducts = products || [];
+  const validProducts = (products as any[]) || [];
 
   const summary = {
     totalProducts: validProducts.length,
@@ -190,7 +190,7 @@ export async function searchProducts(args: { query: string }): Promise<string> {
 
   return JSON.stringify({
     count: (products || []).length,
-    products: (products || []).map((p) => ({
+    products: ((products as any[]) || []).map((p) => ({
       name: p.name,
       sku: p.sku,
       category: p.category,

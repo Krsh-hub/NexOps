@@ -7,13 +7,13 @@ const BIZ = "biz_demo_001";
 async function getFinance() {
   const { data: inv } = await supabase.from("invoices").select("*").eq("businessId", BIZ);
   const all = inv || [];
-  const paid = all.filter(i => i.status === "PAID");
-  const overdue = all.filter(i => i.status === "OVERDUE");
-  const pending = all.filter(i => ["PENDING", "SENT"].includes(i.status));
+  const paid = all.filter((i: any) => i.status === "PAID");
+  const overdue = all.filter((i: any) => i.status === "OVERDUE");
+  const pending = all.filter((i: any) => ["PENDING", "SENT"].includes(i.status));
   return {
-    all, totalRevenue: paid.reduce((s, i) => s + i.total, 0),
-    totalOverdue: overdue.reduce((s, i) => s + i.total, 0), overdueCount: overdue.length,
-    totalPending: pending.reduce((s, i) => s + i.total, 0), pendingCount: pending.length,
+    all, totalRevenue: paid.reduce((s: number, i: any) => s + i.total, 0),
+    totalOverdue: overdue.reduce((s: number, i: any) => s + i.total, 0), overdueCount: overdue.length,
+    totalPending: pending.reduce((s: number, i: any) => s + i.total, 0), pendingCount: pending.length,
   };
 }
 

@@ -20,10 +20,10 @@ export async function runProactiveChecks() {
     .eq("isActive", true)
     .gt("reorderThreshold", 0);
 
-  const lowStockProducts = (products || []).filter(p => p.currentStock <= p.reorderThreshold);
+  const lowStockProducts = (products || []).filter((p: any) => p.currentStock <= p.reorderThreshold);
   
   if (lowStockProducts.length > 0) {
-    const details = lowStockProducts.map(p => `${p.name} (${p.currentStock} ${p.unit} left)`).join(", ");
+    const details = lowStockProducts.map((p: any) => `${p.name} (${p.currentStock} ${p.unit} left)`).join(", ");
     
     await supabase.from("notifications").insert({
       type: "WARNING",
@@ -56,7 +56,7 @@ export async function runProactiveChecks() {
       }
     }
 
-    const totalOverdue = overdueInvoices.reduce((sum, inv) => sum + inv.total, 0);
+    const totalOverdue = overdueInvoices.reduce((sum: number, inv: any) => sum + inv.total, 0);
 
     await supabase.from("notifications").insert({
       type: "CRITICAL",
