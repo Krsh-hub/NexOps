@@ -25,16 +25,16 @@ export function InventoryTable({ products }: { products: Product[] }) {
         <table className="w-full text-left border-collapse">
           <thead>
             <tr className="border-b border-[var(--border-subtle)]">
-              <th className="pb-3 text-xs font-semibold text-[var(--text-muted)] uppercase tracking-wider">Product</th>
-              <th className="pb-3 text-xs font-semibold text-[var(--text-muted)] uppercase tracking-wider">SKU</th>
-              <th className="pb-3 text-xs font-semibold text-[var(--text-muted)] uppercase tracking-wider">Stock Level</th>
-              <th className="pb-3 text-xs font-semibold text-[var(--text-muted)] uppercase tracking-wider">Status</th>
+              <th className="pb-3 text-base font-semibold text-[var(--text-muted)] uppercase tracking-wider">Product</th>
+              <th className="pb-3 text-base font-semibold text-[var(--text-muted)] uppercase tracking-wider">SKU</th>
+              <th className="pb-3 text-base font-semibold text-[var(--text-muted)] uppercase tracking-wider">Stock Level</th>
+              <th className="pb-3 text-base font-semibold text-[var(--text-muted)] uppercase tracking-wider">Status</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-[var(--border-subtle)]">
             {products.length === 0 ? (
               <tr>
-                <td colSpan={4} className="py-8 text-center text-sm text-[var(--text-muted)]">
+                <td colSpan={4} className="py-8 text-center text-base text-[var(--text-muted)]">
                   All inventory levels are healthy.
                 </td>
               </tr>
@@ -45,10 +45,10 @@ export function InventoryTable({ products }: { products: Product[] }) {
                 return (
                   <tr key={product.id} className="hover:bg-[var(--bg-hover)] transition-colors group">
                     <td className="py-3">
-                      <div className="font-medium text-[var(--text-primary)] text-sm">{product.name}</div>
-                      <div className="text-xs text-[var(--text-muted)]">{product.vendor?.name || 'Unknown Vendor'}</div>
+                      <div className="font-medium text-[var(--text-primary)] text-base">{product.name}</div>
+                      <div className="text-base text-[var(--text-muted)]">{product.vendor?.name || 'Unknown Vendor'}</div>
                     </td>
-                    <td className="py-3 text-sm text-[var(--text-secondary)]">{product.sku}</td>
+                    <td className="py-3 text-base text-[var(--text-secondary)]">{product.sku}</td>
                     <td className="py-3">
                       <div className="flex items-center gap-3">
                         <div className="w-16 h-1.5 bg-[var(--bg-base)] rounded-full overflow-hidden border border-[var(--border-subtle)]">
@@ -57,8 +57,8 @@ export function InventoryTable({ products }: { products: Product[] }) {
                             style={{ width: `${Math.min(100, (product.currentStock / product.reorderThreshold) * 100)}%` }}
                           />
                         </div>
-                        <span className="text-sm font-medium text-[var(--text-primary)]">
-                          {product.currentStock} <span className="text-[var(--text-muted)] text-xs font-normal">{product.unit}</span>
+                        <span className="text-base font-medium text-[var(--text-primary)]">
+                          {product.currentStock} <span className="text-[var(--text-muted)] text-base font-normal">{product.unit}</span>
                         </span>
                       </div>
                     </td>

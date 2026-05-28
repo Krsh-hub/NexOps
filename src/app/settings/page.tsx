@@ -13,7 +13,7 @@ export default function SettingsPage() {
     <div className="p-6 lg:p-8 space-y-6 max-w-[800px]">
       <div>
         <h1 className="text-[22px] font-semibold text-[var(--text-primary)] tracking-tight">Settings</h1>
-        <p className="text-[13px] text-[var(--text-tertiary)] mt-1">Manage your workspace preferences</p>
+        <p className="text-[15px] text-[var(--text-tertiary)] mt-1">Manage your workspace preferences</p>
       </div>
       <div className="space-y-2">
         {sections.map((s) => (
@@ -22,8 +22,8 @@ export default function SettingsPage() {
               <s.icon className="w-4 h-4 text-[var(--text-tertiary)]" strokeWidth={1.8} />
             </div>
             <div>
-              <h3 className="text-[13px] font-semibold text-[var(--text-primary)]">{s.title}</h3>
-              <p className="text-[12px] text-[var(--text-tertiary)] mt-0.5">{s.desc}</p>
+              <h3 className="text-[15px] font-semibold text-[var(--text-primary)]">{s.title}</h3>
+              <p className="text-[16px] text-[var(--text-tertiary)] mt-0.5">{s.desc}</p>
             </div>
           </button>
         ))}

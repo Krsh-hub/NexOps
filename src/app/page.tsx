@@ -50,7 +50,7 @@ export default async function DashboardPage() {
         <h1 className="text-[22px] font-semibold text-[var(--text-primary)] tracking-tight">
           Good {new Date().getHours() < 12 ? "morning" : new Date().getHours() < 17 ? "afternoon" : "evening"}
         </h1>
-        <p className="text-[13px] text-[var(--text-tertiary)] mt-1">
+        <p className="text-[15px] text-[var(--text-tertiary)] mt-1">
           Here&apos;s what&apos;s happening with your operations today.
         </p>
       </div>

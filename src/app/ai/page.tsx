@@ -21,7 +21,7 @@ export default async function AIPage() {
           <Bot className="w-5.5 h-5.5 text-[var(--accent)]" strokeWidth={2.2} />
           AI Operations Cockpit
         </h1>
-        <p className="text-[13px] text-[var(--text-secondary)] mt-1">
+        <p className="text-[15px] text-[var(--text-secondary)] mt-1">
           Command your operations agent and review background autonomous workflows.
         </p>
       </div>
@@ -37,8 +37,8 @@ export default async function AIPage() {
         <div className="h-[560px] card-surface flex flex-col overflow-hidden transition-all duration-300">
           <div className="px-4 py-3.5 border-b border-[var(--border-primary)]/50 flex items-center gap-2 bg-[var(--bg-secondary)]/30 shrink-0">
             <Activity className="w-4 h-4 text-[var(--text-tertiary)]" strokeWidth={2} />
-            <span className="text-[12px] font-bold text-[var(--text-primary)] tracking-wide uppercase">Agent Log Feed</span>
-            <span className="ml-auto text-[10px] font-bold text-[var(--text-tertiary)] bg-[var(--border-primary)] border border-[var(--border-secondary)]/25 px-1.5 py-0.5 rounded-md shrink-0">
+            <span className="text-[16px] font-bold text-[var(--text-primary)] tracking-wide uppercase">Agent Log Feed</span>
+            <span className="ml-auto text-[16px] font-bold text-[var(--text-tertiary)] bg-[var(--border-primary)] border border-[var(--border-secondary)]/25 px-1.5 py-0.5 rounded-md shrink-0">
               {activities.length} events
             </span>
           </div>
@@ -47,7 +47,7 @@ export default async function AIPage() {
             {activities.length === 0 ? (
               <div className="flex flex-col items-center justify-center h-full text-center p-6 text-[var(--text-tertiary)]">
                 <Bot className="w-9 h-9 mb-2 text-[var(--text-quaternary)]" strokeWidth={1.5} />
-                <p className="text-[12px] font-semibold">No autonomous actions yet</p>
+                <p className="text-[16px] font-semibold">No autonomous actions yet</p>
               </div>
             ) : (
               activities.map((a: any) => {
@@ -63,18 +63,18 @@ export default async function AIPage() {
                   <div key={a.id} className="px-4 py-3 hover:bg-[var(--bg-hover)] transition-all duration-150 flex items-start gap-3">
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center justify-between gap-1.5">
-                        <p className="text-[12.5px] font-semibold text-[var(--text-primary)] truncate">{a.title}</p>
-                        <span className="text-[10px] text-[var(--text-tertiary)] font-bold font-mono">
+                        <p className="text-[15px] font-semibold text-[var(--text-primary)] truncate">{a.title}</p>
+                        <span className="text-[16px] text-[var(--text-tertiary)] font-bold font-mono">
                           {new Date(a.createdAt).toLocaleTimeString("en-IN", { hour: "numeric", minute: "numeric", hour12: true })}
                         </span>
                       </div>
-                      <p className="text-[11px] text-[var(--text-secondary)] line-clamp-2 mt-0.5 leading-relaxed">{a.description}</p>
+                      <p className="text-[15px] text-[var(--text-secondary)] line-clamp-2 mt-0.5 leading-relaxed">{a.description}</p>
                       <div className="flex items-center gap-2 mt-2">
-                        <span className={`text-[9px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded-md ${pillClass}`}>
+                        <span className={`text-[15px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded-md ${pillClass}`}>
                           {a.status}
                         </span>
                         {a.toolUsed && (
-                          <span className="text-[9px] text-[var(--text-tertiary)] font-semibold font-mono">
+                          <span className="text-[15px] text-[var(--text-tertiary)] font-semibold font-mono">
                             {a.toolUsed}
                           </span>
                         )}
@@ -90,7 +90,7 @@ export default async function AIPage() {
 
       {/* Autonomous Capabilities Grid */}
       <div className="space-y-3">
-        <h3 className="text-[11px] font-bold text-[var(--text-secondary)] tracking-wider uppercase">Active Agent Capabilities</h3>
+        <h3 className="text-[15px] font-bold text-[var(--text-secondary)] tracking-wider uppercase">Active Agent Capabilities</h3>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
           {[
             { icon: Zap, title: "Auto-Reorder Operations", desc: "Monitors real-time café stocks against critical thresholds and automatically drafts supplier POs." },
@@ -102,8 +102,8 @@ export default async function AIPage() {
                 <c.icon className="w-4 h-4" strokeWidth={2.2} />
               </div>
               <div>
-                <h4 className="text-[12.5px] font-bold text-[var(--text-primary)]">{c.title}</h4>
-                <p className="text-[11.5px] text-[var(--text-secondary)] leading-relaxed mt-1">{c.desc}</p>
+                <h4 className="text-[15px] font-bold text-[var(--text-primary)]">{c.title}</h4>
+                <p className="text-[16px] text-[var(--text-secondary)] leading-relaxed mt-1">{c.desc}</p>
               </div>
             </div>
           ))}
