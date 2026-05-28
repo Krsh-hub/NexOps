@@ -243,7 +243,7 @@ export async function getFinancialOverview(args: {
       acc[e.category] = (acc[e.category] || 0) + e.amount;
       return acc;
     }, {} as Record<string, number>),
-    overdueDetails: overdueInvoices.map((i) => ({
+    overdueDetails: overdueInvoices.map((i: any) => ({
       invoiceNumber: i.invoiceNumber,
       customer: i.customer.name,
       amount: i.total,
