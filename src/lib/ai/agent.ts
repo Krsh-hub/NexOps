@@ -1,6 +1,7 @@
 // ============================================
 // NexOps AI Agent — Core Orchestrator
 // Think-Act-Observe loop with tool calling
+// Powered by Groq (Llama 3.3 70B) via OpenAI-compatible API
 // ============================================
 
 import { updateInventory, detectLowStock, getInventoryStatus, searchProducts } from "./tools/inventory-tools";
@@ -85,26 +86,29 @@ export async function runAgent(userMessage: string, conversationHistory: AgentMe
   const tools = getOpenAITools();
   const allToolCalls: AgentResponse["toolCalls"] = [];
 
-  // Check if OpenAI is available
-  const apiKey = process.env.OPENAI_API_KEY;
+  // Check if Groq API is available
+  const apiKey = process.env.GROQ_API_KEY;
 
   if (!apiKey) {
     // Mock mode — use pattern matching for demo
     return runMockAgent(userMessage);
   }
 
-  // Real OpenAI agent loop
+  // Real Groq agent loop (OpenAI-compatible API)
   const { default: OpenAI } = await import("openai");
-  const openai = new OpenAI({ apiKey });
+  const groq = new OpenAI({
+    apiKey,
+    baseURL: "https://api.groq.com/openai/v1",
+  });
 
   let maxIterations = 5; // Prevent infinite loops
   
   while (maxIterations > 0) {
     maxIterations--;
 
-    const response = await openai.chat.completions.create({
-      model: "gpt-4o",
-      messages: messages as Parameters<typeof openai.chat.completions.create>[0]["messages"],
+    const response = await groq.chat.completions.create({
+      model: "llama-3.3-70b-versatile",
+      messages: messages as Parameters<typeof groq.chat.completions.create>[0]["messages"],
       tools,
       tool_choice: "auto",
     });
