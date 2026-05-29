@@ -1,5 +1,6 @@
-import { Package, Plus } from "lucide-react";
+import { Package } from "lucide-react";
 import { supabase } from "@/lib/supabase";
+import AddProductButton from "@/components/dashboard/AddProductButton";
 
 export const revalidate = 60;
 const BIZ = "biz_demo_001";
@@ -9,8 +10,13 @@ async function getProducts() {
   return data || [];
 }
 
+async function getVendors() {
+  const { data } = await supabase.from("vendors").select("id, name").eq("businessId", BIZ).order("name");
+  return (data || []) as Array<{ id: string; name: string }>;
+}
+
 export default async function InventoryPage() {
-  const products = await getProducts();
+  const [products, vendors] = await Promise.all([getProducts(), getVendors()]);
 
   return (
     <div className="p-6 lg:p-8 space-y-6 max-w-[1400px]">
@@ -19,9 +25,7 @@ export default async function InventoryPage() {
           <h1 className="text-[22px] font-semibold text-[var(--text-primary)] tracking-tight">Inventory</h1>
           <p className="text-[15px] text-[var(--text-tertiary)] mt-1">{products.length} active products</p>
         </div>
-        <button className="inline-flex items-center gap-2 h-9 px-4 rounded-[10px] text-[15px] font-medium bg-[var(--accent)] text-white hover:brightness-110 transition-all shadow-sm">
-          <Plus className="w-4 h-4" /> Add Product
-        </button>
+        <AddProductButton vendors={vendors} />
       </div>
 
       <div className="card-surface overflow-hidden">
