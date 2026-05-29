@@ -44,13 +44,13 @@ export default async function DashboardPage() {
   const d = await getData();
 
   return (
-    <div className="p-6 lg:p-8 space-y-6 max-w-[1400px]">
+    <div className="p-4 sm:p-6 lg:p-8 space-y-6 w-full">
       {/* Header */}
       <div>
         <h1 className="text-[22px] font-semibold text-[var(--text-primary)] tracking-tight">
           Good {new Date().getHours() < 12 ? "morning" : new Date().getHours() < 17 ? "afternoon" : "evening"}
         </h1>
-        <p className="text-[13px] text-[var(--text-tertiary)] mt-1">
+        <p className="text-[15px] text-[var(--text-tertiary)] mt-1">
           Here&apos;s what&apos;s happening with your operations today.
         </p>
       </div>

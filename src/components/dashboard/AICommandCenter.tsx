@@ -87,10 +87,10 @@ export function AICommandCenter() {
             <Sparkles className="text-[var(--text-secondary)] w-4 h-4" />
           </div>
           <div>
-            <h2 className="text-sm font-semibold text-[var(--text-primary)] tracking-tight">AI Command Center</h2>
+            <h2 className="text-base font-semibold text-[var(--text-primary)] tracking-tight">AI Command Center</h2>
             <div className="flex items-center gap-1.5 mt-0.5">
               <span className="w-1.5 h-1.5 rounded-full bg-[var(--success)]"></span>
-              <span className="text-[10px] text-[var(--text-muted)] uppercase tracking-wider font-semibold">Ready</span>
+              <span className="text-[16px] text-[var(--text-muted)] uppercase tracking-wider font-semibold">Ready</span>
             </div>
           </div>
         </div>
@@ -111,7 +111,7 @@ export function AICommandCenter() {
             </div>
             
             {/* Message bubble */}
-            <div className={`max-w-[85%] rounded-lg p-3.5 text-[13px] leading-relaxed border
+            <div className={`max-w-[85%] rounded-lg p-3.5 text-[15px] leading-relaxed border
               ${msg.role === "user"
                 ? "bg-[var(--bg-hover)] text-[var(--text-primary)] border-[var(--border-default)]"
                 : "bg-[var(--bg-surface)] text-[var(--text-primary)] border-[var(--border-subtle)] shadow-sm"
@@ -125,7 +125,7 @@ export function AICommandCenter() {
                     .replace(/\*\*(.*?)\*\*/g, "<strong class='text-white font-semibold'>$1</strong>")
                     .replace(/\|(.*)\|/g, (match) => {
                       if (match.includes("---")) return ""; // Skip separator
-                      return `<div class="flex justify-between border-b border-[var(--border-subtle)] py-1 font-mono text-[11px]">${match.replace(/\|/g, "").trim()}</div>`;
+                      return `<div class="flex justify-between border-b border-[var(--border-subtle)] py-1 font-mono text-[15px]">${match.replace(/\|/g, "").trim()}</div>`;
                     })
                 }} 
               />
@@ -156,7 +156,7 @@ export function AICommandCenter() {
             <button
               key={i}
               onClick={() => setInput(suggestion)}
-              className="text-[11px] bg-[var(--bg-surface)] hover:bg-[var(--bg-hover)] border border-[var(--border-subtle)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] rounded-md px-3 py-1.5 whitespace-nowrap transition-colors font-medium"
+              className="text-[15px] bg-[var(--bg-surface)] hover:bg-[var(--bg-hover)] border border-[var(--border-subtle)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] rounded-md px-3 py-1.5 whitespace-nowrap transition-colors font-medium"
             >
               {suggestion}
             </button>
@@ -172,7 +172,7 @@ export function AICommandCenter() {
             value={input}
             onChange={(e) => setInput(e.target.value)}
             placeholder="Command your operations agent..."
-            className="w-full bg-[var(--bg-base)] border border-[var(--border-default)] rounded-md py-2.5 pl-4 pr-12 text-[13px] text-[var(--text-primary)] placeholder:text-[var(--text-muted)] focus:outline-none focus:border-[var(--accent-primary)] focus:ring-1 focus:ring-[var(--accent-primary)] transition-all"
+            className="w-full bg-[var(--bg-base)] border border-[var(--border-default)] rounded-md py-2.5 pl-4 pr-12 text-[15px] text-[var(--text-primary)] placeholder:text-[var(--text-muted)] focus:outline-none focus:border-[var(--accent-primary)] focus:ring-1 focus:ring-[var(--accent-primary)] transition-all"
             disabled={isLoading}
           />
           <button

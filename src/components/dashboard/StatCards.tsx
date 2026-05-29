@@ -63,7 +63,7 @@ export function StatCards({ revenue, lowStockCount, overdueInvoices, activeOrder
             />
 
             <div className="flex items-center justify-between">
-              <span className="text-[11px] font-bold text-[var(--text-secondary)] tracking-wider uppercase">
+              <span className="text-[15px] font-bold text-[var(--text-secondary)] tracking-wider uppercase">
                 {card.label}
               </span>
               <div className={`w-7 h-7 rounded-lg ${card.accentClass} flex items-center justify-center transition-transform duration-300 group-hover:scale-105 shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]`}>
@@ -77,15 +77,15 @@ export function StatCards({ revenue, lowStockCount, overdueInvoices, activeOrder
                   {card.value}
                 </span>
                 {card.suffix && (
-                  <span className="text-[10px] font-semibold text-[var(--text-tertiary)] uppercase tracking-wider">{card.suffix}</span>
+                  <span className="text-[16px] font-semibold text-[var(--text-tertiary)] uppercase tracking-wider">{card.suffix}</span>
                 )}
                 {card.sub && (
-                  <span className="text-[11px] font-semibold text-[var(--text-tertiary)]">{card.sub}</span>
+                  <span className="text-[15px] font-semibold text-[var(--text-tertiary)]">{card.sub}</span>
                 )}
               </div>
 
               {"change" in card && (
-                <div className={`flex items-center gap-0.5 text-[10px] font-bold px-1.5 py-0.5 rounded-md ${
+                <div className={`flex items-center gap-0.5 text-[16px] font-bold px-1.5 py-0.5 rounded-md ${
                   card.positive ? "text-[var(--green)] bg-[var(--green-subtle)]" : "text-[var(--red)] bg-[var(--red-subtle)]"
                 }`}>
                   {card.positive ? <TrendingUp className="w-2.5 h-2.5" /> : <TrendingDown className="w-2.5 h-2.5" />}

@@ -34,9 +34,9 @@ export function OperationsFeed({ activities }: { activities: ActivityItem[] }) {
           <div className="w-6 h-6 rounded-lg bg-[var(--border-primary)] border border-[var(--border-secondary)]/25 text-[var(--text-secondary)] flex items-center justify-center shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]">
             <Clock className="w-3.5 h-3.5" strokeWidth={2.2} />
           </div>
-          <span className="text-[12px] font-bold text-[var(--text-primary)] tracking-wide uppercase">Operational Feed</span>
+          <span className="text-[16px] font-bold text-[var(--text-primary)] tracking-wide uppercase">Operational Feed</span>
         </div>
-        <span className="text-[10px] font-bold text-[var(--text-tertiary)] bg-[var(--border-primary)] border border-[var(--border-secondary)]/25 px-1.5 py-0.5 rounded-md">
+        <span className="text-[16px] font-bold text-[var(--text-tertiary)] bg-[var(--border-primary)] border border-[var(--border-secondary)]/25 px-1.5 py-0.5 rounded-md">
           {activities.length} logs
         </span>
       </div>
@@ -45,7 +45,7 @@ export function OperationsFeed({ activities }: { activities: ActivityItem[] }) {
         {activities.length === 0 ? (
           <div className="flex flex-col items-center justify-center h-full p-6 text-[var(--text-tertiary)]">
             <Activity className="w-8 h-8 mb-2 text-[var(--text-quaternary)]" strokeWidth={1.5} />
-            <p className="text-[12px] font-semibold">No operational updates</p>
+            <p className="text-[16px] font-semibold">No operational updates</p>
           </div>
         ) : (
           activities.map((a) => {
@@ -58,13 +58,13 @@ export function OperationsFeed({ activities }: { activities: ActivityItem[] }) {
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center justify-between gap-2">
-                      <h4 className="text-[12.5px] font-semibold text-[var(--text-primary)] truncate">{a.title}</h4>
-                      <span className="text-[10px] text-[var(--text-tertiary)] font-bold font-mono">
+                      <h4 className="text-[15px] font-semibold text-[var(--text-primary)] truncate">{a.title}</h4>
+                      <span className="text-[16px] text-[var(--text-tertiary)] font-bold font-mono">
                         {new Date(a.createdAt).toLocaleTimeString("en-IN", { hour: "numeric", minute: "numeric", hour12: true })}
                       </span>
                     </div>
-                    <p className="text-[11.5px] text-[var(--text-secondary)] line-clamp-2 mt-0.5 leading-relaxed">{a.description}</p>
-                    <span className={`inline-block mt-2 text-[9px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded-md ${getStatusStyle(a.status)}`}>
+                    <p className="text-[16px] text-[var(--text-secondary)] line-clamp-2 mt-0.5 leading-relaxed">{a.description}</p>
+                    <span className={`inline-block mt-2 text-[15px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded-md ${getStatusStyle(a.status)}`}>
                       {a.status}
                     </span>
                   </div>

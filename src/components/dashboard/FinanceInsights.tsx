@@ -20,9 +20,9 @@ export function FinanceInsights() {
           <div className="w-6 h-6 rounded-lg bg-[var(--accent-subtle)] text-[var(--accent)] flex items-center justify-center shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]">
             <BarChart3 className="w-3.5 h-3.5" strokeWidth={2.2} />
           </div>
-          <span className="text-[12px] font-bold text-[var(--text-primary)] tracking-wide uppercase">Revenue Trend</span>
+          <span className="text-[16px] font-bold text-[var(--text-primary)] tracking-wide uppercase">Revenue Trend</span>
         </div>
-        <div className="flex items-center gap-1 text-[10px] font-bold text-[var(--green)] bg-[var(--green-subtle)] px-2 py-0.5 rounded-md">
+        <div className="flex items-center gap-1 text-[16px] font-bold text-[var(--green)] bg-[var(--green-subtle)] px-2 py-0.5 rounded-md">
           <TrendingUp className="w-3 h-3 animate-bounce" />
           12.5%
         </div>
@@ -44,7 +44,7 @@ export function FinanceInsights() {
             <div key={i} className="flex-1 flex flex-col items-center gap-2.5 h-full group">
               <div className="w-full relative rounded-t-lg overflow-hidden bg-[var(--bg-primary)]/50 h-full flex flex-col justify-end">
                 {/* Custom tooltip hover flag */}
-                <div className="absolute -top-6 left-1/2 -translate-x-1/2 bg-[var(--bg-elevated)] border border-[var(--border-primary)] text-[9px] font-bold px-1.5 py-0.5 rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-20 text-[var(--text-primary)] shadow-md">
+                <div className="absolute -top-6 left-1/2 -translate-x-1/2 bg-[var(--bg-elevated)] border border-[var(--border-primary)] text-[15px] font-bold px-1.5 py-0.5 rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-20 text-[var(--text-primary)] shadow-md">
                   {item.amount}
                 </div>
 
@@ -53,7 +53,7 @@ export function FinanceInsights() {
                   style={{ height: `${(item.value / max) * 100}%` }}
                 />
               </div>
-              <span className="text-[10px] text-[var(--text-secondary)] font-bold tracking-wider group-hover:text-white transition-colors uppercase">{item.label}</span>
+              <span className="text-[16px] text-[var(--text-secondary)] font-bold tracking-wider group-hover:text-white transition-colors uppercase">{item.label}</span>
             </div>
           ))}
         </div>
