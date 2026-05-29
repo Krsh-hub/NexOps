@@ -1,5 +1,6 @@
-import { Plus, Mail, Phone, MapPin, Users } from "lucide-react";
+import { Mail, Phone, MapPin, Users } from "lucide-react";
 import { supabase } from "@/lib/supabase";
+import AddVendorButton from "@/components/dashboard/AddVendorButton";
 
 export const revalidate = 60;
 const BIZ = "biz_demo_001";
@@ -19,9 +20,7 @@ export default async function VendorsPage() {
           <h1 className="text-[22px] font-semibold text-[var(--text-primary)] tracking-tight">Vendors</h1>
           <p className="text-[15px] text-[var(--text-tertiary)] mt-1">{vendors.length} registered suppliers</p>
         </div>
-        <button className="inline-flex items-center gap-2 h-9 px-4 rounded-[10px] text-[15px] font-medium bg-[var(--accent)] text-white hover:brightness-110 transition-all shadow-sm">
-          <Plus className="w-4 h-4" /> Add Vendor
-        </button>
+        <AddVendorButton />
       </div>
 
       {vendors.length === 0 ? (
