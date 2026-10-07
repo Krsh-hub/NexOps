@@ -1,54 +1,59 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap');
 @import "tailwindcss";
 
-/* ─── NexOps Design System · Apple-Inspired Dark ─── */
+/* ─── NexOps Design System · Soft Comforting Light Business Theme ─── */
 
 :root {
-  /* Comfort & Clean Dark Mode */
-  --bg-primary: #0f1115;      /* Deep Slate */
-  --bg-secondary: #16181d;    /* Soft Slate */
-  --bg-tertiary: #1c1f26;     /* Elevated Slate */
-  --bg-elevated: #232730;     /* Popovers/Cards */
-  --bg-hover: rgba(255, 255, 255, 0.04);
-  --bg-active: rgba(255, 255, 255, 0.08);
+  /* Soft, Calming Light Canvas (Clean, Comfortable for Business & Study) */
+  --bg-primary: #f8fafc;      /* Calming Off-White Linen Paper Canvas */
+  --bg-secondary: #ffffff;    /* Pure Crisp White Card Surface */
+  --bg-tertiary: #f1f5f9;     /* Soft Elevated Surfaces & Light Sections */
+  --bg-elevated: #ffffff;     /* Floating Modals & Popovers */
+  --bg-hover: rgba(0, 0, 0, 0.04);
+  --bg-active: rgba(0, 0, 0, 0.07);
 
-  /* Variables utilized by AICommandCenter.tsx */
+  /* Variables utilized by AI Cockpit & Dashboard */
   --bg-base: var(--bg-primary);
   --bg-surface: var(--bg-secondary);
-  --border-default: #2a2d36;
-  --border-subtle: #22252d;
-  --text-muted: #828794;
-  --info: #3b82f6;            /* Soft Blue */
-  --info-bg: rgba(59, 130, 246, 0.1);
-  --success: #10b981;         /* Sage */
-  --accent-primary: #3b82f6;
+  --border-default: #e2e8f0;
+  --border-subtle: #edf2f7;
+  --text-muted: #64748b;
+  --info: #0284c7;            /* Soft Clean Sky */
+  --info-bg: rgba(2, 132, 199, 0.08);
+  --success: #059669;         /* Restful Emerald */
 
-  --text-primary: #f1f3f5;
-  --text-secondary: #a0a5b1;
-  --text-tertiary: #757a85;
-  --text-quaternary: #4b4f58;
+  /* High-Legibility, Eye-Comfort Typography (Deep, Crisp Slate) */
+  --text-primary: #0f172a;    /* Rich Dark Slate (Clear, Sharp, Zero Glare) */
+  --text-secondary: #475569;  /* Muted Slate Body Text */
+  --text-tertiary: #64748b;   /* Clean Subtitle Gray */
+  --text-quaternary: #94a3b8; /* Subtle Placeholder */
 
-  --border-primary: #2a2d36;
-  --border-secondary: #323642;
-  --border-hover: #404552;
+  /* Gentle, Crisp Borders */
+  --border-primary: #e2e8f0;  /* Crisp Light Gray Border */
+  --border-secondary: #cbd5e1;
+  --border-hover: #10b981;
 
-  /* Comfortable, ordinary hues (non-neon) */
-  --accent: #3b82f6;          /* Muted Blue */
-  --accent-hover: #2563eb;
-  --accent-subtle: rgba(59, 130, 246, 0.12);
+  /* Comforting Sage & Forest Emerald Accent */
+  --accent: #059669;          /* Soothing Emerald Sage */
+  --accent-hover: #047857;    /* Deep Forest Emerald */
+  --accent-subtle: rgba(5, 150, 105, 0.09);
+  --accent-glow: rgba(5, 150, 105, 0.2);
+  --accent-primary: #059669;
 
-  --green: #059669;           /* Muted Emerald */
-  --green-subtle: rgba(5, 150, 105, 0.12);
-  --red: #e11d48;             /* Muted Rose */
-  --red-subtle: rgba(225, 29, 72, 0.12);
-  --orange: #d97706;          /* Muted Amber */
-  --orange-subtle: rgba(217, 119, 6, 0.12);
-  --purple: #7c3aed;          /* Muted Violet */
-  --purple-subtle: rgba(124, 58, 237, 0.12);
+  /* Companion Soft Status Accents */
+  --green: #059669;           /* Soothing Emerald */
+  --green-subtle: rgba(5, 150, 105, 0.09);
+  --red: #e11d48;             /* Soft Clean Crimson/Rose (Not Pink) */
+  --red-subtle: rgba(225, 29, 72, 0.08);
+  --orange: #d97706;          /* Warm Caramel / Honey */
+  --orange-subtle: rgba(217, 119, 6, 0.09);
+  --purple: #059669;          /* Harmonized with Sage */
+  --purple-subtle: rgba(5, 150, 105, 0.09);
 
-  --radius: 12px;
-  --radius-sm: 6px;
-  --radius-lg: 16px;
+  /* Modern Ergonomic Curvature */
+  --radius: 14px;
+  --radius-sm: 8px;
+  --radius-lg: 20px;
 }
 
 * {
@@ -58,12 +63,12 @@
 }
 
 html {
-  color-scheme: dark;
+  color-scheme: light;
   height: 100%;
 }
 
 body {
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', sans-serif;
+  font-family: 'Plus Jakarta Sans', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   background: var(--bg-primary);
   color: var(--text-primary);
   -webkit-font-smoothing: antialiased;
@@ -75,8 +80,8 @@ body {
 /* ─── Scrollbar ─── */
 ::-webkit-scrollbar { width: 6px; height: 6px; }
 ::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: var(--border-secondary); border-radius: 999px; }
-::-webkit-scrollbar-thumb:hover { background: var(--border-hover); }
+::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 999px; }
+::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
 .scrollbar-hide::-webkit-scrollbar { display: none; }
 .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
 
@@ -95,74 +100,85 @@ body {
 }
 @keyframes pulse-soft {
   0%, 100% { opacity: 1; }
-  50% { opacity: 0.5; }
+  50% { opacity: 0.6; }
 }
 
-.animate-fade-in { animation: fadeIn 0.4s ease-out forwards; }
-.animate-fade-soft { animation: fadeInSoft 0.3s ease-out forwards; }
-.animate-pulse-soft { animation: pulse-soft 2s ease-in-out infinite; }
+.animate-fade-in { animation: fadeIn 0.35s ease-out forwards; }
+.animate-fade-soft { animation: fadeInSoft 0.25s ease-out forwards; }
+.animate-pulse-soft { animation: pulse-soft 2.5s ease-in-out infinite; }
 .animate-shimmer {
   background: linear-gradient(90deg, transparent 25%, var(--bg-hover) 50%, transparent 75%);
   background-size: 200% 100%;
   animation: shimmer 1.5s infinite;
 }
 
-/* ─── Utilities ─── */
+/* ─── 3D Tactile Cards & Surfaces (Clean Light Mode) ─── */
 .glass {
-  background: rgba(15, 21, 36, 0.7);
+  background: rgba(255, 255, 255, 0.85);
   backdrop-filter: blur(20px) saturate(180%);
   -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid var(--border-primary);
 }
 
 .card,
 .card-surface {
-  background: var(--bg-secondary);
+  background: #ffffff;
   border: 1px solid var(--border-primary);
   border-radius: var(--radius);
-  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.15);
+  transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.22s ease, border-color 0.22s ease;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 4px 12px rgba(0, 0, 0, 0.02);
+  position: relative;
 }
 .card:hover,
 .card-surface:hover {
-  border-color: var(--border-secondary);
-  box-shadow: 0 8px 30px -4px rgba(0, 0, 0, 0.3);
+  transform: translateY(-2px);
+  border-color: #cbd5e1;
+  box-shadow: 0 8px 24px -4px rgba(0, 0, 0, 0.08), 0 2px 6px rgba(0, 0, 0, 0.04);
 }
 
 .card-elevated {
-  background: var(--bg-tertiary);
+  background: #ffffff;
   border: 1px solid var(--border-primary);
   border-radius: var(--radius);
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 6px 24px -4px rgba(0, 0, 0, 0.25);
+  transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.22s ease, border-color 0.22s ease;
+  box-shadow: 0 4px 16px -2px rgba(0, 0, 0, 0.06), 0 1px 3px rgba(0, 0, 0, 0.03);
 }
 .card-elevated:hover {
-  border-color: var(--border-secondary);
-  transform: translateY(-2px);
-  box-shadow: 0 12px 40px -8px rgba(0, 0, 0, 0.45);
+  transform: translateY(-2.5px);
+  border-color: #cbd5e1;
+  box-shadow: 0 12px 28px -6px rgba(0, 0, 0, 0.1), 0 0 16px -4px var(--accent-subtle);
 }
 
 .glass-card {
-  background: rgba(22, 31, 51, 0.4);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--border-primary);
   border-radius: var(--radius);
-  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
-  transition: all 0.3s ease;
+  box-shadow: 0 8px 24px -4px rgba(0, 0, 0, 0.06);
+  transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.22s ease, border-color 0.22s ease;
 }
 .glass-card:hover {
-  border-color: rgba(255, 255, 255, 0.1);
-  background: rgba(22, 31, 51, 0.55);
+  transform: translateY(-2px);
+  border-color: var(--accent);
+  box-shadow: 0 12px 28px -6px rgba(0, 0, 0, 0.1);
 }
 
-/* ─── Focus ─── */
+/* ─── Tactile Button & Click Feedback ─── */
+button {
+  transition: transform 0.15s ease, background-color 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+}
+button:active {
+  transform: scale(0.98);
+}
+
+/* ─── Focus & Selection ─── */
 *:focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 2px;
-  border-radius: 4px;
+  border-radius: 6px;
 }
 
-/* ─── Selection ─── */
 ::selection {
   background: var(--accent-subtle);
   color: var(--accent);
@@ -174,14 +190,8 @@ body {
   100% { background-position: 0% 50%; }
 }
 
-@keyframes float {
-  0% { transform: translateY(0px); }
-  50% { transform: translateY(-5px); }
-  100% { transform: translateY(0px); }
-}
-
 .gradient-text {
-  background: linear-gradient(135deg, var(--accent) 0%, var(--purple) 100%);
+  background: linear-gradient(135deg, #059669 0%, #10b981 50%, #d97706 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -195,17 +205,17 @@ body {
   position: absolute;
   inset: -2px;
   border-radius: inherit;
-  background: linear-gradient(135deg, var(--accent), var(--purple), var(--accent));
+  background: linear-gradient(135deg, var(--accent), #34d399, var(--accent));
   background-size: 200% 200%;
   animation: gradient-shift 3s ease infinite;
   z-index: -1;
-  opacity: 0.5;
+  opacity: 0.3;
   transition: opacity 0.3s ease;
-  filter: blur(8px);
+  filter: blur(6px);
 }
 .glow-border:hover::before,
 .glow-border:focus-within::before {
-  opacity: 1;
+  opacity: 0.7;
 }
 .glow-border-input {
   position: relative;

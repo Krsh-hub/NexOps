@@ -18,7 +18,7 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className="dark h-full">
+    <html lang="en" className="h-full">
       <body className={`${inter.className} h-full flex bg-[var(--bg-primary)] text-[var(--text-primary)] overflow-hidden`}>
         <Sidebar />
         <div className="flex flex-col flex-1 min-w-0 h-full">

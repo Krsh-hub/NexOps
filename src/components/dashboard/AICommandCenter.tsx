@@ -351,7 +351,7 @@ export function AICommandCenter() {
       {/* Header */}
       <div className="px-5 py-3.5 border-b border-[var(--border-primary)]/70 bg-[var(--bg-secondary)] flex items-center justify-between shrink-0">
         <div className="flex items-center gap-3">
-          <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-[var(--accent)] to-[var(--purple)] flex items-center justify-center shadow-md shadow-[var(--accent)]/20">
+          <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-700 flex items-center justify-center shadow-md shadow-emerald-500/20">
             <Sparkles className="w-4 h-4 text-white" />
           </div>
           <div>
@@ -397,7 +397,7 @@ export function AICommandCenter() {
                 className={`w-7 h-7 rounded-lg flex items-center justify-center shrink-0 mt-0.5 shadow-sm ${
                   isUser
                     ? "bg-[var(--bg-elevated)] border border-[var(--border-secondary)] text-[var(--text-secondary)]"
-                    : "bg-gradient-to-br from-[var(--accent)] to-[var(--purple)] text-white shadow-[var(--accent)]/20"
+                    : "bg-gradient-to-br from-emerald-500 to-teal-700 text-white shadow-emerald-500/20"
                 }`}
               >
                 {isUser ? <User className="w-3.5 h-3.5" /> : <Bot className="w-3.5 h-3.5" />}
@@ -466,7 +466,7 @@ export function AICommandCenter() {
         {/* Loading Indicator */}
         {isLoading && (
           <div className="flex gap-3 mr-auto max-w-[80%]">
-            <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-[var(--accent)] to-[var(--purple)] text-white flex items-center justify-center shrink-0 mt-0.5 shadow-sm">
+            <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-emerald-500 to-teal-700 text-white flex items-center justify-center shrink-0 mt-0.5 shadow-sm">
               <Bot className="w-3.5 h-3.5" />
             </div>
             <div className="card-surface p-3.5 rounded-2xl rounded-tl-sm border border-[var(--border-primary)] flex items-center gap-3">

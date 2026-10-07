@@ -43,8 +43,8 @@ export function StatCards({ revenue, lowStockCount, overdueInvoices, activeOrder
       value: activeOrders.toString(),
       suffix: "pending",
       icon: ClipboardList,
-      glow: "rgba(99, 102, 241, 0.15)",
-      accentClass: "text-white bg-gradient-to-br from-[var(--accent)] to-[var(--purple)]",
+      glow: "rgba(245, 158, 11, 0.15)",
+      accentClass: "text-white bg-gradient-to-br from-[var(--accent)] to-amber-600",
       borderAccent: "border-b-[var(--accent)]"
     },
   ];

@@ -11,11 +11,11 @@ interface ActivityItem {
 
 export function OperationsFeed({ activities }: { activities: ActivityItem[] }) {
   const getIconConfig = (type: string) => {
-    if (type.includes("INVOICE")) return { icon: FileText, color: "text-[var(--blue)]", bg: "bg-blue-500/10 border-blue-500/20" };
-    if (type.includes("INVENTORY")) return { icon: Package, color: "text-[var(--orange)]", bg: "bg-orange-500/10 border-orange-500/20" };
-    if (type.includes("ALERT") || type.includes("WARNING")) return { icon: AlertTriangle, color: "text-[var(--red)]", bg: "bg-red-500/10 border-red-500/20" };
-    if (type.includes("PROACTIVE")) return { icon: Zap, color: "text-[var(--accent)]", bg: "bg-[var(--accent)]/10 border-[var(--accent)]/20" };
-    return { icon: Activity, color: "text-[var(--green)]", bg: "bg-green-500/10 border-green-500/20" };
+    if (type.includes("INVOICE")) return { icon: FileText, color: "text-[var(--accent)]", bg: "bg-[var(--accent-subtle)] border-[var(--accent)]/20" };
+    if (type.includes("INVENTORY")) return { icon: Package, color: "text-[var(--orange)]", bg: "bg-[var(--orange-subtle)] border-[var(--orange)]/20" };
+    if (type.includes("ALERT") || type.includes("WARNING")) return { icon: AlertTriangle, color: "text-[var(--red)]", bg: "bg-[var(--red-subtle)] border-[var(--red)]/20" };
+    if (type.includes("PROACTIVE")) return { icon: Zap, color: "text-[var(--accent)]", bg: "bg-[var(--accent-subtle)] border-[var(--accent)]/20" };
+    return { icon: Activity, color: "text-[var(--green)]", bg: "bg-[var(--green-subtle)] border-[var(--green)]/20" };
   };
 
   const getStatusStyle = (status: string) => {
@@ -23,7 +23,7 @@ export function OperationsFeed({ activities }: { activities: ActivityItem[] }) {
       case "COMPLETED": return "text-[var(--green)] bg-gradient-to-r from-[var(--green-subtle)] to-emerald-500/10 border-l-2 border-l-[var(--green)]";
       case "FAILED": return "text-[var(--red)] bg-gradient-to-r from-[var(--red-subtle)] to-rose-500/10 border-l-2 border-l-[var(--red)]";
       case "PENDING": return "text-[var(--orange)] bg-gradient-to-r from-[var(--orange-subtle)] to-amber-500/10 border-l-2 border-l-[var(--orange)]";
-      default: return "text-[var(--accent)] bg-gradient-to-r from-[var(--accent-subtle)] to-blue-500/10 border-l-2 border-l-[var(--accent)]";
+      default: return "text-[var(--accent)] bg-gradient-to-r from-[var(--accent-subtle)] to-amber-500/10 border-l-2 border-l-[var(--accent)]";
     }
   };
 
@@ -36,10 +36,10 @@ export function OperationsFeed({ activities }: { activities: ActivityItem[] }) {
   };
 
   return (
-    <div className="card-surface flex flex-col h-full overflow-hidden transition-all duration-300 hover:shadow-lg border-t-2 border-t-[var(--purple)] group">
+    <div className="card-surface flex flex-col h-full overflow-hidden transition-all duration-300 hover:shadow-lg border-t-2 border-t-[var(--accent)] group">
       <div className="px-5 py-4 flex items-center justify-between border-b border-[var(--border-primary)]/50 bg-[var(--bg-secondary)]/30">
         <div className="flex items-center gap-3">
-          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[var(--purple)] to-indigo-600 text-white flex items-center justify-center shadow-lg shadow-[var(--purple)]/20 group-hover:scale-110 transition-transform">
+          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[var(--accent)] to-amber-600 text-white flex items-center justify-center shadow-lg shadow-[var(--accent-glow)] group-hover:scale-110 transition-transform">
             <Clock className="w-4 h-4" strokeWidth={2.2} />
           </div>
           <div>
@@ -49,7 +49,7 @@ export function OperationsFeed({ activities }: { activities: ActivityItem[] }) {
             </div>
           </div>
         </div>
-        <div className="flex items-center gap-1.5 text-[14px] font-bold text-[var(--purple)] bg-[var(--purple-subtle)] px-2.5 py-1 rounded-md border border-[var(--purple)]/20 shadow-sm">
+        <div className="flex items-center gap-1.5 text-[14px] font-bold text-[var(--accent)] bg-[var(--accent-subtle)] px-2.5 py-1 rounded-md border border-[var(--accent)]/20 shadow-sm">
           {activities.length} events
         </div>
       </div>

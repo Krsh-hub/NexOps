@@ -70,7 +70,7 @@ export function AICommandBar() {
       <form onSubmit={handleSubmit} className="relative group">
         <div className="relative rounded-2xl bg-[var(--bg-secondary)] border border-[var(--border-primary)] shadow-lg shadow-black/20 focus-within:border-[var(--accent)] focus-within:ring-2 focus-within:ring-[var(--accent)]/20 transition-all duration-300">
           <div className="flex items-center px-4 py-1.5">
-            <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-[var(--accent)] to-[var(--purple)] flex items-center justify-center shrink-0 shadow-md shadow-[var(--accent)]/25">
+            <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-[var(--accent)] to-amber-600 flex items-center justify-center shrink-0 shadow-md shadow-[var(--accent-glow)]">
               <Sparkles className="w-4 h-4 text-white" />
             </div>
 
@@ -103,7 +103,7 @@ export function AICommandBar() {
       {(response || isLoading) && (
         <div className="card-surface p-5 rounded-2xl border border-[var(--border-primary)] border-t-2 border-t-[var(--accent)] shadow-xl animate-fade-soft bg-[var(--bg-secondary)]">
           <div className="flex items-start gap-4">
-            <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-[var(--accent)] to-[var(--purple)] flex items-center justify-center shrink-0 mt-0.5 shadow-md shadow-[var(--accent)]/20">
+            <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-[var(--accent)] to-amber-600 flex items-center justify-center shrink-0 mt-0.5 shadow-md shadow-[var(--accent-glow)]">
               <Sparkles className="w-4 h-4 text-white" />
             </div>
 
@@ -117,9 +117,9 @@ export function AICommandBar() {
                   {toolsRun.map((t) => (
                     <span
                       key={t.id}
-                      className="inline-flex items-center gap-1 text-[11px] font-mono px-2 py-0.5 rounded-full bg-emerald-950/60 border border-emerald-800/50 text-emerald-300"
+                      className="inline-flex items-center gap-1 text-[11px] font-mono px-2 py-0.5 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-800"
                     >
-                      <CheckCircle2 className="w-3 h-3" />
+                      <CheckCircle2 className="w-3 h-3 text-emerald-600" />
                       {t.name.replace(/_/g, " ")}
                     </span>
                   ))}
@@ -148,7 +148,7 @@ export function AICommandBar() {
 
                   <button
                     onClick={() => setResponse(null)}
-                    className="text-[var(--text-tertiary)] hover:text-white transition-colors cursor-pointer"
+                    className="text-[var(--text-tertiary)] hover:text-[var(--text-primary)] transition-colors cursor-pointer font-medium"
                   >
                     Dismiss
                   </button>
@@ -159,7 +159,7 @@ export function AICommandBar() {
             {response && !isLoading && (
               <button
                 onClick={() => setResponse(null)}
-                className="w-7 h-7 flex items-center justify-center rounded-lg text-[var(--text-quaternary)] hover:text-white hover:bg-[var(--bg-hover)] transition-all shrink-0 cursor-pointer"
+                className="w-7 h-7 flex items-center justify-center rounded-lg text-[var(--text-quaternary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-hover)] transition-all shrink-0 cursor-pointer"
                 title="Close"
               >
                 <X className="w-4 h-4" />
