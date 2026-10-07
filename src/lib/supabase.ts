@@ -12,21 +12,28 @@ const realSupabase = createClient(supabaseUrl, supabaseKey);
 
 const BIZ = "biz_demo_001";
 
-// Relative times to make mock data dynamic and realistic
-const now = new Date();
-const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate()).toISOString();
-const yesterday = new Date(now.getTime() - 86400000).toISOString();
-const threeDaysAgo = new Date(now.getTime() - 3 * 86400000).toISOString();
-const fiveDaysHence = new Date(now.getTime() + 5 * 86400000).toISOString();
-const sevenDaysHence = new Date(now.getTime() + 7 * 86400000).toISOString();
-const tenDaysAgo = new Date(now.getTime() - 10 * 86400000).toISOString();
+function getDbFilePath(): string | null {
+  if (typeof window === "undefined") {
+    try {
+      const pathModule = require("path");
+      return pathModule.join(process.cwd(), "data", "nexops_db.json");
+    } catch {
+      return null;
+    }
+  }
+  return null;
+}
 
-let mockDb: any = null;
+function getDefaultSeedData() {
+  const n = new Date();
+  const dTodayStart = new Date(n.getFullYear(), n.getMonth(), n.getDate()).toISOString();
+  const dYesterday = new Date(n.getTime() - 86400000).toISOString();
+  const dThreeDaysAgo = new Date(n.getTime() - 3 * 86400000).toISOString();
+  const dFiveDaysHence = new Date(n.getTime() + 5 * 86400000).toISOString();
+  const dSevenDaysHence = new Date(n.getTime() + 7 * 86400000).toISOString();
+  const dTenDaysAgo = new Date(n.getTime() - 10 * 86400000).toISOString();
 
-function getMockDb() {
-  if (mockDb) return mockDb;
-
-  const defaultDb = {
+  return {
     vendors: [
       { id: "v1", name: "Artisan Roasters Co.", contactPerson: "Carlos Rivera", email: "carlos@artisanroasters.in", phone: "+91 98765 43210", address: "Indiranagar, Bangalore", businessId: BIZ },
       { id: "v2", name: "Daily Fresh Dairy", contactPerson: "Priya Sharma", email: "orders@dailyfresh.in", phone: "+91 87654 32109", address: "Ooty Hills, Tamil Nadu", businessId: BIZ },
@@ -43,45 +50,73 @@ function getMockDb() {
     products: [
       { id: "p1", name: "Artisanal Espresso Blend", sku: "COF-ESP-01", category: "Coffee", currentStock: 12.5, reorderThreshold: 10.0, reorderQuantity: 20.0, unit: "kg", costPrice: 800, sellingPrice: 1200, isActive: true, vendorId: "v1", businessId: BIZ },
       { id: "p2", name: "Organic Whole Milk", sku: "DAI-MIL-02", category: "Dairy", currentStock: 140, reorderThreshold: 50, reorderQuantity: 100, unit: "L", costPrice: 52, sellingPrice: 75, isActive: true, vendorId: "v2", businessId: BIZ },
-      { id: "p3", name: "Gourmet Cold Brew", sku: "COF-CLD-03", category: "Coffee", currentStock: 4, reorderThreshold: 20, reorderQuantity: 30, unit: "L", costPrice: 120, sellingPrice: 240, isActive: true, vendorId: "v1", businessId: BIZ }, // Low stock
+      { id: "p3", name: "Gourmet Cold Brew", sku: "COF-CLD-03", category: "Coffee", currentStock: 4, reorderThreshold: 20, reorderQuantity: 30, unit: "L", costPrice: 120, sellingPrice: 240, isActive: true, vendorId: "v1", businessId: BIZ },
       { id: "p4", name: "French Croissant", sku: "BAK-CRO-04", category: "Bakery", currentStock: 35, reorderThreshold: 15, reorderQuantity: 40, unit: "units", costPrice: 58, sellingPrice: 110, isActive: true, vendorId: "v3", businessId: BIZ },
-      { id: "p5", name: "Avocado Toast Mix", sku: "BAK-AVO-05", category: "Bakery", currentStock: 0, reorderThreshold: 5, reorderQuantity: 10, unit: "kg", costPrice: 320, sellingPrice: 550, isActive: true, vendorId: "v2", businessId: BIZ }, // Out of stock
+      { id: "p5", name: "Avocado Toast Mix", sku: "BAK-AVO-05", category: "Bakery", currentStock: 0, reorderThreshold: 5, reorderQuantity: 10, unit: "kg", costPrice: 320, sellingPrice: 550, isActive: true, vendorId: "v2", businessId: BIZ },
       { id: "p6", name: "Double Chocolate Brownie", sku: "BAK-BRW-06", category: "Bakery", currentStock: 28, reorderThreshold: 10, reorderQuantity: 25, unit: "units", costPrice: 45, sellingPrice: 95, isActive: true, vendorId: "v3", businessId: BIZ },
       { id: "p7", name: "Organic Brown Sugar", sku: "ING-SGR-07", category: "Ingredients", currentStock: 45, reorderThreshold: 15, reorderQuantity: 30, unit: "kg", costPrice: 85, sellingPrice: 120, isActive: true, vendorId: "v4", businessId: BIZ },
       { id: "p8", name: "Biodegradable Hot Cups", sku: "PKG-CUP-08", category: "Packaging", currentStock: 1500, reorderThreshold: 500, reorderQuantity: 1000, unit: "units", costPrice: 3, sellingPrice: 5, isActive: true, vendorId: "v4", businessId: BIZ },
-      { id: "p9", name: "Caramel Syrup", sku: "ING-SYR-09", category: "Ingredients", currentStock: 2, reorderThreshold: 10, reorderQuantity: 12, unit: "bottles", costPrice: 240, sellingPrice: 420, isActive: true, vendorId: "v1", businessId: BIZ }, // Critical stock
+      { id: "p9", name: "Caramel Syrup", sku: "ING-SYR-09", category: "Ingredients", currentStock: 2, reorderThreshold: 10, reorderQuantity: 12, unit: "bottles", costPrice: 240, sellingPrice: 420, isActive: true, vendorId: "v1", businessId: BIZ },
       { id: "p10", name: "Almond Milk", sku: "DAI-ALM-10", category: "Dairy", currentStock: 38, reorderThreshold: 15, reorderQuantity: 30, unit: "L", costPrice: 110, sellingPrice: 175, isActive: true, vendorId: "v2", businessId: BIZ }
     ],
     invoices: [
-      { id: "i1", invoiceNumber: "INV-2026-001", customerName: "XYZ Cafe", customerId: "c1", total: 14200, subtotal: 12034, tax: 2166, status: "PAID", dueDate: fiveDaysHence, paidAt: now.toISOString(), createdAt: now.toISOString(), businessId: BIZ },
-      { id: "i2", invoiceNumber: "INV-2026-002", customerName: "Greenwood Cafe", customerId: "c4", total: 6500, subtotal: 5508, tax: 992, status: "OVERDUE", dueDate: threeDaysAgo, paidAt: null, createdAt: tenDaysAgo, businessId: BIZ },
-      { id: "i3", invoiceNumber: "INV-2026-003", customerName: "Himalayan Bistro", customerId: "c3", total: 4800, subtotal: 4068, tax: 732, status: "PENDING", dueDate: fiveDaysHence, paidAt: null, createdAt: now.toISOString(), businessId: BIZ },
-      { id: "i4", invoiceNumber: "INV-2026-004", customerName: "Vikas Sen", customerId: "c2", total: 12450, subtotal: 10550, tax: 1900, status: "PAID", dueDate: yesterday, paidAt: yesterday, createdAt: yesterday, businessId: BIZ },
-      { id: "i5", invoiceNumber: "INV-2026-005", customerName: "Downtown Coffee House", customerId: "c5", total: 9800, subtotal: 8305, tax: 1495, status: "OVERDUE", dueDate: tenDaysAgo, paidAt: null, createdAt: tenDaysAgo, businessId: BIZ },
-      { id: "i6", invoiceNumber: "INV-2026-006", customerName: "XYZ Cafe", customerId: "c1", total: 3200, subtotal: 2712, tax: 488, status: "SENT", dueDate: sevenDaysHence, paidAt: null, createdAt: now.toISOString(), businessId: BIZ }
+      { id: "i1", invoiceNumber: "INV-2026-001", customerName: "XYZ Cafe", customerId: "c1", total: 14200, subtotal: 12034, tax: 2166, status: "PAID", dueDate: dFiveDaysHence, paidAt: n.toISOString(), createdAt: n.toISOString(), businessId: BIZ },
+      { id: "i2", invoiceNumber: "INV-2026-002", customerName: "Greenwood Cafe", customerId: "c4", total: 6500, subtotal: 5508, tax: 992, status: "OVERDUE", dueDate: dThreeDaysAgo, paidAt: null, createdAt: dTenDaysAgo, businessId: BIZ },
+      { id: "i3", invoiceNumber: "INV-2026-003", customerName: "Himalayan Bistro", customerId: "c3", total: 4800, subtotal: 4068, tax: 732, status: "PENDING", dueDate: dFiveDaysHence, paidAt: null, createdAt: n.toISOString(), businessId: BIZ },
+      { id: "i4", invoiceNumber: "INV-2026-004", customerName: "Vikas Sen", customerId: "c2", total: 12450, subtotal: 10550, tax: 1900, status: "PAID", dueDate: dYesterday, paidAt: dYesterday, createdAt: dYesterday, businessId: BIZ },
+      { id: "i5", invoiceNumber: "INV-2026-005", customerName: "Downtown Coffee House", customerId: "c5", total: 9800, subtotal: 8305, tax: 1495, status: "OVERDUE", dueDate: dTenDaysAgo, paidAt: null, createdAt: dTenDaysAgo, businessId: BIZ },
+      { id: "i6", invoiceNumber: "INV-2026-006", customerName: "XYZ Cafe", customerId: "c1", total: 3200, subtotal: 2712, tax: 488, status: "SENT", dueDate: dSevenDaysHence, paidAt: null, createdAt: n.toISOString(), businessId: BIZ }
     ],
     invoice_items: [
       { id: "ii1", invoiceId: "i1", productId: "p1", quantity: 10, unitPrice: 1200, total: 12000 },
       { id: "ii2", invoiceId: "i1", productId: "p4", quantity: 20, unitPrice: 110, total: 2200 }
     ],
     expenses: [
-      { id: "e1", category: "Raw Materials", amount: 15400, date: tenDaysAgo, businessId: BIZ },
-      { id: "e2", category: "Utilities", amount: 3500, date: tenDaysAgo, businessId: BIZ },
-      { id: "e3", category: "Logistics", amount: 1200, date: tenDaysAgo, businessId: BIZ }
+      { id: "e1", category: "Raw Materials", amount: 15400, date: dTenDaysAgo, businessId: BIZ },
+      { id: "e2", category: "Utilities", amount: 3500, date: dTenDaysAgo, businessId: BIZ },
+      { id: "e3", category: "Logistics", amount: 1200, date: dTenDaysAgo, businessId: BIZ }
     ],
     purchase_orders: [
-      { id: "po1", orderNumber: "PO-2026-001", vendorId: "v1", total: 8000, status: "DRAFT", businessId: BIZ, createdAt: now.toISOString() },
-      { id: "po2", orderNumber: "PO-2026-002", vendorId: "v2", total: 5200, status: "SENT", businessId: BIZ, createdAt: now.toISOString() }
+      { id: "po1", orderNumber: "PO-2026-001", vendorId: "v1", total: 8000, status: "DRAFT", businessId: BIZ, createdAt: n.toISOString() },
+      { id: "po2", orderNumber: "PO-2026-002", vendorId: "v2", total: 5200, status: "SENT", businessId: BIZ, createdAt: n.toISOString() }
     ],
     purchase_order_items: [],
     inventory_transactions: [],
     notifications: [],
     ai_activities: [
-      { id: "a1", type: "PROACTIVE_SCAN", status: "COMPLETED", title: "Automated Operations Scan", description: "Checked inventory stock levels. Flagged 'Avocado Toast Mix' as out of stock.", toolUsed: "detect_low_stock", createdAt: yesterday, businessId: BIZ },
-      { id: "a2", type: "INVOICE_CREATED", status: "COMPLETED", title: "Invoice INV-2026-004 created", description: "Auto-generated invoice for Vikas Sen. Total: ₹12,450", toolUsed: "create_invoice", createdAt: yesterday, businessId: BIZ },
-      { id: "a3", type: "PAYMENT_REMINDER", status: "COMPLETED", title: "Payment reminder sent for INV-2026-002", description: "Sent overdue email alert to Greenwood Cafe. ₹6,500 due.", toolUsed: "send_payment_reminder", createdAt: threeDaysAgo, businessId: BIZ }
+      { id: "a1", type: "PROACTIVE_SCAN", status: "COMPLETED", title: "Automated Operations Scan", description: "Checked inventory stock levels. Flagged 'Avocado Toast Mix' as out of stock.", toolUsed: "detect_low_stock", createdAt: dYesterday, businessId: BIZ },
+      { id: "a2", type: "INVOICE_CREATED", status: "COMPLETED", title: "Invoice INV-2026-004 created", description: "Auto-generated invoice for Vikas Sen. Total: ₹12,450", toolUsed: "create_invoice", createdAt: dYesterday, businessId: BIZ },
+      { id: "a3", type: "PAYMENT_REMINDER", status: "COMPLETED", title: "Payment reminder sent for INV-2026-002", description: "Sent overdue email alert to Greenwood Cafe. ₹6,500 due.", toolUsed: "send_payment_reminder", createdAt: dThreeDaysAgo, businessId: BIZ }
     ]
   };
+}
+
+let mockDb: any = null;
+
+export function getMockDb() {
+  const filePath = getDbFilePath();
+  if (filePath) {
+    try {
+      const fsModule = require("fs");
+      if (fsModule.existsSync(filePath)) {
+        const raw = fsModule.readFileSync(filePath, "utf-8");
+        mockDb = JSON.parse(raw);
+        return mockDb;
+      }
+      const initial = getDefaultSeedData();
+      const dir = require("path").dirname(filePath);
+      if (!fsModule.existsSync(dir)) {
+        fsModule.mkdirSync(dir, { recursive: true });
+      }
+      fsModule.writeFileSync(filePath, JSON.stringify(initial, null, 2), "utf-8");
+      mockDb = initial;
+      return mockDb;
+    } catch (err) {
+      console.error("Local JSON DB read error:", err);
+    }
+  }
+
+  if (mockDb) return mockDb;
 
   if (typeof window !== "undefined") {
     const saved = localStorage.getItem("nexops_mock_db");
@@ -93,19 +128,45 @@ function getMockDb() {
         // Fallback
       }
     }
-    mockDb = defaultDb;
-    localStorage.setItem("nexops_mock_db", JSON.stringify(mockDb));
-  } else {
-    mockDb = defaultDb;
+    const fallback = getDefaultSeedData();
+    localStorage.setItem("nexops_mock_db", JSON.stringify(fallback));
+    mockDb = fallback;
+    return mockDb;
   }
+
+  mockDb = getDefaultSeedData();
   return mockDb;
 }
 
-function saveMockDb(db: any) {
+export function saveMockDb(db: any) {
   mockDb = db;
-  if (typeof window !== "undefined") {
-    localStorage.setItem("nexops_mock_db", JSON.stringify(db));
+  const filePath = getDbFilePath();
+  if (filePath) {
+    try {
+      const fsModule = require("fs");
+      const dir = require("path").dirname(filePath);
+      if (!fsModule.existsSync(dir)) {
+        fsModule.mkdirSync(dir, { recursive: true });
+      }
+      fsModule.writeFileSync(filePath, JSON.stringify(db, null, 2), "utf-8");
+    } catch (err) {
+      console.error("Local JSON DB save error:", err);
+    }
   }
+
+  if (typeof window !== "undefined") {
+    try {
+      localStorage.setItem("nexops_mock_db", JSON.stringify(db));
+    } catch {
+      // ignore
+    }
+  }
+}
+
+export function resetMockDb() {
+  const fresh = getDefaultSeedData();
+  saveMockDb(fresh);
+  return fresh;
 }
 
 class MockQueryBuilder {
@@ -115,6 +176,8 @@ class MockQueryBuilder {
   private orderAscending = true;
   private limitCount: number | null = null;
   private isSingle = false;
+  private action: "select" | "insert" | "update" | "delete" = "select";
+  private payload: any = null;
 
   constructor(tableName: string) {
     this.tableName = tableName;
@@ -224,114 +287,133 @@ class MockQueryBuilder {
     return this;
   }
 
-  async insert(data: any) {
-    const db = getMockDb();
-    const table = db[this.tableName] || [];
-    
-    const itemsToInsert = Array.isArray(data) ? data : [data];
-    const insertedItems = itemsToInsert.map(item => {
-      const newItem = {
-        id: item.id || `mock_${Math.random().toString(36).substring(2, 9)}`,
-        createdAt: item.createdAt || new Date().toISOString(),
-        updatedAt: item.updatedAt || new Date().toISOString(),
-        ...item
-      };
-      table.push(newItem);
-      return newItem;
-    });
-
-    db[this.tableName] = table;
-    saveMockDb(db);
-
-    const result = this.isSingle || !Array.isArray(data) ? insertedItems[0] : insertedItems;
-    return { data: result, error: null };
+  insert(data: any) {
+    this.action = "insert";
+    this.payload = data;
+    return this;
   }
 
-  async update(data: any) {
-    const db = getMockDb();
-    const table = db[this.tableName] || [];
-
-    let updatedCount = 0;
-    const updatedItems: any[] = [];
-
-    const updatedTable = table.map((item: any) => {
-      const matches = this.filters.every(filter => filter(item));
-      if (matches) {
-        updatedCount++;
-        const updatedItem = {
-          ...item,
-          ...data,
-          updatedAt: new Date().toISOString()
-        };
-        updatedItems.push(updatedItem);
-        return updatedItem;
-      }
-      return item;
-    });
-
-    db[this.tableName] = updatedTable;
-    saveMockDb(db);
-
-    const result = this.isSingle ? updatedItems[0] : updatedItems;
-    return { data: result, count: updatedCount, error: null };
+  update(data: any) {
+    this.action = "update";
+    this.payload = data;
+    return this;
   }
 
-  async delete() {
-    const db = getMockDb();
-    const table = db[this.tableName] || [];
-
-    const deletedItems: any[] = [];
-    const remainingTable = table.filter((item: any) => {
-      const matches = this.filters.every(filter => filter(item));
-      if (matches) {
-        deletedItems.push(item);
-        return false;
-      }
-      return true;
-    });
-
-    db[this.tableName] = remainingTable;
-    saveMockDb(db);
-
-    return { data: deletedItems, error: null };
+  delete() {
+    this.action = "delete";
+    return this;
   }
 
   async then(onfulfilled?: (value: any) => any, onrejected?: (reason: any) => any) {
     try {
       const db = getMockDb();
+
+      // INSERT
+      if (this.action === "insert") {
+        const table = db[this.tableName] || [];
+        const itemsToInsert = Array.isArray(this.payload) ? this.payload : [this.payload];
+        const insertedItems = itemsToInsert.map((item: any) => {
+          const newItem = {
+            id: item.id || `mock_${Math.random().toString(36).substring(2, 9)}`,
+            createdAt: item.createdAt || new Date().toISOString(),
+            updatedAt: item.updatedAt || new Date().toISOString(),
+            ...item,
+          };
+          table.push(newItem);
+          return newItem;
+        });
+
+        db[this.tableName] = table;
+        saveMockDb(db);
+
+        const result = this.isSingle || !Array.isArray(this.payload) ? insertedItems[0] : insertedItems;
+        const response = { data: result, error: null };
+        return onfulfilled ? onfulfilled(response) : response;
+      }
+
+      // UPDATE
+      if (this.action === "update") {
+        const table = db[this.tableName] || [];
+        let updatedCount = 0;
+        const updatedItems: any[] = [];
+
+        const updatedTable = table.map((item: any) => {
+          const matches = this.filters.length === 0 || this.filters.every((filter) => filter(item));
+          if (matches) {
+            updatedCount++;
+            const updatedItem = {
+              ...item,
+              ...this.payload,
+              updatedAt: new Date().toISOString(),
+            };
+            updatedItems.push(updatedItem);
+            return updatedItem;
+          }
+          return item;
+        });
+
+        db[this.tableName] = updatedTable;
+        saveMockDb(db);
+
+        const result = this.isSingle ? updatedItems[0] : updatedItems;
+        const response = { data: result, count: updatedCount, error: null };
+        return onfulfilled ? onfulfilled(response) : response;
+      }
+
+      // DELETE
+      if (this.action === "delete") {
+        const table = db[this.tableName] || [];
+        const deletedItems: any[] = [];
+        const remainingTable = table.filter((item: any) => {
+          const matches = this.filters.length > 0 && this.filters.every((filter) => filter(item));
+          if (matches) {
+            deletedItems.push(item);
+            return false;
+          }
+          return true;
+        });
+
+        db[this.tableName] = remainingTable;
+        saveMockDb(db);
+
+        const response = { data: deletedItems, error: null };
+        return onfulfilled ? onfulfilled(response) : response;
+      }
+
+      // SELECT
       let items = [...(db[this.tableName] || [])];
 
       // 1. Filter
-      this.filters.forEach(filter => {
+      this.filters.forEach((filter) => {
         items = items.filter(filter);
       });
 
       // 2. Resolve Joins
       if (this.tableName === "products") {
-        items = items.map(p => {
+        items = items.map((p) => {
           const vendors = db.vendors || [];
           const v = vendors.find((vend: any) => vend.id === p.vendorId);
           return {
             ...p,
-            vendor: v ? { ...v } : null
+            vendor: v ? { ...v } : null,
           };
         });
       } else if (this.tableName === "invoices") {
-        items = items.map(inv => {
+        items = items.map((inv) => {
           const customers = db.customers || [];
           const c = customers.find((cust: any) => cust.id === inv.customerId);
           return {
             ...inv,
-            customer: c ? { ...c } : { id: inv.customerId, name: inv.customerName || "Customer" }
+            customer: c ? { ...c } : { id: inv.customerId, name: inv.customerName || "Customer" },
           };
         });
       } else if (this.tableName === "purchase_orders") {
-        items = items.map(po => {
+        items = items.map((po) => {
           const vendors = db.vendors || [];
           const v = vendors.find((vend: any) => vend.id === po.vendorId);
           return {
             ...po,
-            vendor: v ? { ...v } : null
+            vendor: v ? { ...v } : null,
           };
         });
       }

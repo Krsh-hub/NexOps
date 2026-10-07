@@ -25,11 +25,14 @@ export default function AddVendorModal({ open, onClose }: AddVendorModalProps) {
 
   // Mount animation
   useEffect(() => {
+    let animId: number;
     if (open) {
-      // Trigger entrance animation on next frame
-      requestAnimationFrame(() => setMounted(true));
-      // Focus the name input
-      setTimeout(() => nameRef.current?.focus(), 80);
+      animId = requestAnimationFrame(() => setMounted(true));
+      const timer = setTimeout(() => nameRef.current?.focus(), 80);
+      return () => {
+        cancelAnimationFrame(animId);
+        clearTimeout(timer);
+      };
     } else {
       setMounted(false);
     }

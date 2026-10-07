@@ -42,17 +42,30 @@ async function getData() {
 
 export default async function DashboardPage() {
   const d = await getData();
+  const today = new Date();
+  const dateStr = today.toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric", year: "numeric" });
+  const hour = today.getHours();
+  const greeting = hour < 12 ? "Good morning" : hour < 17 ? "Good afternoon" : "Good evening";
 
   return (
-    <div className="p-4 sm:p-6 lg:p-8 space-y-6 w-full">
-      {/* Header */}
-      <div>
-        <h1 className="text-[22px] font-semibold text-[var(--text-primary)] tracking-tight">
-          Good {new Date().getHours() < 12 ? "morning" : new Date().getHours() < 17 ? "afternoon" : "evening"}
-        </h1>
-        <p className="text-[15px] text-[var(--text-tertiary)] mt-1">
-          Here&apos;s what&apos;s happening with your operations today.
-        </p>
+    <div className="p-4 sm:p-6 lg:p-8 space-y-8 w-full max-w-[1600px] mx-auto">
+      {/* Premium Header */}
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
+        <div>
+          <h1 className="text-[28px] sm:text-[32px] font-bold tracking-tight">
+            <span className="gradient-text">{greeting}</span>, Operator
+          </h1>
+          <p className="text-[15px] sm:text-[16px] text-[var(--text-tertiary)] mt-1.5 font-medium">
+            {dateStr}
+          </p>
+        </div>
+        <div className="flex items-center gap-2 px-3 py-1.5 bg-[var(--bg-secondary)] border border-[var(--border-primary)] rounded-full shadow-sm text-[14px] font-medium text-[var(--text-secondary)]">
+          <span className="relative flex h-2.5 w-2.5 shrink-0">
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[var(--green)] opacity-75"></span>
+            <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-[var(--green)]"></span>
+          </span>
+          Brew & Bite Café · All systems operational
+        </div>
       </div>
 
       {/* KPIs */}
@@ -62,10 +75,15 @@ export default async function DashboardPage() {
       <AICommandBar />
 
       {/* Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 min-h-[380px]">
-        <InventoryRisk products={d.lowStockProducts.slice(0, 6)} />
-        <FinanceInsights />
-        <OperationsFeed activities={d.activities} />
+      <div className="space-y-4">
+        <h2 className="text-[14px] font-bold text-[var(--text-quaternary)] uppercase tracking-wider pl-1">
+          Operations Overview
+        </h2>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-5 min-h-[400px]">
+          <InventoryRisk products={d.lowStockProducts.slice(0, 6)} />
+          <FinanceInsights />
+          <OperationsFeed activities={d.activities} />
+        </div>
       </div>
     </div>
   );

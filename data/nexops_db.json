@@ -1,0 +1,520 @@
+{
+  "vendors": [
+    {
+      "id": "v1",
+      "name": "Artisan Roasters Co.",
+      "contactPerson": "Carlos Rivera",
+      "email": "carlos@artisanroasters.in",
+      "phone": "+91 98765 43210",
+      "address": "Indiranagar, Bangalore",
+      "businessId": "biz_demo_001"
+    },
+    {
+      "id": "v2",
+      "name": "Daily Fresh Dairy",
+      "contactPerson": "Priya Sharma",
+      "email": "orders@dailyfresh.in",
+      "phone": "+91 87654 32109",
+      "address": "Ooty Hills, Tamil Nadu",
+      "businessId": "biz_demo_001"
+    },
+    {
+      "id": "v3",
+      "name": "Bakers & Co.",
+      "contactPerson": "Amit Patel",
+      "email": "amit@bakersco.com",
+      "phone": "+91 76543 21098",
+      "address": "Mysore Industrial Area",
+      "businessId": "biz_demo_001"
+    },
+    {
+      "id": "v4",
+      "name": "Organic Packagings",
+      "contactPerson": "Sneha Reddy",
+      "email": "support@organicpack.in",
+      "phone": "+91 65432 10987",
+      "address": "Gachibowli, Hyderabad",
+      "businessId": "biz_demo_001"
+    }
+  ],
+  "customers": [
+    {
+      "id": "c1",
+      "name": "XYZ Cafe",
+      "businessId": "biz_demo_001"
+    },
+    {
+      "id": "c2",
+      "name": "Vikas Sen",
+      "businessId": "biz_demo_001"
+    },
+    {
+      "id": "c3",
+      "name": "Himalayan Bistro",
+      "businessId": "biz_demo_001"
+    },
+    {
+      "id": "c4",
+      "name": "Greenwood Cafe",
+      "businessId": "biz_demo_001"
+    },
+    {
+      "id": "c5",
+      "name": "Downtown Coffee House",
+      "businessId": "biz_demo_001"
+    },
+    {
+      "id": "mock_1of8sym",
+      "createdAt": "2026-10-07T13:59:09.012Z",
+      "updatedAt": "2026-10-07T13:59:09.012Z",
+      "name": "quickbites",
+      "businessId": "biz_demo_001"
+    }
+  ],
+  "products": [
+    {
+      "id": "p1",
+      "name": "Artisanal Espresso Blend",
+      "sku": "COF-ESP-01",
+      "category": "Coffee",
+      "currentStock": 8.5,
+      "reorderThreshold": 10,
+      "reorderQuantity": 20,
+      "unit": "kg",
+      "costPrice": 800,
+      "sellingPrice": 1200,
+      "isActive": true,
+      "vendorId": "v1",
+      "businessId": "biz_demo_001",
+      "updatedAt": "2026-10-07T14:06:42.876Z"
+    },
+    {
+      "id": "p2",
+      "name": "Organic Whole Milk",
+      "sku": "DAI-MIL-02",
+      "category": "Dairy",
+      "currentStock": 140,
+      "reorderThreshold": 50,
+      "reorderQuantity": 100,
+      "unit": "L",
+      "costPrice": 52,
+      "sellingPrice": 75,
+      "isActive": true,
+      "vendorId": "v2",
+      "businessId": "biz_demo_001"
+    },
+    {
+      "id": "p3",
+      "name": "Gourmet Cold Brew",
+      "sku": "COF-CLD-03",
+      "category": "Coffee",
+      "currentStock": 4,
+      "reorderThreshold": 20,
+      "reorderQuantity": 30,
+      "unit": "L",
+      "costPrice": 120,
+      "sellingPrice": 240,
+      "isActive": true,
+      "vendorId": "v1",
+      "businessId": "biz_demo_001"
+    },
+    {
+      "id": "p4",
+      "name": "French Croissant",
+      "sku": "BAK-CRO-04",
+      "category": "Bakery",
+      "currentStock": 35,
+      "reorderThreshold": 15,
+      "reorderQuantity": 40,
+      "unit": "units",
+      "costPrice": 58,
+      "sellingPrice": 110,
+      "isActive": true,
+      "vendorId": "v3",
+      "businessId": "biz_demo_001"
+    },
+    {
+      "id": "p5",
+      "name": "Avocado Toast Mix",
+      "sku": "BAK-AVO-05",
+      "category": "Bakery",
+      "currentStock": 0,
+      "reorderThreshold": 5,
+      "reorderQuantity": 10,
+      "unit": "kg",
+      "costPrice": 320,
+      "sellingPrice": 550,
+      "isActive": true,
+      "vendorId": "v2",
+      "businessId": "biz_demo_001"
+    },
+    {
+      "id": "p6",
+      "name": "Double Chocolate Brownie",
+      "sku": "BAK-BRW-06",
+      "category": "Bakery",
+      "currentStock": 28,
+      "reorderThreshold": 10,
+      "reorderQuantity": 25,
+      "unit": "units",
+      "costPrice": 45,
+      "sellingPrice": 95,
+      "isActive": true,
+      "vendorId": "v3",
+      "businessId": "biz_demo_001"
+    },
+    {
+      "id": "p7",
+      "name": "Organic Brown Sugar",
+      "sku": "ING-SGR-07",
+      "category": "Ingredients",
+      "currentStock": 45,
+      "reorderThreshold": 15,
+      "reorderQuantity": 30,
+      "unit": "kg",
+      "costPrice": 85,
+      "sellingPrice": 120,
+      "isActive": true,
+      "vendorId": "v4",
+      "businessId": "biz_demo_001"
+    },
+    {
+      "id": "p8",
+      "name": "Biodegradable Hot Cups",
+      "sku": "PKG-CUP-08",
+      "category": "Packaging",
+      "currentStock": 1500,
+      "reorderThreshold": 500,
+      "reorderQuantity": 1000,
+      "unit": "units",
+      "costPrice": 3,
+      "sellingPrice": 5,
+      "isActive": true,
+      "vendorId": "v4",
+      "businessId": "biz_demo_001"
+    },
+    {
+      "id": "p9",
+      "name": "Caramel Syrup",
+      "sku": "ING-SYR-09",
+      "category": "Ingredients",
+      "currentStock": 2,
+      "reorderThreshold": 10,
+      "reorderQuantity": 12,
+      "unit": "bottles",
+      "costPrice": 240,
+      "sellingPrice": 420,
+      "isActive": true,
+      "vendorId": "v1",
+      "businessId": "biz_demo_001"
+    },
+    {
+      "id": "p10",
+      "name": "Almond Milk",
+      "sku": "DAI-ALM-10",
+      "category": "Dairy",
+      "currentStock": 38,
+      "reorderThreshold": 15,
+      "reorderQuantity": 30,
+      "unit": "L",
+      "costPrice": 110,
+      "sellingPrice": 175,
+      "isActive": true,
+      "vendorId": "v2",
+      "businessId": "biz_demo_001"
+    }
+  ],
+  "invoices": [
+    {
+      "id": "i1",
+      "invoiceNumber": "INV-2026-001",
+      "customerName": "XYZ Cafe",
+      "customerId": "c1",
+      "total": 14200,
+      "subtotal": 12034,
+      "tax": 2166,
+      "status": "PAID",
+      "dueDate": "2026-10-12T13:35:28.768Z",
+      "paidAt": "2026-10-07T13:35:28.768Z",
+      "createdAt": "2026-10-07T13:35:28.768Z",
+      "businessId": "biz_demo_001"
+    },
+    {
+      "id": "i2",
+      "invoiceNumber": "INV-2026-002",
+      "customerName": "Greenwood Cafe",
+      "customerId": "c4",
+      "total": 6500,
+      "subtotal": 5508,
+      "tax": 992,
+      "status": "OVERDUE",
+      "dueDate": "2026-10-04T13:35:28.768Z",
+      "paidAt": null,
+      "createdAt": "2026-09-27T13:35:28.768Z",
+      "businessId": "biz_demo_001"
+    },
+    {
+      "id": "i3",
+      "invoiceNumber": "INV-2026-003",
+      "customerName": "Himalayan Bistro",
+      "customerId": "c3",
+      "total": 4800,
+      "subtotal": 4068,
+      "tax": 732,
+      "status": "PENDING",
+      "dueDate": "2026-10-12T13:35:28.768Z",
+      "paidAt": null,
+      "createdAt": "2026-10-07T13:35:28.768Z",
+      "businessId": "biz_demo_001"
+    },
+    {
+      "id": "i4",
+      "invoiceNumber": "INV-2026-004",
+      "customerName": "Vikas Sen",
+      "customerId": "c2",
+      "total": 12450,
+      "subtotal": 10550,
+      "tax": 1900,
+      "status": "PAID",
+      "dueDate": "2026-10-06T13:35:28.768Z",
+      "paidAt": "2026-10-06T13:35:28.768Z",
+      "createdAt": "2026-10-06T13:35:28.768Z",
+      "businessId": "biz_demo_001"
+    },
+    {
+      "id": "i5",
+      "invoiceNumber": "INV-2026-005",
+      "customerName": "Downtown Coffee House",
+      "customerId": "c5",
+      "total": 9800,
+      "subtotal": 8305,
+      "tax": 1495,
+      "status": "OVERDUE",
+      "dueDate": "2026-09-27T13:35:28.768Z",
+      "paidAt": null,
+      "createdAt": "2026-09-27T13:35:28.768Z",
+      "businessId": "biz_demo_001"
+    },
+    {
+      "id": "i6",
+      "invoiceNumber": "INV-2026-006",
+      "customerName": "XYZ Cafe",
+      "customerId": "c1",
+      "total": 3200,
+      "subtotal": 2712,
+      "tax": 488,
+      "status": "SENT",
+      "dueDate": "2026-10-14T13:35:28.768Z",
+      "paidAt": null,
+      "createdAt": "2026-10-07T13:35:28.768Z",
+      "businessId": "biz_demo_001"
+    },
+    {
+      "id": "mock_dhd5gae",
+      "createdAt": "2026-10-07T14:02:15.405Z",
+      "updatedAt": "2026-10-07T14:02:15.405Z",
+      "invoiceNumber": "INV-2026-007",
+      "status": "SENT",
+      "subtotal": 2400,
+      "tax": 432,
+      "total": 2832,
+      "dueDate": "2026-10-14T14:02:15.404Z",
+      "customerId": "c1",
+      "businessId": "biz_demo_001"
+    },
+    {
+      "id": "mock_zalp96i",
+      "createdAt": "2026-10-07T14:06:42.855Z",
+      "updatedAt": "2026-10-07T14:06:42.855Z",
+      "invoiceNumber": "INV-2026-008",
+      "status": "SENT",
+      "subtotal": 2400,
+      "tax": 432,
+      "total": 2832,
+      "dueDate": "2026-10-14T14:06:42.853Z",
+      "customerId": "mock_1of8sym",
+      "businessId": "biz_demo_001"
+    }
+  ],
+  "invoice_items": [
+    {
+      "id": "ii1",
+      "invoiceId": "i1",
+      "productId": "p1",
+      "quantity": 10,
+      "unitPrice": 1200,
+      "total": 12000
+    },
+    {
+      "id": "ii2",
+      "invoiceId": "i1",
+      "productId": "p4",
+      "quantity": 20,
+      "unitPrice": 110,
+      "total": 2200
+    },
+    {
+      "id": "mock_c5p7su2",
+      "createdAt": "2026-10-07T14:02:15.407Z",
+      "updatedAt": "2026-10-07T14:02:15.407Z",
+      "invoiceId": "mock_dhd5gae",
+      "productId": "p1",
+      "quantity": 2,
+      "unitPrice": 1200,
+      "total": 2400
+    },
+    {
+      "id": "mock_okeok97",
+      "createdAt": "2026-10-07T14:06:42.872Z",
+      "updatedAt": "2026-10-07T14:06:42.872Z",
+      "invoiceId": "mock_zalp96i",
+      "productId": "p1",
+      "quantity": 2,
+      "unitPrice": 1200,
+      "total": 2400
+    }
+  ],
+  "expenses": [
+    {
+      "id": "e1",
+      "category": "Raw Materials",
+      "amount": 15400,
+      "date": "2026-09-27T13:35:28.768Z",
+      "businessId": "biz_demo_001"
+    },
+    {
+      "id": "e2",
+      "category": "Utilities",
+      "amount": 3500,
+      "date": "2026-09-27T13:35:28.768Z",
+      "businessId": "biz_demo_001"
+    },
+    {
+      "id": "e3",
+      "category": "Logistics",
+      "amount": 1200,
+      "date": "2026-09-27T13:35:28.768Z",
+      "businessId": "biz_demo_001"
+    }
+  ],
+  "purchase_orders": [
+    {
+      "id": "po1",
+      "orderNumber": "PO-2026-001",
+      "vendorId": "v1",
+      "total": 8000,
+      "status": "DRAFT",
+      "businessId": "biz_demo_001",
+      "createdAt": "2026-10-07T13:35:28.768Z"
+    },
+    {
+      "id": "po2",
+      "orderNumber": "PO-2026-002",
+      "vendorId": "v2",
+      "total": 5200,
+      "status": "SENT",
+      "businessId": "biz_demo_001",
+      "createdAt": "2026-10-07T13:35:28.768Z"
+    }
+  ],
+  "purchase_order_items": [],
+  "inventory_transactions": [
+    {
+      "id": "mock_b1ktt2f",
+      "createdAt": "2026-10-07T14:02:15.411Z",
+      "updatedAt": "2026-10-07T14:02:15.411Z",
+      "productId": "p1",
+      "type": "OUT",
+      "quantity": 2,
+      "reason": "Invoice INV-2026-007 - sold to XYZ Cafe",
+      "businessId": "biz_demo_001"
+    },
+    {
+      "id": "mock_q6j3icq",
+      "createdAt": "2026-10-07T14:06:42.879Z",
+      "updatedAt": "2026-10-07T14:06:42.879Z",
+      "productId": "p1",
+      "type": "OUT",
+      "quantity": 2,
+      "reason": "Invoice INV-2026-008 - sold to quickbites",
+      "businessId": "biz_demo_001"
+    }
+  ],
+  "notifications": [],
+  "ai_activities": [
+    {
+      "id": "a1",
+      "type": "PROACTIVE_SCAN",
+      "status": "COMPLETED",
+      "title": "Automated Operations Scan",
+      "description": "Checked inventory stock levels. Flagged 'Avocado Toast Mix' as out of stock.",
+      "toolUsed": "detect_low_stock",
+      "createdAt": "2026-10-06T13:35:28.768Z",
+      "businessId": "biz_demo_001"
+    },
+    {
+      "id": "a2",
+      "type": "INVOICE_CREATED",
+      "status": "COMPLETED",
+      "title": "Invoice INV-2026-004 created",
+      "description": "Auto-generated invoice for Vikas Sen. Total: ₹12,450",
+      "toolUsed": "create_invoice",
+      "createdAt": "2026-10-06T13:35:28.768Z",
+      "businessId": "biz_demo_001"
+    },
+    {
+      "id": "a3",
+      "type": "PAYMENT_REMINDER",
+      "status": "COMPLETED",
+      "title": "Payment reminder sent for INV-2026-002",
+      "description": "Sent overdue email alert to Greenwood Cafe. ₹6,500 due.",
+      "toolUsed": "send_payment_reminder",
+      "createdAt": "2026-10-04T13:35:28.768Z",
+      "businessId": "biz_demo_001"
+    },
+    {
+      "id": "mock_pd9jvpe",
+      "createdAt": "2026-10-07T14:02:15.412Z",
+      "updatedAt": "2026-10-07T14:02:15.412Z",
+      "type": "INVOICE_CREATED",
+      "status": "COMPLETED",
+      "title": "Invoice INV-2026-007 created",
+      "description": "Created invoice for XYZ Cafe: 2x Artisanal Espresso Blend. Total: ₹2,832",
+      "toolUsed": "create_invoice",
+      "businessId": "biz_demo_001"
+    },
+    {
+      "id": "mock_nz4jiol",
+      "createdAt": "2026-10-07T14:02:15.414Z",
+      "updatedAt": "2026-10-07T14:02:15.414Z",
+      "type": "INVENTORY_UPDATED",
+      "status": "COMPLETED",
+      "title": "Inventory adjusted for INV-2026-007",
+      "description": "Auto-updated: Artisanal Espresso Blend: -2 kg",
+      "toolUsed": "update_inventory",
+      "businessId": "biz_demo_001"
+    },
+    {
+      "id": "mock_43u33ps",
+      "createdAt": "2026-10-07T14:06:42.882Z",
+      "updatedAt": "2026-10-07T14:06:42.882Z",
+      "type": "INVOICE_CREATED",
+      "status": "COMPLETED",
+      "title": "Invoice INV-2026-008 created",
+      "description": "Created invoice for quickbites: 2x Artisanal Espresso Blend. Total: ₹2,832",
+      "toolUsed": "create_invoice",
+      "businessId": "biz_demo_001"
+    },
+    {
+      "id": "mock_9w3wwro",
+      "createdAt": "2026-10-07T14:06:42.885Z",
+      "updatedAt": "2026-10-07T14:06:42.885Z",
+      "type": "INVENTORY_UPDATED",
+      "status": "COMPLETED",
+      "title": "Inventory adjusted for INV-2026-008",
+      "description": "Auto-updated: Artisanal Espresso Blend: -2 kg",
+      "toolUsed": "update_inventory",
+      "businessId": "biz_demo_001"
+    }
+  ]
+}

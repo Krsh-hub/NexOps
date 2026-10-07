@@ -1,33 +1,18 @@
-import { User, Palette, Bot, Bell, Shield } from "lucide-react";
-
-const sections = [
-  { icon: User, title: "Profile", desc: "Manage your account details and business information." },
-  { icon: Palette, title: "Appearance", desc: "Theme preferences and display settings." },
-  { icon: Bot, title: "AI Preferences", desc: "Configure AI automation rules and notification triggers." },
-  { icon: Bell, title: "Notifications", desc: "Email and push notification settings." },
-  { icon: Shield, title: "Security", desc: "Password, API keys, and access control." },
-];
+import { SettingsManager } from "@/components/dashboard/SettingsManager";
 
 export default function SettingsPage() {
   return (
-    <div className="p-6 lg:p-8 space-y-6 max-w-[800px]">
+    <div className="p-4 sm:p-6 lg:p-8 space-y-6 max-w-[1400px] mx-auto animate-fade-soft">
       <div>
-        <h1 className="text-[22px] font-semibold text-[var(--text-primary)] tracking-tight">Settings</h1>
-        <p className="text-[15px] text-[var(--text-tertiary)] mt-1">Manage your workspace preferences</p>
+        <h1 className="text-[22px] font-bold text-[var(--text-primary)] tracking-tight">
+          System & AI Configuration
+        </h1>
+        <p className="text-[14px] text-[var(--text-tertiary)] mt-1 font-medium">
+          Tune business entity details, AI autonomy behavior, alert frequencies, and integration endpoints
+        </p>
       </div>
-      <div className="space-y-2">
-        {sections.map((s) => (
-          <button key={s.title} className="w-full card-surface p-4 flex items-center gap-4 text-left hover:border-[var(--border-secondary)] transition-all">
-            <div className="w-9 h-9 rounded-lg bg-[var(--bg-hover)] flex items-center justify-center shrink-0">
-              <s.icon className="w-4 h-4 text-[var(--text-tertiary)]" strokeWidth={1.8} />
-            </div>
-            <div>
-              <h3 className="text-[15px] font-semibold text-[var(--text-primary)]">{s.title}</h3>
-              <p className="text-[16px] text-[var(--text-tertiary)] mt-0.5">{s.desc}</p>
-            </div>
-          </button>
-        ))}
-      </div>
+
+      <SettingsManager />
     </div>
   );
 }

@@ -3,7 +3,6 @@
 
 /* ─── NexOps Design System · Apple-Inspired Dark ─── */
 
-
 :root {
   /* Comfort & Clean Dark Mode */
   --bg-primary: #0f1115;      /* Deep Slate */
@@ -167,4 +166,59 @@ body {
 ::selection {
   background: var(--accent-subtle);
   color: var(--accent);
+}
+
+@keyframes gradient-shift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@keyframes float {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-5px); }
+  100% { transform: translateY(0px); }
+}
+
+.gradient-text {
+  background: linear-gradient(135deg, var(--accent) 0%, var(--purple) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.glow-border {
+  position: relative;
+}
+.glow-border::before {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border-radius: inherit;
+  background: linear-gradient(135deg, var(--accent), var(--purple), var(--accent));
+  background-size: 200% 200%;
+  animation: gradient-shift 3s ease infinite;
+  z-index: -1;
+  opacity: 0.5;
+  transition: opacity 0.3s ease;
+  filter: blur(8px);
+}
+.glow-border:hover::before,
+.glow-border:focus-within::before {
+  opacity: 1;
+}
+.glow-border-input {
+  position: relative;
+  z-index: 1;
+  background: var(--bg-secondary);
+}
+
+.timeline-line {
+  position: absolute;
+  left: 27px;
+  top: 40px;
+  bottom: -10px;
+  width: 2px;
+  background: var(--border-primary);
+  z-index: 0;
 }
