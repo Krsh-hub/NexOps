@@ -81,23 +81,23 @@
   "notifications": [],
   "ai_activities": [
     {
-      "id": "act_1791404820139",
+      "id": "act_1791405928443",
       "type": "SYSTEM_INITIALIZED",
       "status": "COMPLETED",
       "title": "Workspace Initialized",
       "description": "Workspace created for NexOps Labs. Ready for real transactions and inventory.",
       "toolUsed": "init_workspace",
-      "createdAt": "2026-10-07T20:27:00.139Z",
+      "createdAt": "2026-10-07T20:45:28.443Z",
       "businessId": "biz_demo_001"
     }
   ],
   "business_profile": {
-    "isConfigured": true,
-    "businessName": "NexOps Labs",
+    "isConfigured": false,
+    "businessName": "",
     "businessType": "Business",
-    "operatorName": "Operator",
+    "operatorName": "",
     "currencySymbol": "₹",
     "currencyCode": "INR",
-    "mode": "clean"
+    "mode": "unconfigured"
   }
 }
