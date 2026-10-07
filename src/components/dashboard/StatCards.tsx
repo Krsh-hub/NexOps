@@ -1,109 +1,115 @@
-import { TrendingUp, TrendingDown, IndianRupee, AlertTriangle, FileText, ClipboardList } from "lucide-react";
+import { TrendingUp, TrendingDown, AlertTriangle, FileText, ClipboardList, IndianRupee, DollarSign, Euro, PoundSterling } from "lucide-react";
 
 interface StatCardsProps {
   revenue: { amount: number; change: number };
   lowStockCount: number;
   overdueInvoices: { count: number; total: number };
   activeOrders: number;
+  currencySymbol?: string;
 }
 
-export function StatCards({ revenue, lowStockCount, overdueInvoices, activeOrders }: StatCardsProps) {
+export function StatCards({
+  revenue,
+  lowStockCount,
+  overdueInvoices,
+  activeOrders,
+  currencySymbol = "₹",
+}: StatCardsProps) {
   const cards = [
     {
       label: "Revenue",
-      value: `₹${revenue.amount.toLocaleString("en-IN")}`,
+      value: `${currencySymbol}${revenue.amount.toLocaleString("en-IN")}`,
       change: revenue.change,
       positive: revenue.change >= 0,
       icon: IndianRupee,
-      glow: "rgba(16, 185, 129, 0.15)",
-      accentClass: "text-white bg-gradient-to-br from-[var(--green)] to-emerald-600",
-      borderAccent: "border-b-[var(--green)]",
-      hasSparkline: true
+      borderAccent: "border-b-emerald-600",
+      accentBg: "bg-emerald-50 text-emerald-700 border-emerald-200",
+      badgeText: revenue.amount > 0 ? `${revenue.change >= 0 ? "+" : ""}${revenue.change}%` : "No sales yet",
+      isPositive: revenue.change >= 0,
     },
     {
       label: "Low Stock",
       value: lowStockCount.toString(),
-      suffix: "items",
+      suffix: lowStockCount === 1 ? "item" : "items",
       icon: AlertTriangle,
-      glow: lowStockCount > 0 ? "rgba(245, 158, 11, 0.15)" : "rgba(16, 185, 129, 0.15)",
-      accentClass: lowStockCount > 0 ? "text-white bg-gradient-to-br from-[var(--orange)] to-amber-600" : "text-[var(--green)] bg-[var(--green-subtle)]",
-      borderAccent: lowStockCount > 0 ? "border-b-[var(--orange)]" : "border-b-[var(--border-primary)]"
+      borderAccent: lowStockCount > 0 ? "border-b-amber-500" : "border-b-emerald-600",
+      accentBg: lowStockCount > 0 ? "bg-amber-50 text-amber-700 border-amber-200" : "bg-emerald-50 text-emerald-700 border-emerald-200",
+      badgeText: lowStockCount > 0 ? "Needs restock" : "All healthy",
+      isPositive: lowStockCount === 0,
     },
     {
-      label: "Overdue",
+      label: "Overdue Invoices",
       value: overdueInvoices.count.toString(),
-      sub: `₹${overdueInvoices.total.toLocaleString("en-IN")}`,
+      sub: overdueInvoices.total > 0 ? `${currencySymbol}${overdueInvoices.total.toLocaleString("en-IN")}` : undefined,
       icon: FileText,
-      glow: overdueInvoices.count > 0 ? "rgba(244, 63, 94, 0.15)" : "rgba(16, 185, 129, 0.15)",
-      accentClass: overdueInvoices.count > 0 ? "text-white bg-gradient-to-br from-[var(--red)] to-rose-600" : "text-[var(--green)] bg-[var(--green-subtle)]",
-      borderAccent: overdueInvoices.count > 0 ? "border-b-[var(--red)]" : "border-b-[var(--border-primary)]"
+      borderAccent: overdueInvoices.count > 0 ? "border-b-rose-500" : "border-b-emerald-600",
+      accentBg: overdueInvoices.count > 0 ? "bg-rose-50 text-rose-700 border-rose-200" : "bg-emerald-50 text-emerald-700 border-emerald-200",
+      badgeText: overdueInvoices.count > 0 ? "Pending collection" : "Zero overdue",
+      isPositive: overdueInvoices.count === 0,
     },
     {
       label: "Active POs",
       value: activeOrders.toString(),
-      suffix: "pending",
+      suffix: activeOrders === 1 ? "order" : "orders",
       icon: ClipboardList,
-      glow: "rgba(245, 158, 11, 0.15)",
-      accentClass: "text-white bg-gradient-to-br from-[var(--accent)] to-amber-600",
-      borderAccent: "border-b-[var(--accent)]"
+      borderAccent: "border-b-teal-600",
+      accentBg: "bg-teal-50 text-teal-700 border-teal-200",
+      badgeText: activeOrders > 0 ? "In progress" : "No pending POs",
+      isPositive: true,
     },
   ];
 
   return (
-    <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-7">
       {cards.map((card) => {
         const Icon = card.icon;
         return (
           <div
             key={card.label}
-            className={`card-surface p-5 flex flex-col gap-4 relative overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-xl group border-b-2 ${card.borderAccent}`}
+            className={`card-surface p-6 sm:p-7 rounded-2xl flex flex-col justify-between gap-5 relative overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-lg border border-slate-200/90 border-b-4 ${card.borderAccent} group`}
           >
-            {/* Background glow orb */}
-            <div 
-              className="absolute -right-8 -bottom-8 w-32 h-32 rounded-full blur-[40px] opacity-40 group-hover:opacity-70 transition-opacity duration-500 pointer-events-none"
-              style={{ background: card.glow }}
-            />
-
-            {/* Sparkline decoration */}
-            {card.hasSparkline && (
-              <div className="absolute inset-0 pointer-events-none overflow-hidden opacity-20">
-                <svg viewBox="0 0 100 30" preserveAspectRatio="none" className="absolute bottom-0 w-full h-16 text-[var(--green)] stroke-current fill-none" strokeWidth="2">
-                  <path d="M0,30 Q10,15 20,25 T40,15 T60,20 T80,5 T100,10" className="opacity-50" />
-                  <path d="M0,30 Q15,20 25,28 T50,15 T70,25 T90,10 T100,5" />
-                </svg>
-              </div>
-            )}
-
-            <div className="flex items-center justify-between relative z-10">
-              <span className="text-[15px] font-bold text-[var(--text-secondary)] tracking-wider uppercase">
+            {/* Top row: Label & Icon */}
+            <div className="flex items-center justify-between">
+              <span className="text-[13px] font-bold text-slate-500 tracking-wider uppercase">
                 {card.label}
               </span>
-              <div className={`w-10 h-10 rounded-xl ${card.accentClass} flex items-center justify-center shadow-lg transition-transform duration-300 group-hover:scale-110 group-hover:rotate-3`}>
-                <Icon className="w-5 h-5" strokeWidth={2} />
+              <div
+                className={`w-11 h-11 rounded-xl ${card.accentBg} border flex items-center justify-center shadow-xs transition-transform duration-300 group-hover:scale-110`}
+              >
+                <Icon className="w-5 h-5" strokeWidth={2.2} />
               </div>
             </div>
 
-            <div className="flex items-baseline justify-between mt-2 relative z-10">
+            {/* Metric Value & Badges */}
+            <div className="space-y-3">
               <div className="flex items-baseline gap-2">
-                <span className="text-[28px] sm:text-[32px] font-bold text-[var(--text-primary)] tracking-tight leading-none">
+                <span className="text-[30px] sm:text-[34px] font-extrabold text-slate-900 tracking-tight leading-none">
                   {card.value}
                 </span>
                 {card.suffix && (
-                  <span className="text-[15px] font-semibold text-[var(--text-tertiary)] uppercase tracking-wider">{card.suffix}</span>
+                  <span className="text-[14px] font-medium text-slate-500">
+                    {card.suffix}
+                  </span>
                 )}
                 {card.sub && (
-                  <span className="text-[15px] font-medium text-[var(--text-tertiary)] bg-[var(--bg-primary)] px-2 py-0.5 rounded border border-[var(--border-primary)] shadow-sm">{card.sub}</span>
+                  <span className="text-[13px] font-semibold text-rose-700 bg-rose-50 px-2 py-0.5 rounded-md border border-rose-200 ml-1">
+                    {card.sub}
+                  </span>
                 )}
               </div>
 
-              {"change" in card && (
-                <div className={`flex items-center gap-1 text-[15px] font-bold px-2 py-1 rounded-md shadow-sm ${
-                  card.positive ? "text-[var(--green)] bg-[var(--green-subtle)] border border-[var(--green)]/20" : "text-[var(--red)] bg-[var(--red-subtle)] border border-[var(--red)]/20"
-                }`}>
-                  {card.positive ? <TrendingUp className="w-3.5 h-3.5" /> : <TrendingDown className="w-3.5 h-3.5" />}
-                  {Math.abs(card.change!)}%
-                </div>
-              )}
+              {/* Status pill */}
+              <div className="flex items-center gap-1.5 text-[12px] font-semibold">
+                <span
+                  className={`inline-flex items-center px-2 py-0.5 rounded-md ${
+                    card.isPositive
+                      ? "text-emerald-800 bg-emerald-50 border border-emerald-200"
+                      : "text-amber-800 bg-amber-50 border border-amber-200"
+                  }`}
+                >
+                  {card.badgeText}
+                </span>
+              </div>
             </div>
           </div>
         );

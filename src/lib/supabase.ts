@@ -169,6 +169,51 @@ export function resetMockDb() {
   return fresh;
 }
 
+export function getBusinessProfile() {
+  const db = getMockDb();
+  if (!db.business_profile) {
+    db.business_profile = {
+      isConfigured: false,
+      businessName: "",
+      businessType: "Business",
+      operatorName: "Operator",
+      currencySymbol: "₹",
+      currencyCode: "INR",
+      mode: "unconfigured"
+    };
+    saveMockDb(db);
+  }
+  return db.business_profile;
+}
+
+export function saveBusinessProfile(profile: any, resetToClean: boolean = false) {
+  const db = getMockDb();
+  db.business_profile = { ...db.business_profile, ...profile, isConfigured: true };
+  if (resetToClean) {
+    db.products = [];
+    db.invoices = [];
+    db.invoice_items = [];
+    db.expenses = [];
+    db.purchase_orders = [];
+    db.purchase_order_items = [];
+    db.inventory_transactions = [];
+    db.ai_activities = [
+      {
+        id: `act_${Date.now()}`,
+        type: "SYSTEM_INITIALIZED",
+        status: "COMPLETED",
+        title: "Workspace Initialized",
+        description: `Workspace created for ${profile.businessName || 'your business'}. Ready for real transactions and inventory.`,
+        toolUsed: "init_workspace",
+        createdAt: new Date().toISOString(),
+        businessId: BIZ,
+      }
+    ];
+  }
+  saveMockDb(db);
+  return db.business_profile;
+}
+
 class MockQueryBuilder {
   private tableName: string;
   private filters: Array<(item: any) => boolean> = [];
