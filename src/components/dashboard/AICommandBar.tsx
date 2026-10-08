@@ -10,6 +10,9 @@ import {
   Zap,
   ArrowUpRight,
   CheckCircle2,
+  Plus,
+  Search,
+  FileText,
 } from "lucide-react";
 
 interface ToolExecuted {
@@ -24,11 +27,16 @@ export function AICommandBar() {
   const [response, setResponse] = useState<string | null>(null);
   const [toolsRun, setToolsRun] = useState<ToolExecuted[]>([]);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!input.trim() || isLoading) return;
-    const msg = input.trim();
-    setInput("");
+  const promptShortcuts = [
+    { label: "Scan Low Stock", prompt: "Scan inventory for low stock items" },
+    { label: "+ New Invoice", prompt: "Create invoice for 5 Cold Brews to XYZ Cafe" },
+    { label: "+ Restock Item", prompt: "Add 20 units of Colombian Roast to inventory" },
+    { label: "Summarize Ops", prompt: "Summarize today's business operations and status" },
+  ];
+
+  const handleExecutePrompt = async (textToRun: string) => {
+    if (isLoading) return;
+    setInput(textToRun);
     setIsLoading(true);
     setResponse(null);
     setToolsRun([]);
@@ -37,7 +45,7 @@ export function AICommandBar() {
       const res = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: msg, history: [] }),
+        body: JSON.stringify({ message: textToRun, history: [] }),
       });
       const data = await res.json();
       if (data.error) {
@@ -55,34 +63,51 @@ export function AICommandBar() {
     }
   };
 
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!input.trim() || isLoading) return;
+    const msg = input.trim();
+    setInput("");
+    await handleExecutePrompt(msg);
+  };
+
   return (
-    <div className="card-surface p-6 sm:p-7 rounded-2xl border border-slate-200/90 shadow-xs space-y-4">
-      {/* Top Header Row */}
+    <div className="card-surface p-5 sm:p-6 rounded-2xl border border-slate-200/90 bg-white shadow-xs space-y-4">
+      {/* Header with Title & Spotlight Icon */}
       <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2 text-[12px] uppercase tracking-wider font-bold text-slate-500">
-          <Sparkles className="w-4 h-4 text-emerald-600" />
-          Autonomous Command Bar
+        <div className="flex items-center gap-2.5">
+          <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-emerald-600 to-teal-700 text-white flex items-center justify-center shadow-xs">
+            <Sparkles className="w-4 h-4" />
+          </div>
+          <div>
+            <h3 className="text-[14px] font-bold text-slate-900 leading-tight">
+              Autonomous AI Command Cockpit
+            </h3>
+            <p className="text-[12px] text-slate-500 font-medium">
+              Execute actions, adjust inventory, and generate invoices with natural language
+            </p>
+          </div>
         </div>
-        <span className="text-[12px] text-slate-400 hidden sm:inline font-medium">
-          Examples: &quot;Add 10 units of Coffee Beans&quot; · &quot;Create invoice for Client A&quot; · &quot;Summarize inventory&quot;
+
+        <span className="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
+          <span className="w-1.5 h-1.5 rounded-full bg-emerald-600 animate-pulse" />
+          Autonomous Engine Ready
         </span>
       </div>
 
       {/* Input Form */}
       <form onSubmit={handleSubmit} className="relative group">
-        <div className="relative rounded-xl bg-slate-50 border border-slate-200 focus-within:bg-white focus-within:border-emerald-600 focus-within:ring-2 focus-within:ring-emerald-500/10 transition-all duration-200">
+        <div className="relative rounded-xl bg-slate-50 border border-slate-200 focus-within:bg-white focus-within:border-emerald-600 focus-within:ring-3 focus-within:ring-emerald-500/10 transition-all duration-200">
           <div className="flex items-center px-4 py-1.5">
-            <div className="w-8 h-8 rounded-lg bg-emerald-600 text-white flex items-center justify-center shrink-0 shadow-xs">
-              <Sparkles className="w-4 h-4" />
-            </div>
+            <Search className="w-4 h-4 text-slate-400 shrink-0 mr-2" />
 
             <input
               type="text"
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              placeholder="Ask or command NexOps AI (e.g. 'Log invoice for 5 items', 'Check out-of-stock items')..."
+              placeholder="Ask or command NexOps AI (e.g. 'Log invoice for 5 items', 'Check low stock')..."
               disabled={isLoading}
-              className="w-full h-12 bg-transparent border-none pl-3.5 pr-4 text-[15px] text-slate-900 placeholder:text-slate-400 focus:outline-none disabled:opacity-50"
+              className="w-full h-11 bg-transparent border-none text-[14px] text-slate-900 placeholder:text-slate-400 focus:outline-none disabled:opacity-50"
             />
 
             <div className="shrink-0 flex items-center gap-2">
@@ -92,21 +117,44 @@ export function AICommandBar() {
                   <span className="hidden sm:inline">Processing...</span>
                 </div>
               ) : (
-                <kbd className="hidden sm:inline-flex items-center px-2 py-1 bg-white border border-slate-200 rounded-md text-[11px] font-bold text-slate-400 shadow-xs">
-                  <CornerDownLeft className="w-3 h-3 mr-1" /> Enter
-                </kbd>
+                <button
+                  type="submit"
+                  disabled={!input.trim()}
+                  className="hidden sm:inline-flex items-center gap-1 px-3 py-1.5 bg-emerald-700 hover:bg-emerald-800 disabled:bg-slate-200 disabled:text-slate-400 text-white rounded-lg text-[12px] font-semibold shadow-xs transition-colors cursor-pointer"
+                >
+                  <span>Run</span>
+                  <CornerDownLeft className="w-3 h-3" />
+                </button>
               )}
             </div>
           </div>
         </div>
       </form>
 
+      {/* Quick Action Prompt Chips */}
+      <div className="flex items-center gap-2 flex-wrap pt-1">
+        <span className="text-[11px] uppercase tracking-wider font-bold text-slate-400 shrink-0">
+          Quick Prompts:
+        </span>
+        {promptShortcuts.map((sc) => (
+          <button
+            key={sc.label}
+            type="button"
+            disabled={isLoading}
+            onClick={() => handleExecutePrompt(sc.prompt)}
+            className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[12px] font-medium bg-slate-100/80 hover:bg-emerald-50 hover:text-emerald-800 hover:border-emerald-200 border border-slate-200/80 text-slate-600 transition-all cursor-pointer disabled:opacity-50"
+          >
+            <span>{sc.label}</span>
+          </button>
+        ))}
+      </div>
+
       {/* AI Response Card */}
       {(response || isLoading) && (
-        <div className="p-5 sm:p-6 rounded-xl border border-emerald-200 bg-emerald-50/40 shadow-xs animate-fade-soft space-y-3">
+        <div className="p-5 rounded-xl border border-emerald-200 bg-emerald-50/40 shadow-xs animate-fade-soft space-y-3">
           <div className="flex items-start gap-3.5">
-            <div className="w-8 h-8 rounded-lg bg-emerald-600 text-white flex items-center justify-center shrink-0 mt-0.5 shadow-xs">
-              <Sparkles className="w-4 h-4" />
+            <div className="w-7 h-7 rounded-lg bg-emerald-600 text-white flex items-center justify-center shrink-0 mt-0.5 shadow-xs">
+              <Sparkles className="w-3.5 h-3.5" />
             </div>
 
             <div className="flex-1 min-w-0 space-y-3">

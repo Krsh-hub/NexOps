@@ -6,7 +6,7 @@ import { AICommandBar } from "@/components/dashboard/AICommandBar";
 import { InitialSetupScreen } from "@/components/dashboard/InitialSetupScreen";
 import { supabase, getBusinessProfile } from "@/lib/supabase";
 import Link from "next/link";
-import { Settings } from "lucide-react";
+import { Settings, Plus, Package, FileText, Sparkles, BarChart3 } from "lucide-react";
 
 export const revalidate = 0;
 const BIZ = "biz_demo_001";
@@ -94,12 +94,12 @@ async function getData() {
 export default async function DashboardPage() {
   const profile = getBusinessProfile();
 
-  // If the user has not configured their details yet, show the focused initial setup screen first!
+  // If unconfigured, display focused initial setup screen first
   if (!profile || !profile.isConfigured) {
     return <InitialSetupScreen initialProfile={profile} />;
   }
 
-  // Once configured, display the spacious, real dashboard!
+  // Once configured, render the modern 2-column cockpit workspace
   const d = await getData();
   const today = new Date();
   const dateStr = today.toLocaleDateString("en-US", {
@@ -116,78 +116,134 @@ export default async function DashboardPage() {
   const currencySymbol = profile.currencySymbol || "₹";
 
   return (
-    <div className="w-full max-w-[1440px] mx-auto px-6 sm:px-10 lg:px-12 py-10 sm:py-12 space-y-10 sm:space-y-12 animate-fade-in">
-      {/* 1. Header Section */}
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-2">
-        <div className="space-y-1.5">
-          <h1 className="text-[30px] sm:text-[34px] font-extrabold tracking-tight text-slate-900 leading-tight">
+    <div className="w-full max-w-[1540px] mx-auto px-5 sm:px-8 lg:px-10 py-7 space-y-7 animate-fade-in">
+      {/* 1. Executive Header with Quick Action Buttons */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-slate-200/80">
+        <div className="space-y-1">
+          <h1 className="text-[26px] sm:text-[30px] font-extrabold tracking-tight text-slate-900 leading-tight">
             <span className="text-emerald-700">{greeting}</span>, {operatorDisplay}
           </h1>
-          <p className="text-[15px] sm:text-[16px] text-slate-500 font-medium">
-            {dateStr}
+          <p className="text-[13px] sm:text-[14px] text-slate-500 font-medium">
+            {dateStr} · <span className="text-slate-700 font-semibold">{businessDisplay}</span>
           </p>
         </div>
 
-        <div className="flex items-center gap-3">
-          <div className="flex items-center gap-2.5 px-4 py-2 bg-white border border-slate-200/90 rounded-full shadow-xs text-[14px] font-semibold text-slate-700">
-            <span className="relative flex h-2.5 w-2.5 shrink-0">
+        {/* Action Shortcuts */}
+        <div className="flex items-center gap-2.5 flex-wrap">
+          <div className="flex items-center gap-2 px-3.5 py-1.5 bg-white border border-slate-200 rounded-full shadow-xs text-[13px] font-semibold text-slate-700">
+            <span className="relative flex h-2 w-2 shrink-0">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-500 opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-600"></span>
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-600"></span>
             </span>
-            <span>{businessDisplay} · All systems operational</span>
+            <span>Live Workspace</span>
           </div>
 
           <Link
+            href="/finance"
+            className="inline-flex items-center gap-1.5 px-3.5 py-2 bg-emerald-700 hover:bg-emerald-800 text-white text-[13px] font-semibold rounded-xl shadow-xs transition-colors cursor-pointer"
+          >
+            <Plus className="w-4 h-4" />
+            <span>New Invoice</span>
+          </Link>
+
+          <Link
+            href="/inventory"
+            className="inline-flex items-center gap-1.5 px-3.5 py-2 bg-white hover:bg-slate-50 border border-slate-200 text-slate-700 text-[13px] font-semibold rounded-xl shadow-xs transition-colors cursor-pointer"
+          >
+            <Package className="w-4 h-4 text-emerald-700" />
+            <span>Add Product</span>
+          </Link>
+
+          <Link
             href="/settings"
-            title="Edit Workspace Settings"
-            className="w-9 h-9 rounded-full bg-white border border-slate-200 flex items-center justify-center text-slate-500 hover:text-slate-900 hover:border-slate-300 transition-colors shadow-xs"
+            title="Workspace Settings"
+            className="w-9 h-9 rounded-xl bg-white border border-slate-200 flex items-center justify-center text-slate-500 hover:text-slate-900 hover:border-slate-300 transition-colors shadow-xs"
           >
             <Settings className="w-4 h-4" />
           </Link>
         </div>
       </div>
 
-      {/* 2. Metric KPI Cards */}
-      <section className="space-y-3">
-        <StatCards
-          revenue={d.revenue}
-          lowStockCount={d.lowStockCount}
-          overdueInvoices={d.overdueInvoices}
-          activeOrders={d.activeOrders}
-          currencySymbol={currencySymbol}
-        />
-      </section>
+      {/* 2. Asymmetric Cockpit Grid (Left: 8 cols = 67%, Right: 4 cols = 33%) */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-7 items-start">
+        {/* Left Main Column: Command Bar + Financial Health + Operations Stream */}
+        <div className="lg:col-span-8 space-y-7">
+          {/* AI Command Spotlight Cockpit */}
+          <AICommandBar />
 
-      {/* 3. Autonomous AI Command Section */}
-      <section className="space-y-3">
-        <AICommandBar />
-      </section>
-
-      {/* 4. Operations Overview Grid */}
-      <section className="space-y-5 pt-2">
-        <div className="flex items-center justify-between px-1">
-          <h2 className="text-[13px] font-bold text-slate-500 uppercase tracking-wider">
-            Operations Overview
-          </h2>
-          <span className="text-[12px] font-medium text-slate-400">
-            Real-time feed & catalog telemetry
-          </span>
-        </div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-7 sm:gap-8 min-h-[440px]">
-          <InventoryRisk
-            products={d.lowStockProducts.slice(0, 6)}
-            totalProductsCount={d.totalProductsCount}
-          />
+          {/* Financial Health Chart */}
           <FinanceInsights
             invoices={d.allInvoices}
             currencySymbol={currencySymbol}
           />
+
+          {/* Live Operations Stream */}
           <OperationsFeed
             activities={d.activities}
           />
         </div>
-      </section>
+
+        {/* Right Dock: Compact KPI Digest + Urgent Attention + Fast Shortcuts */}
+        <div className="lg:col-span-4 space-y-7">
+          {/* Executive KPI Digest (2x2 Compact Grid) */}
+          <div className="space-y-2.5">
+            <h3 className="text-[12px] font-bold text-slate-400 uppercase tracking-wider pl-1">
+              Executive Digest
+            </h3>
+            <StatCards
+              revenue={d.revenue}
+              lowStockCount={d.lowStockCount}
+              overdueInvoices={d.overdueInvoices}
+              activeOrders={d.activeOrders}
+              currencySymbol={currencySymbol}
+              compact={true}
+            />
+          </div>
+
+          {/* Urgent Attention / Stock Risks */}
+          <InventoryRisk
+            products={d.lowStockProducts.slice(0, 5)}
+            totalProductsCount={d.totalProductsCount}
+          />
+
+          {/* Quick Workspaces Shortcuts */}
+          <div className="card-surface p-5 rounded-2xl border border-slate-200/90 bg-white shadow-xs space-y-3">
+            <h4 className="text-[12px] font-bold text-slate-400 uppercase tracking-wider">
+              Quick Shortcuts
+            </h4>
+            <div className="grid grid-cols-2 gap-2 text-[12px] font-semibold text-slate-700">
+              <Link
+                href="/inventory"
+                className="p-2.5 rounded-xl border border-slate-200/80 hover:border-emerald-300 hover:bg-emerald-50/50 flex items-center gap-2 transition-all"
+              >
+                <Package className="w-4 h-4 text-emerald-700" />
+                <span>Inventory</span>
+              </Link>
+              <Link
+                href="/finance"
+                className="p-2.5 rounded-xl border border-slate-200/80 hover:border-emerald-300 hover:bg-emerald-50/50 flex items-center gap-2 transition-all"
+              >
+                <FileText className="w-4 h-4 text-emerald-700" />
+                <span>Invoices</span>
+              </Link>
+              <Link
+                href="/ai"
+                className="p-2.5 rounded-xl border border-slate-200/80 hover:border-emerald-300 hover:bg-emerald-50/50 flex items-center gap-2 transition-all"
+              >
+                <Sparkles className="w-4 h-4 text-emerald-700" />
+                <span>AI Cockpit</span>
+              </Link>
+              <Link
+                href="/reports"
+                className="p-2.5 rounded-xl border border-slate-200/80 hover:border-emerald-300 hover:bg-emerald-50/50 flex items-center gap-2 transition-all"
+              >
+                <BarChart3 className="w-4 h-4 text-emerald-700" />
+                <span>Reports</span>
+              </Link>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

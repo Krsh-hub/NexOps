@@ -1,4 +1,4 @@
-import { Activity, FileText, Package, AlertTriangle, Zap, Clock, Bot } from "lucide-react";
+import { Activity, FileText, Package, AlertTriangle, Zap, Clock, Bot, CheckCircle2 } from "lucide-react";
 
 interface ActivityItem {
   id: string;
@@ -20,10 +20,7 @@ export function OperationsFeed({ activities }: { activities: ActivityItem[] }) {
     if (type.includes("ALERT") || type.includes("WARNING")) {
       return { icon: AlertTriangle, color: "text-rose-700", bg: "bg-rose-50 border-rose-200" };
     }
-    if (type.includes("INITIALIZED") || type.includes("PROACTIVE")) {
-      return { icon: Zap, color: "text-emerald-700", bg: "bg-emerald-50 border-emerald-200" };
-    }
-    return { icon: Activity, color: "text-emerald-700", bg: "bg-emerald-50 border-emerald-200" };
+    return { icon: Zap, color: "text-emerald-700", bg: "bg-emerald-50 border-emerald-200" };
   };
 
   const getStatusStyle = (status: string) => {
@@ -49,46 +46,46 @@ export function OperationsFeed({ activities }: { activities: ActivityItem[] }) {
   };
 
   return (
-    <div className="card-surface flex flex-col h-full rounded-2xl border border-slate-200/90 shadow-xs overflow-hidden transition-all duration-300 hover:shadow-md group">
+    <div className="card-surface flex flex-col rounded-2xl border border-slate-200/90 bg-white shadow-xs overflow-hidden transition-all duration-200 hover:shadow-md group">
       {/* Header */}
-      <div className="px-6 py-5 flex items-center justify-between border-b border-slate-100 bg-slate-50/40">
-        <div className="flex items-center gap-3.5">
-          <div className="w-9 h-9 rounded-xl bg-emerald-50 text-emerald-700 flex items-center justify-center border border-emerald-100 shadow-xs">
+      <div className="px-6 py-5 flex items-center justify-between border-b border-slate-100 bg-slate-50/50">
+        <div className="flex items-center gap-3">
+          <div className="w-8 h-8 rounded-xl bg-emerald-50 text-emerald-700 flex items-center justify-center border border-emerald-200 shadow-xs">
             <Clock className="w-4 h-4" strokeWidth={2.2} />
           </div>
           <div>
-            <span className="text-[12px] font-bold text-slate-400 tracking-wider uppercase">
-              Agent Feed
+            <h3 className="text-[14px] font-bold text-slate-900 leading-tight">
+              Live Operations Stream
+            </h3>
+            <span className="text-[11px] font-medium text-slate-500">
+              Autonomous telemetry & operational audit
             </span>
-            <div className="flex items-baseline gap-2 mt-0.5">
-              <span className="text-[17px] font-bold text-slate-900 leading-tight">
-                Operations Log
-              </span>
-            </div>
           </div>
         </div>
 
-        <div className="flex items-center gap-1.5 text-[13px] font-bold text-slate-700 bg-slate-100 px-2.5 py-1 rounded-lg border border-slate-200 shadow-xs">
-          {activities.length} {activities.length === 1 ? "entry" : "entries"}
-        </div>
+        <span className="text-[12px] font-bold text-slate-600 bg-slate-100 px-2.5 py-0.5 rounded-full border border-slate-200">
+          {activities.length} {activities.length === 1 ? "event" : "events"}
+        </span>
       </div>
 
-      {/* Content */}
-      <div className="flex-1 overflow-y-auto scrollbar-hide relative">
+      {/* Stream Content */}
+      <div className="p-6 overflow-y-auto max-h-[460px] scrollbar-hide">
         {activities.length === 0 ? (
-          <div className="flex flex-col items-center justify-center h-full p-8 text-center animate-fade-in space-y-3">
-            <div className="w-14 h-14 rounded-2xl bg-slate-100 text-slate-400 flex items-center justify-center border border-slate-200 shadow-xs">
-              <Bot className="w-7 h-7" strokeWidth={1.75} />
+          <div className="py-10 text-center space-y-3">
+            <div className="w-12 h-12 rounded-2xl bg-slate-100 text-slate-400 flex items-center justify-center mx-auto border border-slate-200 shadow-xs">
+              <Bot className="w-6 h-6" />
             </div>
-            <div>
-              <h3 className="text-[16px] font-bold text-slate-900">Operations Feed Ready</h3>
-              <p className="text-[13px] text-slate-500 max-w-[240px] mt-1 leading-relaxed">
-                When you create invoices, add stock, or run AI tasks, actions will appear here in real-time.
+            <div className="space-y-1">
+              <h4 className="text-[14px] font-bold text-slate-800">
+                Operations Stream Initialized
+              </h4>
+              <p className="text-[12px] text-slate-500 max-w-xs mx-auto leading-relaxed">
+                As you generate invoices, add inventory, or instruct AI, actions will stream here in real-time.
               </p>
             </div>
           </div>
         ) : (
-          <div className="p-4 sm:p-5 flex flex-col gap-3.5">
+          <div className="space-y-4">
             {activities.map((a) => {
               const config = getIconConfig(a.type);
               const Icon = config.icon;
@@ -96,7 +93,7 @@ export function OperationsFeed({ activities }: { activities: ActivityItem[] }) {
               return (
                 <div
                   key={a.id}
-                  className="bg-slate-50/70 border border-slate-200/80 rounded-xl p-4 hover:border-slate-300 hover:bg-white transition-all duration-200 flex flex-col gap-2.5"
+                  className="bg-slate-50/70 border border-slate-200/80 rounded-xl p-4 hover:border-slate-300 hover:bg-white transition-all flex flex-col gap-2.5"
                 >
                   <div className="flex items-start justify-between gap-3">
                     <div className="flex items-start gap-3 min-w-0">
@@ -104,10 +101,10 @@ export function OperationsFeed({ activities }: { activities: ActivityItem[] }) {
                         <Icon className={`w-4 h-4 ${config.color}`} strokeWidth={2} />
                       </div>
                       <div className="min-w-0">
-                        <h4 className="text-[14px] font-bold text-slate-900 leading-snug">
+                        <h4 className="text-[13px] font-bold text-slate-900 leading-snug">
                           {a.title}
                         </h4>
-                        <p className="text-[13px] text-slate-600 mt-1 leading-relaxed">
+                        <p className="text-[12px] text-slate-600 mt-0.5 leading-relaxed">
                           {a.description}
                         </p>
                       </div>
@@ -118,11 +115,11 @@ export function OperationsFeed({ activities }: { activities: ActivityItem[] }) {
                     </span>
                   </div>
 
-                  <div className="flex items-center justify-between pt-1 border-t border-slate-200/60 text-[11px]">
+                  <div className="flex items-center justify-between pt-1 border-t border-slate-200/50 text-[11px]">
                     <span className={`inline-flex items-center px-2 py-0.5 rounded-md font-semibold border ${getStatusStyle(a.status)}`}>
                       {a.status}
                     </span>
-                    <span className="font-semibold text-slate-400 uppercase tracking-wider">
+                    <span className="font-semibold text-slate-400 uppercase tracking-wider text-[10px]">
                       {a.type.replace(/_/g, " ")}
                     </span>
                   </div>

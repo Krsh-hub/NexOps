@@ -81,13 +81,13 @@
   "notifications": [],
   "ai_activities": [
     {
-      "id": "act_1791405928443",
+      "id": "act_1791438984943",
       "type": "SYSTEM_INITIALIZED",
       "status": "COMPLETED",
       "title": "Workspace Initialized",
-      "description": "Workspace created for NexOps Labs. Ready for real transactions and inventory.",
+      "description": "Workspace created for Nova Studio. Ready for real transactions and inventory.",
       "toolUsed": "init_workspace",
-      "createdAt": "2026-10-07T20:45:28.443Z",
+      "createdAt": "2026-10-08T05:56:24.943Z",
       "businessId": "biz_demo_001"
     }
   ],
