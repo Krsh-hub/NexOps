@@ -102,33 +102,40 @@ export function InventoryRisk({ products, totalProductsCount = 0 }: InventoryRis
               return (
                 <div
                   key={p.id}
-                  className="bg-slate-50/70 border border-slate-200/80 rounded-xl p-3.5 hover:border-slate-300 hover:bg-white transition-all flex flex-col gap-2.5"
+                  className="bg-white border border-slate-200/90 rounded-xl p-3 hover:border-amber-300 hover:shadow-2xs transition-all flex flex-col gap-2"
                 >
                   <div className="flex items-start justify-between gap-2.5">
                     <div className="min-w-0">
-                      <h4 className="text-[13px] font-bold text-slate-900 truncate">
-                        {p.name}
-                      </h4>
-                      <div className="text-[11px] text-slate-500 font-medium">
-                        {p.sku} {p.vendor?.name ? `· ${p.vendor.name}` : ""}
+                      <div className="flex items-center gap-1.5 flex-wrap">
+                        <h4 className="text-[13px] font-bold text-slate-900 truncate">
+                          {p.name}
+                        </h4>
+                        <span className="hash-badge">
+                          {p.sku}
+                        </span>
                       </div>
+                      {p.vendor?.name && (
+                        <div className="text-[11px] text-slate-500 font-medium truncate mt-0.5">
+                          via {p.vendor.name}
+                        </div>
+                      )}
                     </div>
 
                     <div className="text-right shrink-0">
                       <span
-                        className={`text-[14px] font-bold ${
+                        className={`text-[13px] font-bold mono-num ${
                           isOut || isCritical ? "text-rose-600" : "text-amber-700"
                         }`}
                       >
                         {p.currentStock}
                       </span>
-                      <span className="text-[11px] text-slate-500 ml-1">
+                      <span className="text-[11px] text-slate-400 ml-1 mono-num">
                         / {p.reorderThreshold} {p.unit}
                       </span>
                     </div>
                   </div>
 
-                  <div className="h-1.5 w-full bg-slate-200/80 rounded-full overflow-hidden">
+                  <div className="h-1.5 w-full bg-slate-100 rounded-full overflow-hidden border border-slate-200/60">
                     <div
                       className={`h-full rounded-full bg-gradient-to-r ${barColor}`}
                       style={{ width: `${Math.max(3, percent)}%` }}

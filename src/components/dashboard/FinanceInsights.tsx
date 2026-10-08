@@ -143,11 +143,11 @@ export function FinanceInsights({ invoices = [], currencySymbol = "₹" }: Finan
         <div className="flex items-center justify-between pt-4 mt-2 border-t border-slate-100 text-[12px] text-slate-500">
           <div>
             <span>Daily Average: </span>
-            <span className="font-bold text-slate-800">{currencySymbol}{avgDaily.toLocaleString("en-IN")}</span>
+            <span className="font-bold text-slate-800 mono-num">{currencySymbol}{avgDaily.toLocaleString("en-IN")}</span>
           </div>
           <div>
             <span>Weekly Cashflow: </span>
-            <span className="font-bold text-emerald-700">{currencySymbol}{total.toLocaleString("en-IN")}</span>
+            <span className="font-bold text-emerald-700 mono-num">{currencySymbol}{total.toLocaleString("en-IN")}</span>
           </div>
         </div>
       </div>

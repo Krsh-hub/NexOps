@@ -67,7 +67,7 @@ export function StatCards({
         return (
           <div
             key={card.label}
-            className={`linear-card p-5 flex flex-col justify-between gap-4 border-t-3 ${card.borderTop} group`}
+            className={`linear-card ${compact ? "p-4" : "p-5"} flex flex-col justify-between gap-3.5 border-t-2 ${card.borderTop} group`}
           >
             {/* Top row: Label & Icon */}
             <div className="flex items-center justify-between">

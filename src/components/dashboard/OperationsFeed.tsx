@@ -93,33 +93,39 @@ export function OperationsFeed({ activities }: { activities: ActivityItem[] }) {
               return (
                 <div
                   key={a.id}
-                  className="bg-slate-50/70 border border-slate-200/80 rounded-xl p-4 hover:border-slate-300 hover:bg-white transition-all flex flex-col gap-2.5"
+                  className="bg-white border border-slate-200/90 hover:border-emerald-300 rounded-xl p-3.5 hover:shadow-xs transition-all flex flex-col gap-2.5 group/item"
                 >
                   <div className="flex items-start justify-between gap-3">
-                    <div className="flex items-start gap-3 min-w-0">
-                      <div className={`w-8 h-8 rounded-lg ${config.bg} border flex items-center justify-center shrink-0 mt-0.5 shadow-xs`}>
-                        <Icon className={`w-4 h-4 ${config.color}`} strokeWidth={2} />
+                    <div className="flex items-start gap-2.5 min-w-0">
+                      <div className={`w-7 h-7 rounded-lg ${config.bg} border flex items-center justify-center shrink-0 mt-0.5 shadow-2xs`}>
+                        <Icon className={`w-3.5 h-3.5 ${config.color}`} strokeWidth={2} />
                       </div>
                       <div className="min-w-0">
-                        <h4 className="text-[13px] font-bold text-slate-900 leading-snug">
-                          {a.title}
-                        </h4>
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <h4 className="text-[13px] font-bold text-slate-900 leading-snug">
+                            {a.title}
+                          </h4>
+                          <span className="hash-badge">
+                            #{a.id.replace(/[^a-zA-Z0-9]/g, "").slice(-6)}
+                          </span>
+                        </div>
                         <p className="text-[12px] text-slate-600 mt-0.5 leading-relaxed">
                           {a.description}
                         </p>
                       </div>
                     </div>
 
-                    <span className="text-[11px] font-medium text-slate-400 shrink-0 whitespace-nowrap">
+                    <span className="text-[11px] font-mono font-medium text-slate-400 shrink-0 whitespace-nowrap mono-num">
                       {getRelativeTime(a.createdAt)}
                     </span>
                   </div>
 
-                  <div className="flex items-center justify-between pt-1 border-t border-slate-200/50 text-[11px]">
-                    <span className={`inline-flex items-center px-2 py-0.5 rounded-md font-semibold border ${getStatusStyle(a.status)}`}>
+                  <div className="flex items-center justify-between pt-1.5 border-t border-slate-100 text-[11px]">
+                    <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-mono font-semibold border ${getStatusStyle(a.status)}`}>
+                      <span className="w-1.5 h-1.5 rounded-full bg-current opacity-70" />
                       {a.status}
                     </span>
-                    <span className="font-semibold text-slate-400 uppercase tracking-wider text-[10px]">
+                    <span className="font-mono text-[10px] text-slate-400 uppercase tracking-wider">
                       {a.type.replace(/_/g, " ")}
                     </span>
                   </div>
