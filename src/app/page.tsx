@@ -130,34 +130,36 @@ export default async function DashboardPage() {
 
         {/* Action Shortcuts */}
         <div className="flex items-center gap-2.5 flex-wrap">
-          <div className="flex items-center gap-2 px-3.5 py-1.5 bg-white border border-slate-200 rounded-full shadow-xs text-[13px] font-semibold text-slate-700">
+          <div className="flex items-center gap-2 px-3 py-1.5 bg-white border border-slate-200/90 rounded-full shadow-xs text-[12px] font-semibold text-slate-700 mono-num">
             <span className="relative flex h-2 w-2 shrink-0">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-500 opacity-75"></span>
               <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-600"></span>
             </span>
-            <span>Live Workspace</span>
+            <span>SYSTEM ACTIVE · 4ms</span>
           </div>
 
           <Link
             href="/finance"
-            className="inline-flex items-center gap-1.5 px-3.5 py-2 bg-emerald-700 hover:bg-emerald-800 text-white text-[13px] font-semibold rounded-xl shadow-xs transition-colors cursor-pointer"
+            className="inline-flex items-center gap-1.5 px-3.5 py-1.5 bg-emerald-700 hover:bg-emerald-800 text-white text-[13px] font-semibold rounded-xl shadow-xs transition-colors cursor-pointer group"
           >
-            <Plus className="w-4 h-4" />
+            <Plus className="w-3.5 h-3.5" />
             <span>New Invoice</span>
+            <kbd className="kbd-badge bg-emerald-800/60 border-emerald-600/50 text-white ml-0.5">N</kbd>
           </Link>
 
           <Link
             href="/inventory"
-            className="inline-flex items-center gap-1.5 px-3.5 py-2 bg-white hover:bg-slate-50 border border-slate-200 text-slate-700 text-[13px] font-semibold rounded-xl shadow-xs transition-colors cursor-pointer"
+            className="inline-flex items-center gap-1.5 px-3.5 py-1.5 bg-white hover:bg-slate-50 border border-slate-200 text-slate-700 text-[13px] font-semibold rounded-xl shadow-xs transition-colors cursor-pointer group"
           >
-            <Package className="w-4 h-4 text-emerald-700" />
+            <Package className="w-3.5 h-3.5 text-emerald-700" />
             <span>Add Product</span>
+            <kbd className="kbd-badge ml-0.5">P</kbd>
           </Link>
 
           <Link
             href="/settings"
             title="Workspace Settings"
-            className="w-9 h-9 rounded-xl bg-white border border-slate-200 flex items-center justify-center text-slate-500 hover:text-slate-900 hover:border-slate-300 transition-colors shadow-xs"
+            className="w-8 h-8 rounded-xl bg-white border border-slate-200 flex items-center justify-center text-slate-500 hover:text-slate-900 hover:border-slate-300 transition-colors shadow-xs"
           >
             <Settings className="w-4 h-4" />
           </Link>

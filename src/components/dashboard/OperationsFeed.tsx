@@ -46,7 +46,7 @@ export function OperationsFeed({ activities }: { activities: ActivityItem[] }) {
   };
 
   return (
-    <div className="card-surface flex flex-col rounded-2xl border border-slate-200/90 bg-white shadow-xs overflow-hidden transition-all duration-200 hover:shadow-md group">
+    <div className="linear-card flex flex-col overflow-hidden group">
       {/* Header */}
       <div className="px-6 py-5 flex items-center justify-between border-b border-slate-100 bg-slate-50/50">
         <div className="flex items-center gap-3">
@@ -63,7 +63,7 @@ export function OperationsFeed({ activities }: { activities: ActivityItem[] }) {
           </div>
         </div>
 
-        <span className="text-[12px] font-bold text-slate-600 bg-slate-100 px-2.5 py-0.5 rounded-full border border-slate-200">
+        <span className="text-[11px] font-bold text-slate-600 bg-slate-100 px-2.5 py-0.5 rounded-full border border-slate-200 mono-num">
           {activities.length} {activities.length === 1 ? "event" : "events"}
         </span>
       </div>

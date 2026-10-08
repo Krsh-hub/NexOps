@@ -72,7 +72,7 @@ export function AICommandBar() {
   };
 
   return (
-    <div className="card-surface p-5 sm:p-6 rounded-2xl border border-slate-200/90 bg-white shadow-xs space-y-4">
+    <div className="linear-card p-5 sm:p-6 space-y-4">
       {/* Header with Title & Spotlight Icon */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2.5">
@@ -89,15 +89,15 @@ export function AICommandBar() {
           </div>
         </div>
 
-        <span className="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
+        <span className="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-emerald-50 text-emerald-800 border border-emerald-200 mono-num">
           <span className="w-1.5 h-1.5 rounded-full bg-emerald-600 animate-pulse" />
-          Autonomous Engine Ready
+          ENGINE ACTIVE · 3ms
         </span>
       </div>
 
       {/* Input Form */}
       <form onSubmit={handleSubmit} className="relative group">
-        <div className="relative rounded-xl bg-slate-50 border border-slate-200 focus-within:bg-white focus-within:border-emerald-600 focus-within:ring-3 focus-within:ring-emerald-500/10 transition-all duration-200">
+        <div className="relative rounded-xl bg-slate-50/80 border border-slate-200 focus-within:bg-white focus-within:border-emerald-600 focus-within:ring-3 focus-within:ring-emerald-500/10 transition-all duration-200">
           <div className="flex items-center px-4 py-1.5">
             <Search className="w-4 h-4 text-slate-400 shrink-0 mr-2" />
 
@@ -111,6 +111,10 @@ export function AICommandBar() {
             />
 
             <div className="shrink-0 flex items-center gap-2">
+              <span className="hidden sm:inline-flex items-center gap-1 text-[11px] text-slate-400">
+                <kbd className="kbd-badge">⌘K</kbd>
+              </span>
+
               {isLoading ? (
                 <div className="flex items-center gap-2 text-[12px] font-mono text-emerald-700 px-2 py-1">
                   <Loader2 className="w-4 h-4 animate-spin" />
@@ -120,10 +124,10 @@ export function AICommandBar() {
                 <button
                   type="submit"
                   disabled={!input.trim()}
-                  className="hidden sm:inline-flex items-center gap-1 px-3 py-1.5 bg-emerald-700 hover:bg-emerald-800 disabled:bg-slate-200 disabled:text-slate-400 text-white rounded-lg text-[12px] font-semibold shadow-xs transition-colors cursor-pointer"
+                  className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 bg-emerald-700 hover:bg-emerald-800 disabled:bg-slate-200 disabled:text-slate-400 text-white rounded-lg text-[12px] font-semibold shadow-xs transition-colors cursor-pointer"
                 >
                   <span>Run</span>
-                  <CornerDownLeft className="w-3 h-3" />
+                  <kbd className="kbd-badge bg-emerald-800/40 border-emerald-600/50 text-white">↵</kbd>
                 </button>
               )}
             </div>
@@ -133,8 +137,8 @@ export function AICommandBar() {
 
       {/* Quick Action Prompt Chips */}
       <div className="flex items-center gap-2 flex-wrap pt-1">
-        <span className="text-[11px] uppercase tracking-wider font-bold text-slate-400 shrink-0">
-          Quick Prompts:
+        <span className="text-[11px] uppercase tracking-wider font-bold text-slate-400 shrink-0 mono-num">
+          Quick Actions:
         </span>
         {promptShortcuts.map((sc) => (
           <button
@@ -142,7 +146,7 @@ export function AICommandBar() {
             type="button"
             disabled={isLoading}
             onClick={() => handleExecutePrompt(sc.prompt)}
-            className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[12px] font-medium bg-slate-100/80 hover:bg-emerald-50 hover:text-emerald-800 hover:border-emerald-200 border border-slate-200/80 text-slate-600 transition-all cursor-pointer disabled:opacity-50"
+            className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[11px] font-medium bg-slate-100 hover:bg-emerald-50 hover:text-emerald-800 hover:border-emerald-300 border border-slate-200/80 text-slate-600 transition-all cursor-pointer disabled:opacity-50"
           >
             <span>{sc.label}</span>
           </button>

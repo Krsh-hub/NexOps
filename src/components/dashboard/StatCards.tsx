@@ -67,11 +67,11 @@ export function StatCards({
         return (
           <div
             key={card.label}
-            className={`card-surface p-5 rounded-2xl flex flex-col justify-between gap-4 border border-slate-200/90 bg-white shadow-xs hover:shadow-md transition-all duration-200 border-t-3 ${card.borderTop} group`}
+            className={`linear-card p-5 flex flex-col justify-between gap-4 border-t-3 ${card.borderTop} group`}
           >
             {/* Top row: Label & Icon */}
             <div className="flex items-center justify-between">
-              <span className="text-[12px] font-bold text-slate-500 tracking-wider uppercase">
+              <span className="text-[11px] font-bold text-slate-500 tracking-wider uppercase">
                 {card.label}
               </span>
               <div
@@ -84,11 +84,11 @@ export function StatCards({
             {/* Metric Value & Badges */}
             <div className="space-y-2">
               <div className="flex items-baseline gap-1.5 flex-wrap">
-                <span className="text-[24px] sm:text-[28px] font-extrabold text-slate-900 tracking-tight leading-none">
+                <span className="mono-num text-[24px] sm:text-[27px] font-bold text-slate-900 tracking-tight leading-none">
                   {card.value}
                 </span>
                 {card.suffix && (
-                  <span className="text-[13px] font-medium text-slate-500">
+                  <span className="mono-num text-[12px] font-medium text-slate-500">
                     {card.suffix}
                   </span>
                 )}

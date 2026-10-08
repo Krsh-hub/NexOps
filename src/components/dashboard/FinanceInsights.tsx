@@ -41,7 +41,7 @@ export function FinanceInsights({ invoices = [], currencySymbol = "₹" }: Finan
   const hasData = total > 0;
 
   return (
-    <div className="card-surface flex flex-col rounded-2xl border border-slate-200/90 bg-white shadow-xs overflow-hidden transition-all duration-200 hover:shadow-md group">
+    <div className="linear-card flex flex-col overflow-hidden group">
       {/* Header */}
       <div className="px-6 py-5 flex items-center justify-between border-b border-slate-100 bg-slate-50/50">
         <div className="flex items-center gap-3.5">
@@ -53,7 +53,7 @@ export function FinanceInsights({ invoices = [], currencySymbol = "₹" }: Finan
               Financial Health
             </span>
             <div className="flex items-baseline gap-2.5 mt-0.5">
-              <span className="text-[22px] font-extrabold text-slate-900 leading-tight">
+              <span className="mono-num text-[22px] font-bold text-slate-900 leading-tight">
                 {currencySymbol}{total.toLocaleString("en-IN")}
               </span>
               <span className="text-[12px] font-medium text-slate-500">This week</span>

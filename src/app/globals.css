@@ -1,10 +1,10 @@
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap');
 @import "tailwindcss";
 
-/* ─── NexOps Design System · Soft Comforting Light Business Theme ─── */
+/* ─── NexOps Design System · Linear / Raycast Studio Developer Theme ─── */
 
 :root {
-  /* Soft, Calming Light Canvas (Clean, Comfortable for Business & Study) */
+  /* Soft, Calming Light Canvas with Micro-Grid Depth */
   --bg-primary: #f8fafc;      /* Calming Off-White Linen Paper Canvas */
   --bg-secondary: #ffffff;    /* Pure Crisp White Card Surface */
   --bg-tertiary: #f1f5f9;     /* Soft Elevated Surfaces & Light Sections */
@@ -43,15 +43,15 @@
   /* Companion Soft Status Accents */
   --green: #059669;           /* Soothing Emerald */
   --green-subtle: rgba(5, 150, 105, 0.09);
-  --red: #e11d48;             /* Soft Clean Crimson/Rose (Not Pink) */
+  --red: #e11d48;             /* Soft Clean Crimson/Rose */
   --red-subtle: rgba(225, 29, 72, 0.08);
-  --orange: #d97706;          /* Warm Caramel / Honey */
+  --orange: #d97706;          /* Warm Caramel / Amber */
   --orange-subtle: rgba(217, 119, 6, 0.09);
   --purple: #059669;          /* Harmonized with Sage */
   --purple-subtle: rgba(5, 150, 105, 0.09);
 
   /* Modern Ergonomic Curvature */
-  --radius: 14px;
+  --radius: 16px;
   --radius-sm: 8px;
   --radius-lg: 20px;
 }
@@ -69,7 +69,12 @@ html {
 
 body {
   font-family: 'Plus Jakarta Sans', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  background: var(--bg-primary);
+  background-color: #f8fafc;
+  background-image: 
+    radial-gradient(rgba(100, 116, 139, 0.14) 1px, transparent 1px),
+    linear-gradient(to right, rgba(226, 232, 240, 0.35) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(226, 232, 240, 0.35) 1px, transparent 1px);
+  background-size: 20px 20px, 100px 100px, 100px 100px;
   color: var(--text-primary);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -162,6 +167,42 @@ body {
   transform: translateY(-2px);
   border-color: var(--accent);
   box-shadow: 0 12px 28px -6px rgba(0, 0, 0, 0.1);
+}
+
+/* ─── Linear & Raycast Developer Accents ─── */
+.mono-num {
+  font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-feature-settings: "tnum" 1, "zero" 1;
+}
+
+.kbd-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-size: 10px;
+  font-weight: 600;
+  padding: 1.5px 5px;
+  border-radius: 5px;
+  background: #f1f5f9;
+  border: 1px solid #cbd5e1;
+  color: #475569;
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.08);
+  line-height: 1;
+}
+
+.linear-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: var(--radius);
+  transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.22s ease, border-color 0.22s ease;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03), 0 6px 16px -4px rgba(0, 0, 0, 0.02);
+  position: relative;
+}
+.linear-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(5, 150, 105, 0.4);
+  box-shadow: 0 12px 28px -4px rgba(5, 150, 105, 0.08), 0 2px 6px rgba(0, 0, 0, 0.03);
 }
 
 /* ─── Tactile Button & Click Feedback ─── */

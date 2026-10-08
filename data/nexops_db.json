@@ -81,23 +81,23 @@
   "notifications": [],
   "ai_activities": [
     {
-      "id": "act_1791438984943",
+      "id": "act_1791439193591",
       "type": "SYSTEM_INITIALIZED",
       "status": "COMPLETED",
       "title": "Workspace Initialized",
-      "description": "Workspace created for Nova Studio. Ready for real transactions and inventory.",
+      "description": "Workspace created for cafe latte. Ready for real transactions and inventory.",
       "toolUsed": "init_workspace",
-      "createdAt": "2026-10-08T05:56:24.943Z",
+      "createdAt": "2026-10-08T05:59:53.591Z",
       "businessId": "biz_demo_001"
     }
   ],
   "business_profile": {
-    "isConfigured": false,
-    "businessName": "",
+    "isConfigured": true,
+    "businessName": "cafe latte",
     "businessType": "Business",
-    "operatorName": "",
+    "operatorName": "weg",
     "currencySymbol": "₹",
     "currencyCode": "INR",
-    "mode": "unconfigured"
+    "mode": "clean"
   }
 }

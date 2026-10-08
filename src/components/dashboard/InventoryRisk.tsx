@@ -21,7 +21,7 @@ export function InventoryRisk({ products, totalProductsCount = 0 }: InventoryRis
   const hasAnyProducts = totalProductsCount > 0 || products.length > 0;
 
   return (
-    <div className="card-surface flex flex-col rounded-2xl border border-slate-200/90 bg-white shadow-xs overflow-hidden transition-all duration-200 hover:shadow-md group">
+    <div className="linear-card flex flex-col overflow-hidden group">
       {/* Header */}
       <div className="px-5 py-4 flex items-center justify-between border-b border-slate-100 bg-slate-50/50">
         <div className="flex items-center gap-3">
