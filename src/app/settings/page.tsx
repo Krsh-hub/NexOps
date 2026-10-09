@@ -8,7 +8,7 @@ export default function SettingsPage() {
   const businessDisplay = profile?.businessName || "My Workspace";
 
   return (
-    <div className="w-full px-6 sm:px-8 lg:px-10 py-7 space-y-7 animate-fade-in min-h-[calc(100vh-4rem)] flex flex-col">
+    <div className="w-full px-6 sm:px-8 lg:px-10 py-7 space-y-7 animate-fade-in flex-1 flex flex-col">
       {/* Executive Apple Settings Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-5 border-b border-slate-200/70">
         <div className="space-y-1">

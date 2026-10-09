@@ -27,7 +27,7 @@ export default async function InventoryPage() {
   const [products, vendors] = await Promise.all([getProducts(), getVendors()]);
 
   return (
-    <div className="p-4 sm:p-6 lg:p-8 space-y-6 max-w-[1400px] mx-auto animate-fade-soft">
+    <div className="w-full px-6 sm:px-8 lg:px-10 py-7 space-y-7 animate-fade-in flex-1 flex flex-col">
       <div>
         <h1 className="text-[22px] font-bold text-[var(--text-primary)] tracking-tight">
           Inventory Control Center

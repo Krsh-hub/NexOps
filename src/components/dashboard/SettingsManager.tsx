@@ -222,7 +222,7 @@ export function SettingsManager({ initialProfile }: SettingsManagerProps) {
       )}
 
       {/* Main 2-Column Full-Screen Settings Layout */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-7 items-start flex-1 w-full">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-7 items-stretch flex-1 w-full min-h-[640px]">
         {/* Left Column: Vertical Section Navigation */}
         <div className="lg:col-span-4 xl:col-span-3 space-y-4">
           <div className="px-1 flex items-center justify-between">

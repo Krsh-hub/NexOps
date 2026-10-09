@@ -23,7 +23,7 @@ export default function RootLayout({
         <Sidebar />
         <div className="flex flex-col flex-1 min-w-0 h-full">
           <Navbar />
-          <main className="flex-1 overflow-y-auto scrollbar-hide">
+          <main className="flex-1 overflow-y-auto scrollbar-hide flex flex-col">
             {children}
           </main>
         </div>

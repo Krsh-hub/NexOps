@@ -14,7 +14,7 @@ export default async function AIPage() {
   const activities = await getActivity();
 
   return (
-    <div className="p-6 lg:p-8 space-y-6 max-w-[1400px] animate-fade-soft">
+    <div className="w-full px-6 sm:px-8 lg:px-10 py-7 space-y-7 animate-fade-in flex-1 flex flex-col">
       {/* Header */}
       <div>
         <h1 className="text-[22px] font-semibold text-[var(--text-primary)] tracking-tight flex items-center gap-2.5">
