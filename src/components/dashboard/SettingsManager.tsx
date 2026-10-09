@@ -13,14 +13,19 @@ import {
   RotateCcw,
   ChevronRight,
   Sparkles,
+  Command,
+  FileText,
   Sliders,
   Check,
-  AlertCircle,
+  Zap,
+  Cpu,
 } from "lucide-react";
 
 interface SettingsState {
   businessName: string;
   operatorName: string;
+  businessCategory: string;
+  taxId: string;
   currency: string;
   taxRate: string;
   email: string;
@@ -31,6 +36,7 @@ interface SettingsState {
   notifyLowStock: boolean;
   notifyOverdue: boolean;
   notifyDailyDigest: boolean;
+  notifyHighValue: boolean;
 }
 
 interface SettingsManagerProps {
@@ -39,6 +45,7 @@ interface SettingsManagerProps {
     operatorName?: string;
     currencySymbol?: string;
     currencyCode?: string;
+    businessType?: string;
   } | null;
 }
 
@@ -47,6 +54,8 @@ export function SettingsManager({ initialProfile }: SettingsManagerProps) {
   const [settings, setSettings] = useState<SettingsState>({
     businessName: initialProfile?.businessName || "Brew & Bite Café",
     operatorName: initialProfile?.operatorName || "Lead Operator",
+    businessCategory: initialProfile?.businessType || "F&B / Specialty Café",
+    taxId: "29AABCU9603R1ZM",
     currency: initialProfile?.currencyCode === "INR" ? "INR (₹)" : "INR (₹)",
     taxRate: "18",
     email: "operations@brewandbite.com",
@@ -57,6 +66,7 @@ export function SettingsManager({ initialProfile }: SettingsManagerProps) {
     notifyLowStock: true,
     notifyOverdue: true,
     notifyDailyDigest: true,
+    notifyHighValue: true,
   });
 
   const [saved, setSaved] = useState(false);
@@ -86,9 +96,9 @@ export function SettingsManager({ initialProfile }: SettingsManagerProps) {
           setSettings((prev) => ({
             ...prev,
             ...parsed,
-            // Prioritize profile from DB if passed
             ...(initialProfile?.businessName && { businessName: initialProfile.businessName }),
             ...(initialProfile?.operatorName && { operatorName: initialProfile.operatorName }),
+            ...(initialProfile?.businessType && { businessCategory: initialProfile.businessType }),
           }));
         } catch {
           // ignore
@@ -98,6 +108,7 @@ export function SettingsManager({ initialProfile }: SettingsManagerProps) {
           ...prev,
           ...(initialProfile.businessName && { businessName: initialProfile.businessName }),
           ...(initialProfile.operatorName && { operatorName: initialProfile.operatorName }),
+          ...(initialProfile.businessType && { businessCategory: initialProfile.businessType }),
         }));
       }
     }
@@ -109,12 +120,10 @@ export function SettingsManager({ initialProfile }: SettingsManagerProps) {
     setIsSaving(true);
 
     try {
-      // 1. Save to localStorage
       if (typeof window !== "undefined") {
         localStorage.setItem("nexops_user_settings", JSON.stringify(settings));
       }
 
-      // 2. Extract currency symbol and code
       let sym = "₹";
       let code = "INR";
       if (settings.currency.includes("$")) {
@@ -128,7 +137,6 @@ export function SettingsManager({ initialProfile }: SettingsManagerProps) {
         code = "GBP";
       }
 
-      // 3. Persist to real API / DB
       await fetch("/api/profile", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -136,12 +144,13 @@ export function SettingsManager({ initialProfile }: SettingsManagerProps) {
           action: "update",
           businessName: settings.businessName,
           operatorName: settings.operatorName,
+          businessType: settings.businessCategory,
           currencySymbol: sym,
           currencyCode: code,
         }),
       });
 
-      setToastText("Preferences updated and saved to database.");
+      setToastText("Preferences updated and synchronized to database.");
       setSaved(true);
       setTimeout(() => setSaved(false), 3500);
     } catch {
@@ -179,7 +188,7 @@ export function SettingsManager({ initialProfile }: SettingsManagerProps) {
     {
       id: "profile" as const,
       label: "Business Profile",
-      sub: "Entity name, currency & GST",
+      sub: "Entity headers, currency & GST",
       icon: Building2,
       badge: "IDENTITY",
     },
@@ -207,7 +216,7 @@ export function SettingsManager({ initialProfile }: SettingsManagerProps) {
   ];
 
   return (
-    <div className="space-y-6">
+    <div className="w-full flex-1 flex flex-col space-y-6">
       {/* Toast Notification */}
       {saved && (
         <div className="fixed bottom-6 right-6 z-50 bg-slate-900 border border-slate-800 text-white px-4 py-3 rounded-xl shadow-2xl flex items-center gap-2.5 animate-fade-in text-[13px] font-medium">
@@ -216,13 +225,13 @@ export function SettingsManager({ initialProfile }: SettingsManagerProps) {
         </div>
       )}
 
-      {/* Main 2-Column Settings Layout */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-7 items-start">
-        {/* Left Column: Vertical Section Navigation */}
-        <div className="lg:col-span-4 xl:col-span-3 space-y-3">
+      {/* Main 2-Column Full-Screen Settings Layout */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-7 items-start flex-1 w-full">
+        {/* Left Column: Vertical Section Navigation & System Diagnostics */}
+        <div className="lg:col-span-4 xl:col-span-3 space-y-4">
           <div className="px-1 flex items-center justify-between">
             <h3 className="text-[11px] font-bold text-slate-400 uppercase tracking-wider font-mono">
-              Sections
+              Configuration Sections
             </h3>
             <span className="text-[11px] font-mono text-slate-400 font-medium">4 areas</span>
           </div>
@@ -275,42 +284,75 @@ export function SettingsManager({ initialProfile }: SettingsManagerProps) {
           </div>
 
           {/* System Telemetry & Persistence Card */}
-          <div className="pt-2">
-            <div className="p-4 rounded-xl border border-slate-200/90 bg-white shadow-2xs space-y-3">
-              <div className="flex items-center justify-between text-[11px] font-mono text-slate-400 font-bold uppercase tracking-wider">
-                <span>Persistence Status</span>
-                <span className="text-emerald-700 flex items-center gap-1 font-semibold">
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-600 animate-pulse"></span>
-                  SYNCED
+          <div className="p-4 rounded-xl border border-slate-200/90 bg-white shadow-2xs space-y-3">
+            <div className="flex items-center justify-between text-[11px] font-mono text-slate-400 font-bold uppercase tracking-wider">
+              <span>Persistence Status</span>
+              <span className="text-emerald-700 flex items-center gap-1 font-semibold">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-600 animate-pulse"></span>
+                SYNCED
+              </span>
+            </div>
+            <div className="text-[12px] space-y-2 pt-0.5">
+              <div className="flex justify-between items-center">
+                <span className="text-slate-500">Database:</span>
+                <span className="font-mono text-[11px] font-semibold text-slate-700 bg-slate-100 px-1.5 py-0.5 rounded border border-slate-200/80">
+                  nexops_db.json
                 </span>
               </div>
-              <div className="text-[12px] space-y-1.5 pt-0.5">
-                <div className="flex justify-between items-center">
-                  <span className="text-slate-500">Database:</span>
-                  <span className="font-mono text-[11px] font-semibold text-slate-700 bg-slate-100 px-1.5 py-0.5 rounded border border-slate-200/80">
-                    nexops_db.json
-                  </span>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-slate-500">Orchestrator:</span>
-                  <span className="font-mono text-[11px] font-semibold text-slate-700">
-                    Llama 3.3 70B
-                  </span>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-slate-500">Autonomy:</span>
-                  <span className="font-mono text-[11px] font-semibold text-emerald-700">
-                    {settings.aiAutonomyMode === "autonomous" ? "Autonomous" : "Supervised"}
-                  </span>
-                </div>
+              <div className="flex justify-between items-center">
+                <span className="text-slate-500">Orchestrator:</span>
+                <span className="font-mono text-[11px] font-semibold text-slate-700">
+                  Llama 3.3 (70B)
+                </span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-slate-500">Autonomy:</span>
+                <span className="font-mono text-[11px] font-semibold text-emerald-700">
+                  {settings.aiAutonomyMode === "autonomous" ? "Autonomous" : "Supervised"}
+                </span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-slate-500">Latency:</span>
+                <span className="font-mono text-[11px] font-semibold text-slate-700">
+                  3ms (Edge Local)
+                </span>
+              </div>
+            </div>
+          </div>
+
+          {/* Developer Keyboard Shortcuts Card */}
+          <div className="p-4 rounded-xl border border-slate-200/90 bg-white shadow-2xs space-y-2.5">
+            <div className="flex items-center justify-between text-[11px] font-mono text-slate-400 font-bold uppercase tracking-wider">
+              <span>Fast Keys</span>
+              <Command className="w-3.5 h-3.5 text-slate-400" />
+            </div>
+            <div className="space-y-1.5 text-[11px] text-slate-600">
+              <div className="flex items-center justify-between">
+                <span>Save Preferences</span>
+                <kbd className="kbd-badge">⌘S</kbd>
+              </div>
+              <div className="flex items-center justify-between">
+                <span>AI Command Dock</span>
+                <kbd className="kbd-badge">⌘K</kbd>
+              </div>
+              <div className="flex items-center justify-between">
+                <span>Create Invoice</span>
+                <kbd className="kbd-badge">N</kbd>
+              </div>
+              <div className="flex items-center justify-between">
+                <span>Add Product</span>
+                <kbd className="kbd-badge">P</kbd>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Right Column: Configuration Details Form */}
-        <div className="lg:col-span-8 xl:col-span-9">
-          <form onSubmit={handleSave} className="linear-card p-6 sm:p-8 space-y-7">
+        {/* Right Column: Full-Height Configuration Details Panel */}
+        <div className="lg:col-span-8 xl:col-span-9 flex flex-col flex-1 h-full w-full">
+          <form
+            onSubmit={handleSave}
+            className="linear-card p-6 sm:p-8 flex flex-col justify-between flex-1 space-y-7 w-full shadow-xs min-h-[620px]"
+          >
             {/* 1. Business Profile Tab */}
             {activeTab === "profile" && (
               <div className="space-y-6">
@@ -328,7 +370,7 @@ export function SettingsManager({ initialProfile }: SettingsManagerProps) {
                   </div>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
                   <div>
                     <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-1.5 font-mono">
                       Business Entity Name
@@ -353,6 +395,23 @@ export function SettingsManager({ initialProfile }: SettingsManagerProps) {
                       placeholder="e.g. Lead Operator"
                       className="w-full h-11 px-3.5 rounded-xl bg-slate-50/80 border border-slate-200 text-[14px] text-slate-900 font-medium focus:bg-white focus:outline-none focus:border-emerald-600 focus:ring-2 focus:ring-emerald-500/10 transition-all"
                     />
+                  </div>
+
+                  <div>
+                    <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-1.5 font-mono">
+                      Business Category
+                    </label>
+                    <select
+                      value={settings.businessCategory}
+                      onChange={(e) => setSettings({ ...settings, businessCategory: e.target.value })}
+                      className="w-full h-11 px-3.5 rounded-xl bg-slate-50/80 border border-slate-200 text-[14px] text-slate-900 font-medium focus:bg-white focus:outline-none focus:border-emerald-600 focus:ring-2 focus:ring-emerald-500/10 transition-all cursor-pointer"
+                    >
+                      <option value="F&B / Specialty Café">F&B / Specialty Café</option>
+                      <option value="Retail & Inventory">Retail & Inventory</option>
+                      <option value="E-Commerce Store">E-Commerce Store</option>
+                      <option value="Professional Services">Professional Services</option>
+                      <option value="Wholesale & Distribution">Wholesale & Distribution</option>
+                    </select>
                   </div>
 
                   <div>
@@ -385,6 +444,19 @@ export function SettingsManager({ initialProfile }: SettingsManagerProps) {
 
                   <div>
                     <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-1.5 font-mono">
+                      Tax Identifier / GSTIN
+                    </label>
+                    <input
+                      type="text"
+                      value={settings.taxId}
+                      onChange={(e) => setSettings({ ...settings, taxId: e.target.value })}
+                      placeholder="e.g. 29AABCU9603R1ZM"
+                      className="w-full h-11 px-3.5 rounded-xl bg-slate-50/80 border border-slate-200 text-[14px] text-slate-900 font-medium focus:bg-white focus:outline-none focus:border-emerald-600 focus:ring-2 focus:ring-emerald-500/10 transition-all font-mono"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-1.5 font-mono">
                       Operations Email
                     </label>
                     <input
@@ -409,7 +481,7 @@ export function SettingsManager({ initialProfile }: SettingsManagerProps) {
                     />
                   </div>
 
-                  <div className="md:col-span-2">
+                  <div className="md:col-span-2 lg:col-span-1">
                     <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-1.5 font-mono">
                       Operating Address
                     </label>
@@ -417,9 +489,30 @@ export function SettingsManager({ initialProfile }: SettingsManagerProps) {
                       type="text"
                       value={settings.address}
                       onChange={(e) => setSettings({ ...settings, address: e.target.value })}
-                      placeholder="e.g. 12th Main, Indiranagar, Bangalore, Karnataka"
+                      placeholder="e.g. 12th Main, Indiranagar, Bangalore"
                       className="w-full h-11 px-3.5 rounded-xl bg-slate-50/80 border border-slate-200 text-[14px] text-slate-900 font-medium focus:bg-white focus:outline-none focus:border-emerald-600 focus:ring-2 focus:ring-emerald-500/10 transition-all"
                     />
+                  </div>
+                </div>
+
+                {/* Live Invoice & Order Header Preview Card */}
+                <div className="p-4 sm:p-5 rounded-xl bg-slate-50/70 border border-slate-200/90 space-y-2.5">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <FileText className="w-4 h-4 text-emerald-700" />
+                      <span className="text-[12px] font-mono font-bold uppercase tracking-wider text-slate-700">
+                        Live Invoice & PO Header Preview
+                      </span>
+                    </div>
+                    <span className="text-[11px] font-mono text-emerald-800 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded">
+                      FORMAT: AUTO-COMPOSED
+                    </span>
+                  </div>
+                  <div className="p-3.5 rounded-lg bg-white border border-slate-200/80 text-[12px] text-slate-700 font-mono space-y-1 shadow-2xs">
+                    <div className="font-bold text-[13px] text-slate-900">{settings.businessName || "My Business"}</div>
+                    <div className="text-slate-500">{settings.address} · Phone: {settings.phone}</div>
+                    <div className="text-slate-500">GSTIN / Tax ID: <span className="text-slate-800 font-semibold">{settings.taxId}</span> · Standard GST: {settings.taxRate}%</div>
+                    <div className="text-slate-400 pt-0.5">Authorized Signatory: {settings.operatorName}</div>
                   </div>
                 </div>
               </div>
@@ -442,13 +535,13 @@ export function SettingsManager({ initialProfile }: SettingsManagerProps) {
                   </div>
                 </div>
 
-                <div className="space-y-3.5">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div
                     onClick={() => setSettings({ ...settings, aiAutonomyMode: "autonomous" })}
-                    className={`p-4 sm:p-5 rounded-xl border cursor-pointer transition-all flex items-start gap-3.5 ${
+                    className={`p-5 rounded-xl border cursor-pointer transition-all flex items-start gap-3.5 ${
                       settings.aiAutonomyMode === "autonomous"
                         ? "bg-emerald-50/70 border-emerald-300 ring-1 ring-emerald-500/20 shadow-2xs"
-                        : "bg-white border-slate-200 hover:border-slate-300 hover:bg-slate-50/50"
+                        : "bg-white border-slate-200 hover:border-slate-300 hover:bg-slate-50/50 shadow-2xs"
                     }`}
                   >
                     <input
@@ -460,23 +553,23 @@ export function SettingsManager({ initialProfile }: SettingsManagerProps) {
                     />
                     <div className="space-y-1">
                       <div className="text-[14px] font-bold text-slate-900 flex items-center gap-2">
-                        <span>Full Autonomous Execution (Recommended)</span>
+                        <span>Full Autonomous Mode</span>
                         <span className="text-[10px] font-mono font-semibold px-2 py-0.5 rounded-md bg-emerald-100 text-emerald-800 border border-emerald-300">
-                          Active Mode
+                          Active
                         </span>
                       </div>
                       <p className="text-[12.5px] text-slate-600 leading-relaxed font-normal">
-                        The agent automatically invokes inventory adjustments, drafts customer invoices, and updates order statuses when triggered by user commands.
+                        The agent automatically invokes inventory adjustments, drafts customer invoices, and updates order statuses when commanded.
                       </p>
                     </div>
                   </div>
 
                   <div
                     onClick={() => setSettings({ ...settings, aiAutonomyMode: "confirmation" })}
-                    className={`p-4 sm:p-5 rounded-xl border cursor-pointer transition-all flex items-start gap-3.5 ${
+                    className={`p-5 rounded-xl border cursor-pointer transition-all flex items-start gap-3.5 ${
                       settings.aiAutonomyMode === "confirmation"
                         ? "bg-emerald-50/70 border-emerald-300 ring-1 ring-emerald-500/20 shadow-2xs"
-                        : "bg-white border-slate-200 hover:border-slate-300 hover:bg-slate-50/50"
+                        : "bg-white border-slate-200 hover:border-slate-300 hover:bg-slate-50/50 shadow-2xs"
                     }`}
                   >
                     <input
@@ -532,12 +625,12 @@ export function SettingsManager({ initialProfile }: SettingsManagerProps) {
                   </div>
                 </div>
 
-                <div className="space-y-3">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {[
                     {
                       id: "notifyLowStock" as const,
                       label: "Critical & Low Stock Notifications",
-                      desc: "Trigger urgent alerts when any inventory item drops at or below minimum threshold.",
+                      desc: "Trigger urgent alerts when any product stock drops at or below minimum threshold.",
                     },
                     {
                       id: "notifyOverdue" as const,
@@ -548,6 +641,11 @@ export function SettingsManager({ initialProfile }: SettingsManagerProps) {
                       id: "notifyDailyDigest" as const,
                       label: "Daily Autonomous Digest Recaps",
                       desc: "Summary recap of revenue trends, inventory movements, and pending actions.",
+                    },
+                    {
+                      id: "notifyHighValue" as const,
+                      label: "High-Value Transaction Monitor",
+                      desc: "Flag orders and invoices exceeding ₹50,000 for secondary verification.",
                     },
                   ].map((item) => (
                     <div
@@ -566,7 +664,7 @@ export function SettingsManager({ initialProfile }: SettingsManagerProps) {
                         type="checkbox"
                         checked={settings[item.id]}
                         onChange={(e) => setSettings({ ...settings, [item.id]: e.target.checked })}
-                        className="w-4 h-4 accent-emerald-600 rounded cursor-pointer"
+                        className="w-4 h-4 accent-emerald-600 rounded cursor-pointer shrink-0"
                       />
                     </div>
                   ))}
@@ -664,17 +762,17 @@ export function SettingsManager({ initialProfile }: SettingsManagerProps) {
             )}
 
             {/* Bottom Form Actions Bar */}
-            <div className="pt-5 border-t border-slate-200/80 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div className="pt-6 border-t border-slate-200/90 flex flex-col sm:flex-row sm:items-center justify-between gap-4 mt-auto">
               <div className="text-[12px] text-slate-500 font-medium flex items-center gap-1.5">
-                <Sparkles className="w-3.5 h-3.5 text-emerald-600" />
-                <span>Changes will synchronize immediately across your workspace.</span>
+                <Sparkles className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+                <span>Changes persist automatically across all workspace views and invoices.</span>
               </div>
 
-              <div className="flex items-center gap-2.5">
+              <div className="flex items-center gap-3 shrink-0">
                 <button
                   type="submit"
                   disabled={isSaving}
-                  className="px-5 py-2.5 rounded-xl bg-emerald-700 hover:bg-emerald-800 disabled:opacity-50 text-white text-[13px] font-semibold shadow-2xs flex items-center gap-2 cursor-pointer transition-all"
+                  className="px-6 py-2.5 rounded-xl bg-emerald-700 hover:bg-emerald-800 disabled:opacity-50 text-white text-[13px] font-semibold shadow-2xs flex items-center gap-2 cursor-pointer transition-all shrink-0"
                 >
                   <Save className="w-4 h-4" />
                   <span>{isSaving ? "Saving..." : "Save Preferences"}</span>

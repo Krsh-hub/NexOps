@@ -10,7 +10,7 @@ export default function SettingsPage() {
   const workspaceSlug = businessDisplay.toLowerCase().replace(/[^a-z0-9]/g, "-").replace(/-+/g, "-");
 
   return (
-    <div className="w-full max-w-[1540px] mx-auto px-5 sm:px-8 lg:px-10 py-6 space-y-6 animate-fade-in">
+    <div className="w-full px-6 sm:px-8 lg:px-10 py-6 space-y-6 animate-fade-in min-h-[calc(100vh-4rem)] flex flex-col">
       {/* 1. Developer Breadcrumb & Telemetry Header */}
       <div className="space-y-3 pb-4 border-b border-slate-200/80">
         <div className="flex items-center gap-2 text-[12px] font-mono text-slate-500 flex-wrap">
