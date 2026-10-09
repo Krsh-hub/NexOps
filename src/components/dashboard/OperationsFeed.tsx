@@ -48,23 +48,23 @@ export function OperationsFeed({ activities }: { activities: ActivityItem[] }) {
   return (
     <div className="linear-card flex flex-col overflow-hidden group">
       {/* Header */}
-      <div className="px-6 py-5 flex items-center justify-between border-b border-slate-100 bg-slate-50/50">
+      <div className="px-6 py-5 flex items-center justify-between border-b border-slate-100 bg-slate-50/40">
         <div className="flex items-center gap-3">
-          <div className="w-8 h-8 rounded-xl bg-emerald-50 text-emerald-700 flex items-center justify-center border border-emerald-200 shadow-xs">
-            <Clock className="w-4 h-4" strokeWidth={2.2} />
+          <div className="w-9 h-9 rounded-xl bg-slate-100 text-slate-700 flex items-center justify-center border border-slate-200/80 shadow-2xs">
+            <Clock className="w-4 h-4" strokeWidth={2} />
           </div>
           <div>
-            <h3 className="text-[14px] font-bold text-slate-900 leading-tight">
-              Live Operations Stream
+            <h3 className="text-[15px] font-bold text-slate-900 leading-tight">
+              Activity Stream
             </h3>
-            <span className="text-[11px] font-medium text-slate-500">
-              Autonomous telemetry & operational audit
+            <span className="text-[12px] font-medium text-slate-500">
+              Live updates across orders, invoices & inventory
             </span>
           </div>
         </div>
 
-        <span className="text-[11px] font-bold text-slate-600 bg-slate-100 px-2.5 py-0.5 rounded-full border border-slate-200 mono-num">
-          {activities.length} {activities.length === 1 ? "event" : "events"}
+        <span className="text-[11.5px] font-semibold text-slate-600 bg-slate-100 px-3 py-1 rounded-full border border-slate-200/80">
+          {activities.length} {activities.length === 1 ? "activity" : "activities"}
         </span>
       </div>
 
@@ -85,7 +85,7 @@ export function OperationsFeed({ activities }: { activities: ActivityItem[] }) {
             </div>
           </div>
         ) : (
-          <div className="space-y-4">
+          <div className="space-y-3.5">
             {activities.map((a) => {
               const config = getIconConfig(a.type);
               const Icon = config.icon;
@@ -93,39 +93,34 @@ export function OperationsFeed({ activities }: { activities: ActivityItem[] }) {
               return (
                 <div
                   key={a.id}
-                  className="bg-white border border-slate-200/90 hover:border-emerald-300 rounded-xl p-3.5 hover:shadow-xs transition-all flex flex-col gap-2.5 group/item"
+                  className="bg-white border border-slate-200/90 hover:border-slate-300 rounded-xl p-4 shadow-2xs transition-all flex flex-col gap-2.5"
                 >
                   <div className="flex items-start justify-between gap-3">
-                    <div className="flex items-start gap-2.5 min-w-0">
-                      <div className={`w-7 h-7 rounded-lg ${config.bg} border flex items-center justify-center shrink-0 mt-0.5 shadow-2xs`}>
-                        <Icon className={`w-3.5 h-3.5 ${config.color}`} strokeWidth={2} />
+                    <div className="flex items-start gap-3 min-w-0">
+                      <div className={`w-8 h-8 rounded-lg ${config.bg} border flex items-center justify-center shrink-0 mt-0.5 shadow-2xs`}>
+                        <Icon className={`w-4 h-4 ${config.color}`} strokeWidth={2} />
                       </div>
                       <div className="min-w-0">
-                        <div className="flex items-center gap-2 flex-wrap">
-                          <h4 className="text-[13px] font-bold text-slate-900 leading-snug">
-                            {a.title}
-                          </h4>
-                          <span className="hash-badge">
-                            #{a.id.replace(/[^a-zA-Z0-9]/g, "").slice(-6)}
-                          </span>
-                        </div>
-                        <p className="text-[12px] text-slate-600 mt-0.5 leading-relaxed">
+                        <h4 className="text-[13.5px] font-bold text-slate-900 leading-snug">
+                          {a.title}
+                        </h4>
+                        <p className="text-[12.5px] text-slate-600 mt-0.5 leading-relaxed">
                           {a.description}
                         </p>
                       </div>
                     </div>
 
-                    <span className="text-[11px] font-mono font-medium text-slate-400 shrink-0 whitespace-nowrap mono-num">
+                    <span className="text-[11.5px] font-medium text-slate-400 shrink-0 whitespace-nowrap">
                       {getRelativeTime(a.createdAt)}
                     </span>
                   </div>
 
                   <div className="flex items-center justify-between pt-1.5 border-t border-slate-100 text-[11px]">
-                    <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-mono font-semibold border ${getStatusStyle(a.status)}`}>
-                      <span className="w-1.5 h-1.5 rounded-full bg-current opacity-70" />
+                    <span className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full font-medium border ${getStatusStyle(a.status)}`}>
+                      <span className="w-1.5 h-1.5 rounded-full bg-current opacity-75" />
                       {a.status}
                     </span>
-                    <span className="font-mono text-[10px] text-slate-400 uppercase tracking-wider">
+                    <span className="font-medium text-slate-400 text-[11px]">
                       {a.type.replace(/_/g, " ")}
                     </span>
                   </div>

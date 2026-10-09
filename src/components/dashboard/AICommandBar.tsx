@@ -28,10 +28,10 @@ export function AICommandBar() {
   const [toolsRun, setToolsRun] = useState<ToolExecuted[]>([]);
 
   const promptShortcuts = [
-    { label: "scan --low-stock", prompt: "Scan inventory for low stock items" },
-    { label: "new --invoice", prompt: "Create invoice for 5 Cold Brews to XYZ Cafe" },
-    { label: "restock --item 20", prompt: "Add 20 units of Colombian Roast to inventory" },
-    { label: "summary --today", prompt: "Summarize today's business operations and status" },
+    { label: "Scan Low Stock", prompt: "Scan inventory for low stock items" },
+    { label: "Create Invoice", prompt: "Create invoice for 5 Cold Brews to XYZ Cafe" },
+    { label: "Restock Inventory", prompt: "Add 20 units of Colombian Roast to inventory" },
+    { label: "Daily Summary", prompt: "Summarize today's business operations and status" },
   ];
 
   const handleExecutePrompt = async (textToRun: string) => {
@@ -72,64 +72,57 @@ export function AICommandBar() {
   };
 
   return (
-    <div className="linear-card p-5 sm:p-6 space-y-4">
+    <div className="linear-card p-6 space-y-4">
       {/* Header with Title & Spotlight Icon */}
       <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2.5">
-          <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-emerald-600 to-teal-700 text-white flex items-center justify-center shadow-xs">
+        <div className="flex items-center gap-3">
+          <div className="w-9 h-9 rounded-xl bg-emerald-50 text-emerald-700 flex items-center justify-center border border-emerald-200/80 shadow-2xs">
             <Sparkles className="w-4 h-4" />
           </div>
           <div>
-            <h3 className="text-[14px] font-bold text-slate-900 leading-tight">
-              Autonomous AI Command Cockpit
+            <h3 className="text-[15px] font-bold text-slate-900 leading-tight">
+              AI Operations Assistant
             </h3>
-            <p className="text-[12px] text-slate-500 font-medium">
-              Execute actions, adjust inventory, and generate invoices with natural language
+            <p className="text-[12.5px] text-slate-500 font-medium mt-0.5">
+              Ask anything about your operations, draft invoices, or adjust inventory
             </p>
           </div>
         </div>
 
-        <span className="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-emerald-50 text-emerald-800 border border-emerald-200 mono-num">
+        <span className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-medium bg-emerald-50 text-emerald-800 border border-emerald-200/80">
           <span className="w-1.5 h-1.5 rounded-full bg-emerald-600 animate-pulse" />
-          ENGINE ACTIVE · 3ms
+          Ready
         </span>
       </div>
 
       {/* Input Form */}
       <form onSubmit={handleSubmit} className="relative group">
-        <div className="relative rounded-xl bg-slate-50/90 border border-slate-200/90 focus-within:bg-white focus-within:border-emerald-600 focus-within:ring-2 focus-within:ring-emerald-500/10 transition-all duration-200 shadow-2xs">
-          <div className="flex items-center px-3.5 py-1.5">
-            <span className="font-mono text-emerald-600 font-bold text-[14px] shrink-0 mr-2 select-none">
-              ❯
-            </span>
+        <div className="relative rounded-2xl bg-slate-50/80 border border-slate-200 focus-within:bg-white focus-within:border-emerald-600 focus-within:ring-2 focus-within:ring-emerald-500/10 transition-all duration-200 shadow-2xs">
+          <div className="flex items-center px-4 py-1.5">
+            <Search className="w-4 h-4 text-slate-400 shrink-0 mr-2.5" />
 
             <input
               type="text"
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              placeholder="Command NexOps AI or type query (e.g. 'Log invoice for 5 items', 'Check low stock')..."
+              placeholder="Ask a question or enter a command (e.g. 'Draft invoice for 5 items', 'Check low stock')..."
               disabled={isLoading}
-              className="w-full h-10 bg-transparent border-none text-[13px] text-slate-900 placeholder:text-slate-400 focus:outline-none disabled:opacity-50 font-medium"
+              className="w-full h-11 bg-transparent border-none text-[13.5px] text-slate-900 placeholder:text-slate-400 focus:outline-none disabled:opacity-50 font-normal"
             />
 
             <div className="shrink-0 flex items-center gap-2">
-              <span className="hidden sm:inline-flex items-center gap-1 text-[11px] text-slate-400">
-                <kbd className="kbd-badge">⌘K</kbd>
-              </span>
-
               {isLoading ? (
-                <div className="flex items-center gap-2 text-[12px] font-mono text-emerald-700 px-2 py-1">
-                  <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                  <span className="hidden sm:inline">Executing...</span>
+                <div className="flex items-center gap-2 text-[12px] font-medium text-emerald-700 px-2 py-1">
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                  <span className="hidden sm:inline">Processing...</span>
                 </div>
               ) : (
                 <button
                   type="submit"
                   disabled={!input.trim()}
-                  className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 bg-emerald-700 hover:bg-emerald-800 disabled:bg-slate-200 disabled:text-slate-400 text-white rounded-lg text-[12px] font-semibold shadow-2xs transition-colors cursor-pointer"
+                  className="px-4 py-2 bg-slate-900 hover:bg-slate-800 disabled:bg-slate-200 disabled:text-slate-400 text-white rounded-xl text-[12.5px] font-medium shadow-2xs transition-colors cursor-pointer"
                 >
-                  <span>Run</span>
-                  <kbd className="kbd-badge bg-emerald-800/60 border-emerald-600/50 text-white">↵</kbd>
+                  Send
                 </button>
               )}
             </div>
@@ -137,10 +130,10 @@ export function AICommandBar() {
         </div>
       </form>
 
-      {/* Quick Action Prompt Chips */}
+      {/* Quick Action Suggestion Chips */}
       <div className="flex items-center gap-2 flex-wrap pt-0.5">
-        <span className="text-[10px] uppercase tracking-wider font-bold text-slate-400 shrink-0 font-mono">
-          CLI Presets:
+        <span className="text-[11px] font-semibold text-slate-400 shrink-0">
+          Suggestions:
         </span>
         {promptShortcuts.map((sc) => (
           <button
@@ -148,9 +141,8 @@ export function AICommandBar() {
             type="button"
             disabled={isLoading}
             onClick={() => handleExecutePrompt(sc.prompt)}
-            className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[11px] font-mono bg-white hover:bg-emerald-50 hover:text-emerald-800 hover:border-emerald-300 border border-slate-200/90 text-slate-600 transition-all cursor-pointer disabled:opacity-50 shadow-2xs"
+            className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11.5px] font-medium bg-white hover:bg-slate-50 hover:text-slate-900 border border-slate-200/90 text-slate-600 transition-all cursor-pointer disabled:opacity-50 shadow-2xs"
           >
-            <span className="text-emerald-600 font-bold">$</span>
             <span>{sc.label}</span>
           </button>
         ))}

@@ -68,13 +68,9 @@ html {
 }
 
 body {
-  font-family: 'Plus Jakarta Sans', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-family: 'Plus Jakarta Sans', 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', sans-serif;
   background-color: #f8fafc;
-  background-image: 
-    radial-gradient(rgba(100, 116, 139, 0.14) 1px, transparent 1px),
-    linear-gradient(to right, rgba(226, 232, 240, 0.35) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(226, 232, 240, 0.35) 1px, transparent 1px);
-  background-size: 20px 20px, 100px 100px, 100px 100px;
+  background-image: none;
   color: var(--text-primary);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -191,42 +187,42 @@ body {
   line-height: 1;
 }
 
-.linear-card {
+.linear-card,
+.apple-card {
   background: #ffffff;
-  border: 1px solid #e2e8f0;
-  border-radius: var(--radius);
+  border: 1px solid rgba(226, 232, 240, 0.85);
+  border-radius: 20px;
   transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.22s ease, border-color 0.22s ease;
-  box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.9), 0 1px 3px rgba(0, 0, 0, 0.03), 0 6px 16px -4px rgba(0, 0, 0, 0.02);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03), 0 10px 25px -8px rgba(0, 0, 0, 0.04);
   position: relative;
 }
-.linear-card:hover {
-  transform: translateY(-2px);
-  border-color: rgba(5, 150, 105, 0.4);
-  box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 1), 0 12px 28px -4px rgba(5, 150, 105, 0.08), 0 2px 6px rgba(0, 0, 0, 0.03);
+.linear-card:hover,
+.apple-card:hover {
+  transform: translateY(-1.5px);
+  border-color: rgba(203, 213, 225, 0.9);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03), 0 16px 32px -8px rgba(0, 0, 0, 0.06);
 }
 
-.hash-badge {
-  font-family: 'JetBrains Mono', ui-monospace, monospace;
+.hash-badge,
+.status-pill {
   font-size: 11px;
-  color: #64748b;
+  font-weight: 500;
+  color: #475569;
   background: #f1f5f9;
   border: 1px solid #e2e8f0;
-  border-radius: 4px;
-  padding: 1px 5px;
+  border-radius: 9999px;
+  padding: 2px 8px;
   display: inline-flex;
   align-items: center;
-  gap: 3px;
+  gap: 4px;
   line-height: 1.2;
 }
 
 .craft-tag {
-  font-family: 'JetBrains Mono', ui-monospace, monospace;
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  padding: 2px 6px;
-  border-radius: 4px;
+  padding: 2px 8px;
+  border-radius: 9999px;
 }
 
 /* ─── Tactile Button & Click Feedback ─── */

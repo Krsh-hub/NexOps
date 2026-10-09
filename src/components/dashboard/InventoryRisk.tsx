@@ -102,7 +102,7 @@ export function InventoryRisk({ products, totalProductsCount = 0 }: InventoryRis
               return (
                 <div
                   key={p.id}
-                  className="bg-white border border-slate-200/90 rounded-xl p-3 hover:border-amber-300 hover:shadow-2xs transition-all flex flex-col gap-2"
+                  className="bg-white border border-slate-200/90 rounded-xl p-3.5 hover:border-slate-300 hover:shadow-2xs transition-all flex flex-col gap-2"
                 >
                   <div className="flex items-start justify-between gap-2.5">
                     <div className="min-w-0">
@@ -110,12 +110,12 @@ export function InventoryRisk({ products, totalProductsCount = 0 }: InventoryRis
                         <h4 className="text-[13px] font-bold text-slate-900 truncate">
                           {p.name}
                         </h4>
-                        <span className="hash-badge">
+                        <span className="text-[11.5px] text-slate-400 font-medium">
                           {p.sku}
                         </span>
                       </div>
                       {p.vendor?.name && (
-                        <div className="text-[11px] text-slate-500 font-medium truncate mt-0.5">
+                        <div className="text-[11.5px] text-slate-500 font-medium truncate mt-0.5">
                           via {p.vendor.name}
                         </div>
                       )}
@@ -123,13 +123,13 @@ export function InventoryRisk({ products, totalProductsCount = 0 }: InventoryRis
 
                     <div className="text-right shrink-0">
                       <span
-                        className={`text-[13px] font-bold mono-num ${
+                        className={`text-[13.5px] font-bold ${
                           isOut || isCritical ? "text-rose-600" : "text-amber-700"
                         }`}
                       >
                         {p.currentStock}
                       </span>
-                      <span className="text-[11px] text-slate-400 ml-1 mono-num">
+                      <span className="text-[11.5px] text-slate-500 ml-1">
                         / {p.reorderThreshold} {p.unit}
                       </span>
                     </div>

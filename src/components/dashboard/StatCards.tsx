@@ -67,45 +67,45 @@ export function StatCards({
         return (
           <div
             key={card.label}
-            className={`linear-card ${compact ? "p-4" : "p-5"} flex flex-col justify-between gap-3.5 border-t-2 ${card.borderTop} group`}
+            className={`linear-card ${compact ? "p-4.5" : "p-5"} flex flex-col justify-between gap-4 group hover:border-slate-300`}
           >
             {/* Top row: Label & Icon */}
             <div className="flex items-center justify-between">
-              <span className="text-[11px] font-bold text-slate-500 tracking-wider uppercase">
+              <span className="text-[12px] font-semibold text-slate-500 tracking-normal">
                 {card.label}
               </span>
               <div
-                className={`w-8 h-8 rounded-lg ${card.iconBg} border flex items-center justify-center shadow-xs transition-transform duration-200 group-hover:scale-105`}
+                className={`w-9 h-9 rounded-xl ${card.iconBg} border flex items-center justify-center shadow-2xs transition-transform duration-200 group-hover:scale-105`}
               >
-                <Icon className="w-4 h-4" strokeWidth={2.2} />
+                <Icon className="w-4 h-4" strokeWidth={2} />
               </div>
             </div>
 
             {/* Metric Value & Badges */}
             <div className="space-y-2">
               <div className="flex items-baseline gap-1.5 flex-wrap">
-                <span className="mono-num text-[24px] sm:text-[27px] font-bold text-slate-900 tracking-tight leading-none">
+                <span className="text-[25px] sm:text-[28px] font-bold text-slate-900 tracking-tight leading-none">
                   {card.value}
                 </span>
                 {card.suffix && (
-                  <span className="mono-num text-[12px] font-medium text-slate-500">
+                  <span className="text-[12.5px] font-medium text-slate-500">
                     {card.suffix}
                   </span>
                 )}
                 {card.sub && (
-                  <span className="text-[12px] font-semibold text-rose-700 bg-rose-50 px-1.5 py-0.5 rounded border border-rose-200 ml-1">
+                  <span className="text-[12px] font-semibold text-rose-700 bg-rose-50 px-2 py-0.5 rounded-full border border-rose-200 ml-1">
                     {card.sub}
                   </span>
                 )}
               </div>
 
               {/* Status pill */}
-              <div className="flex items-center gap-1.5 text-[11px] font-semibold">
+              <div className="flex items-center gap-1.5 text-[11px] font-medium">
                 <span
-                  className={`inline-flex items-center px-2 py-0.5 rounded-md ${
+                  className={`inline-flex items-center px-2.5 py-0.5 rounded-full ${
                     card.isPositive
-                      ? "text-emerald-800 bg-emerald-50 border border-emerald-200"
-                      : "text-amber-800 bg-amber-50 border border-amber-200"
+                      ? "text-emerald-800 bg-emerald-50 border border-emerald-200/80"
+                      : "text-amber-800 bg-amber-50 border border-amber-200/80"
                   }`}
                 >
                   {card.badgeText}

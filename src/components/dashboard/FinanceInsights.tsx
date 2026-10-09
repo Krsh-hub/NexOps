@@ -49,14 +49,14 @@ export function FinanceInsights({ invoices = [], currencySymbol = "₹" }: Finan
             <BarChart3 className="w-4 h-4" strokeWidth={2.2} />
           </div>
           <div>
-            <span className="text-[11px] font-bold text-slate-400 tracking-wider uppercase">
+            <span className="text-[12px] font-semibold text-slate-500">
               Financial Health
             </span>
             <div className="flex items-baseline gap-2.5 mt-0.5">
-              <span className="mono-num text-[22px] font-bold text-slate-900 leading-tight">
+              <span className="text-[24px] font-bold text-slate-900 leading-tight tracking-tight">
                 {currencySymbol}{total.toLocaleString("en-IN")}
               </span>
-              <span className="text-[12px] font-medium text-slate-500">This week</span>
+              <span className="text-[12.5px] font-medium text-slate-500">This week</span>
             </div>
           </div>
         </div>
@@ -140,14 +140,14 @@ export function FinanceInsights({ invoices = [], currencySymbol = "₹" }: Finan
         </div>
 
         {/* Bottom stats summary */}
-        <div className="flex items-center justify-between pt-4 mt-2 border-t border-slate-100 text-[12px] text-slate-500">
+        <div className="flex items-center justify-between pt-4 mt-2 border-t border-slate-100 text-[12.5px] text-slate-500 font-medium">
           <div>
             <span>Daily Average: </span>
-            <span className="font-bold text-slate-800 mono-num">{currencySymbol}{avgDaily.toLocaleString("en-IN")}</span>
+            <span className="font-semibold text-slate-900 ml-1">{currencySymbol}{avgDaily.toLocaleString("en-IN")}</span>
           </div>
           <div>
             <span>Weekly Cashflow: </span>
-            <span className="font-bold text-emerald-700 mono-num">{currencySymbol}{total.toLocaleString("en-IN")}</span>
+            <span className="font-semibold text-emerald-800 ml-1">{currencySymbol}{total.toLocaleString("en-IN")}</span>
           </div>
         </div>
       </div>
