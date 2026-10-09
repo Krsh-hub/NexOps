@@ -2,8 +2,7 @@
 
 import { useState, useEffect } from "react";
 import {
-  User,
-  Palette,
+  Building2,
   Bot,
   Bell,
   Shield,
@@ -11,12 +10,17 @@ import {
   Save,
   Key,
   Database,
-  Sparkles,
   RotateCcw,
+  ChevronRight,
+  Sparkles,
+  Sliders,
+  Check,
+  AlertCircle,
 } from "lucide-react";
 
 interface SettingsState {
   businessName: string;
+  operatorName: string;
   currency: string;
   taxRate: string;
   email: string;
@@ -29,25 +33,35 @@ interface SettingsState {
   notifyDailyDigest: boolean;
 }
 
-const DEFAULT_SETTINGS: SettingsState = {
-  businessName: "Brew & Bite Café",
-  currency: "INR (₹)",
-  taxRate: "18",
-  email: "operations@brewandbite.com",
-  phone: "+91 98765 43210",
-  address: "12th Main, Indiranagar, Bangalore, Karnataka",
-  aiAutonomyMode: "autonomous",
-  proactiveInterval: "1h",
-  notifyLowStock: true,
-  notifyOverdue: true,
-  notifyDailyDigest: true,
-};
+interface SettingsManagerProps {
+  initialProfile?: {
+    businessName?: string;
+    operatorName?: string;
+    currencySymbol?: string;
+    currencyCode?: string;
+  } | null;
+}
 
-export function SettingsManager() {
+export function SettingsManager({ initialProfile }: SettingsManagerProps) {
   const [activeTab, setActiveTab] = useState<"profile" | "ai" | "notifications" | "security">("profile");
-  const [settings, setSettings] = useState<SettingsState>(DEFAULT_SETTINGS);
+  const [settings, setSettings] = useState<SettingsState>({
+    businessName: initialProfile?.businessName || "Brew & Bite Café",
+    operatorName: initialProfile?.operatorName || "Lead Operator",
+    currency: initialProfile?.currencyCode === "INR" ? "INR (₹)" : "INR (₹)",
+    taxRate: "18",
+    email: "operations@brewandbite.com",
+    phone: "+91 98765 43210",
+    address: "12th Main, Indiranagar, Bangalore, Karnataka",
+    aiAutonomyMode: "autonomous",
+    proactiveInterval: "1h",
+    notifyLowStock: true,
+    notifyOverdue: true,
+    notifyDailyDigest: true,
+  });
+
   const [saved, setSaved] = useState(false);
-  const [toastText, setToastText] = useState("Preferences updated and saved successfully.");
+  const [isSaving, setIsSaving] = useState(false);
+  const [toastText, setToastText] = useState("Preferences saved and synchronized successfully.");
   const [dbStats, setDbStats] = useState<any>(null);
   const [isResetting, setIsResetting] = useState(false);
 
@@ -68,23 +82,75 @@ export function SettingsManager() {
       const stored = localStorage.getItem("nexops_user_settings");
       if (stored) {
         try {
-          setSettings(JSON.parse(stored));
+          const parsed = JSON.parse(stored);
+          setSettings((prev) => ({
+            ...prev,
+            ...parsed,
+            // Prioritize profile from DB if passed
+            ...(initialProfile?.businessName && { businessName: initialProfile.businessName }),
+            ...(initialProfile?.operatorName && { operatorName: initialProfile.operatorName }),
+          }));
         } catch {
           // ignore
         }
+      } else if (initialProfile) {
+        setSettings((prev) => ({
+          ...prev,
+          ...(initialProfile.businessName && { businessName: initialProfile.businessName }),
+          ...(initialProfile.operatorName && { operatorName: initialProfile.operatorName }),
+        }));
       }
     }
     fetchDbStats();
-  }, []);
+  }, [initialProfile]);
 
-  const handleSave = (e: React.FormEvent) => {
+  const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (typeof window !== "undefined") {
-      localStorage.setItem("nexops_user_settings", JSON.stringify(settings));
+    setIsSaving(true);
+
+    try {
+      // 1. Save to localStorage
+      if (typeof window !== "undefined") {
+        localStorage.setItem("nexops_user_settings", JSON.stringify(settings));
+      }
+
+      // 2. Extract currency symbol and code
+      let sym = "₹";
+      let code = "INR";
+      if (settings.currency.includes("$")) {
+        sym = "$";
+        code = "USD";
+      } else if (settings.currency.includes("€")) {
+        sym = "€";
+        code = "EUR";
+      } else if (settings.currency.includes("£")) {
+        sym = "£";
+        code = "GBP";
+      }
+
+      // 3. Persist to real API / DB
+      await fetch("/api/profile", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          action: "update",
+          businessName: settings.businessName,
+          operatorName: settings.operatorName,
+          currencySymbol: sym,
+          currencyCode: code,
+        }),
+      });
+
+      setToastText("Preferences updated and saved to database.");
+      setSaved(true);
+      setTimeout(() => setSaved(false), 3500);
+    } catch {
+      setToastText("Saved locally.");
+      setSaved(true);
+      setTimeout(() => setSaved(false), 3500);
+    } finally {
+      setIsSaving(false);
     }
-    setToastText("Preferences updated and saved successfully.");
-    setSaved(true);
-    setTimeout(() => setSaved(false), 3000);
   };
 
   const handleResetDb = async () => {
@@ -98,9 +164,9 @@ export function SettingsManager() {
       });
       if (res.ok) {
         await fetchDbStats();
-        setToastText("Database reset to original demo data successfully!");
+        setToastText("Database reset to demo sample data successfully!");
         setSaved(true);
-        setTimeout(() => setSaved(false), 3000);
+        setTimeout(() => setSaved(false), 3500);
       }
     } catch {
       alert("Failed to reset database");
@@ -110,359 +176,515 @@ export function SettingsManager() {
   };
 
   const tabs = [
-    { id: "profile" as const, label: "Business Profile", icon: User },
-    { id: "ai" as const, label: "AI Operations & Autonomy", icon: Bot },
-    { id: "notifications" as const, label: "Alert Triggers", icon: Bell },
-    { id: "security" as const, label: "Integrations & API", icon: Shield },
+    {
+      id: "profile" as const,
+      label: "Business Profile",
+      sub: "Entity name, currency & GST",
+      icon: Building2,
+      badge: "IDENTITY",
+    },
+    {
+      id: "ai" as const,
+      label: "AI Operations & Autonomy",
+      sub: "Llama 3.3 mode & scan intervals",
+      icon: Bot,
+      badge: "AGENT CORE",
+    },
+    {
+      id: "notifications" as const,
+      label: "Alert Triggers",
+      sub: "Stock shortages & overdue alarms",
+      icon: Bell,
+      badge: "MONITORS",
+    },
+    {
+      id: "security" as const,
+      label: "Integrations & Database",
+      sub: "API connections & JSON persistence",
+      icon: Shield,
+      badge: "SYSTEM",
+    },
   ];
 
   return (
     <div className="space-y-6">
-      {/* Toast */}
+      {/* Toast Notification */}
       {saved && (
-        <div className="fixed bottom-6 right-6 z-50 bg-[var(--bg-elevated)] border border-[var(--border-secondary)] text-white px-4 py-3 rounded-2xl shadow-2xl flex items-center gap-2.5 animate-fade-in text-[13px] font-medium">
+        <div className="fixed bottom-6 right-6 z-50 bg-slate-900 border border-slate-800 text-white px-4 py-3 rounded-xl shadow-2xl flex items-center gap-2.5 animate-fade-in text-[13px] font-medium">
           <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
           <span>{toastText}</span>
         </div>
       )}
 
-      {/* Navigation Tabs */}
-      <div className="flex items-center gap-2 border-b border-[var(--border-primary)]/70 pb-2 overflow-x-auto scrollbar-hide">
-        {tabs.map((tab) => {
-          const Icon = tab.icon;
-          const isActive = activeTab === tab.id;
-          return (
-            <button
-              key={tab.id}
-              onClick={() => setActiveTab(tab.id)}
-              className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-[13px] font-semibold transition-all whitespace-nowrap cursor-pointer ${
-                isActive
-                  ? "bg-[var(--accent)] text-white shadow-sm"
-                  : "text-[var(--text-secondary)] hover:text-white hover:bg-[var(--bg-hover)]"
-              }`}
-            >
-              <Icon className="w-4 h-4" />
-              <span>{tab.label}</span>
-            </button>
-          );
-        })}
-      </div>
+      {/* Main 2-Column Settings Layout */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-7 items-start">
+        {/* Left Column: Vertical Section Navigation */}
+        <div className="lg:col-span-4 xl:col-span-3 space-y-3">
+          <div className="px-1 flex items-center justify-between">
+            <h3 className="text-[11px] font-bold text-slate-400 uppercase tracking-wider font-mono">
+              Sections
+            </h3>
+            <span className="text-[11px] font-mono text-slate-400 font-medium">4 areas</span>
+          </div>
 
-      {/* Tab Panels */}
-      <form onSubmit={handleSave} className="card-surface p-5 sm:p-6 rounded-2xl border border-[var(--border-primary)] space-y-6 max-w-[800px]">
-        {/* Profile Tab */}
-        {activeTab === "profile" && (
-          <div className="space-y-4">
-            <div>
-              <h3 className="text-[16px] font-bold text-[var(--text-primary)]">
-                Business & Organization Details
-              </h3>
-              <p className="text-[12px] text-[var(--text-tertiary)] mt-0.5">
-                Configures headers for generated invoices, purchase orders, and financial reports.
-              </p>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-[11px] font-bold uppercase tracking-wider text-[var(--text-tertiary)] mb-1.5">
-                  Business Entity Name
-                </label>
-                <input
-                  type="text"
-                  value={settings.businessName}
-                  onChange={(e) => setSettings({ ...settings, businessName: e.target.value })}
-                  className="w-full h-10 px-3 rounded-xl bg-[var(--bg-primary)] border border-[var(--border-primary)] text-[14px] text-[var(--text-primary)] focus:outline-none focus:border-[var(--accent)]"
-                />
-              </div>
-
-              <div>
-                <label className="block text-[11px] font-bold uppercase tracking-wider text-[var(--text-tertiary)] mb-1.5">
-                  Currency Symbol & Code
-                </label>
-                <select
-                  value={settings.currency}
-                  onChange={(e) => setSettings({ ...settings, currency: e.target.value })}
-                  className="w-full h-10 px-3 rounded-xl bg-[var(--bg-primary)] border border-[var(--border-primary)] text-[14px] text-[var(--text-primary)] focus:outline-none focus:border-[var(--accent)]"
+          <div className="space-y-2">
+            {tabs.map((tab) => {
+              const Icon = tab.icon;
+              const isActive = activeTab === tab.id;
+              return (
+                <button
+                  key={tab.id}
+                  type="button"
+                  onClick={() => setActiveTab(tab.id)}
+                  className={`w-full text-left p-3.5 rounded-xl border transition-all flex items-center justify-between group cursor-pointer ${
+                    isActive
+                      ? "bg-emerald-50/80 border-emerald-300 shadow-2xs text-slate-900 ring-1 ring-emerald-500/15"
+                      : "bg-white hover:bg-slate-50 border-slate-200/90 text-slate-700 hover:border-slate-300 shadow-2xs"
+                  }`}
                 >
-                  <option value="INR (₹)">INR (₹) - Indian Rupee</option>
-                  <option value="USD ($)">USD ($) - US Dollar</option>
-                  <option value="EUR (€)">EUR (€) - Euro</option>
-                  <option value="GBP (£)">GBP (£) - British Pound</option>
-                </select>
-              </div>
-
-              <div>
-                <label className="block text-[11px] font-bold uppercase tracking-wider text-[var(--text-tertiary)] mb-1.5">
-                  Default Tax / GST Rate (%)
-                </label>
-                <input
-                  type="number"
-                  value={settings.taxRate}
-                  onChange={(e) => setSettings({ ...settings, taxRate: e.target.value })}
-                  className="w-full h-10 px-3 rounded-xl bg-[var(--bg-primary)] border border-[var(--border-primary)] text-[14px] text-[var(--text-primary)] focus:outline-none focus:border-[var(--accent)]"
-                />
-              </div>
-
-              <div>
-                <label className="block text-[11px] font-bold uppercase tracking-wider text-[var(--text-tertiary)] mb-1.5">
-                  Operations Email
-                </label>
-                <input
-                  type="email"
-                  value={settings.email}
-                  onChange={(e) => setSettings({ ...settings, email: e.target.value })}
-                  className="w-full h-10 px-3 rounded-xl bg-[var(--bg-primary)] border border-[var(--border-primary)] text-[14px] text-[var(--text-primary)] focus:outline-none focus:border-[var(--accent)]"
-                />
-              </div>
-
-              <div className="sm:col-span-2">
-                <label className="block text-[11px] font-bold uppercase tracking-wider text-[var(--text-tertiary)] mb-1.5">
-                  Operating Address
-                </label>
-                <input
-                  type="text"
-                  value={settings.address}
-                  onChange={(e) => setSettings({ ...settings, address: e.target.value })}
-                  className="w-full h-10 px-3 rounded-xl bg-[var(--bg-primary)] border border-[var(--border-primary)] text-[14px] text-[var(--text-primary)] focus:outline-none focus:border-[var(--accent)]"
-                />
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* AI Tab */}
-        {activeTab === "ai" && (
-          <div className="space-y-4">
-            <div>
-              <h3 className="text-[16px] font-bold text-[var(--text-primary)]">
-                Autonomous Agent Configuration
-              </h3>
-              <p className="text-[12px] text-[var(--text-tertiary)] mt-0.5">
-                Tune the level of autonomy granted to the NexOps Llama 3.3 orchestrator.
-              </p>
-            </div>
-
-            <div className="space-y-3">
-              <div
-                onClick={() => setSettings({ ...settings, aiAutonomyMode: "autonomous" })}
-                className={`p-4 rounded-xl border cursor-pointer transition-all flex items-start gap-3 ${
-                  settings.aiAutonomyMode === "autonomous"
-                    ? "bg-[var(--accent-subtle)] border-[var(--accent)]"
-                    : "bg-[var(--bg-tertiary)]/50 border-[var(--border-primary)] hover:border-[var(--border-hover)]"
-                }`}
-              >
-                <input
-                  type="radio"
-                  name="autonomy"
-                  checked={settings.aiAutonomyMode === "autonomous"}
-                  onChange={() => {}}
-                  className="mt-1"
-                />
-                <div>
-                  <div className="text-[14px] font-bold text-white flex items-center gap-2">
-                    Full Autonomous Mode (Recommended)
-                    <span className="text-[10px] font-mono px-1.5 py-0.2 rounded bg-emerald-950 text-emerald-400 border border-emerald-800">
-                      Active
-                    </span>
-                  </div>
-                  <div className="text-[12px] text-[var(--text-secondary)] mt-0.5 leading-relaxed">
-                    The agent automatically invokes inventory updates, drafts invoices, and dispatches reminder tools without waiting for manual confirmation.
-                  </div>
-                </div>
-              </div>
-
-              <div
-                onClick={() => setSettings({ ...settings, aiAutonomyMode: "confirmation" })}
-                className={`p-4 rounded-xl border cursor-pointer transition-all flex items-start gap-3 ${
-                  settings.aiAutonomyMode === "confirmation"
-                    ? "bg-[var(--accent-subtle)] border-[var(--accent)]"
-                    : "bg-[var(--bg-tertiary)]/50 border-[var(--border-primary)] hover:border-[var(--border-hover)]"
-                }`}
-              >
-                <input
-                  type="radio"
-                  name="autonomy"
-                  checked={settings.aiAutonomyMode === "confirmation"}
-                  onChange={() => {}}
-                  className="mt-1"
-                />
-                <div>
-                  <div className="text-[14px] font-bold text-white">
-                    Supervised Co-pilot Mode
-                  </div>
-                  <div className="text-[12px] text-[var(--text-secondary)] mt-0.5 leading-relaxed">
-                    The agent proposes tool executions and asks for explicit operator approval before modifying data or placing purchase orders.
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div className="pt-2">
-              <label className="block text-[11px] font-bold uppercase tracking-wider text-[var(--text-tertiary)] mb-1.5">
-                Proactive Background Scanner Frequency
-              </label>
-              <select
-                value={settings.proactiveInterval}
-                onChange={(e) => setSettings({ ...settings, proactiveInterval: e.target.value })}
-                className="w-full sm:w-64 h-10 px-3 rounded-xl bg-[var(--bg-primary)] border border-[var(--border-primary)] text-[14px] text-[var(--text-primary)] focus:outline-none focus:border-[var(--accent)]"
-              >
-                <option value="15m">Every 15 minutes</option>
-                <option value="1h">Every 1 hour (Default)</option>
-                <option value="6h">Every 6 hours</option>
-                <option value="24h">Once daily at 08:00 AM</option>
-              </select>
-            </div>
-          </div>
-        )}
-
-        {/* Notifications Tab */}
-        {activeTab === "notifications" && (
-          <div className="space-y-4">
-            <div>
-              <h3 className="text-[16px] font-bold text-[var(--text-primary)]">
-                Autonomous Alert Channels
-              </h3>
-              <p className="text-[12px] text-[var(--text-tertiary)] mt-0.5">
-                Decide when NexOps sounds alarm bells in the navigation notification center.
-              </p>
-            </div>
-
-            <div className="space-y-3">
-              {[
-                {
-                  id: "notifyLowStock" as const,
-                  label: "Critical & Low Stock Notifications",
-                  desc: "Trigger urgent alerts when any product stock drops at or below reorder threshold.",
-                },
-                {
-                  id: "notifyOverdue" as const,
-                  label: "Overdue Invoice Escalations",
-                  desc: "Generate warnings when client payment terms exceed invoice due dates.",
-                },
-                {
-                  id: "notifyDailyDigest" as const,
-                  label: "Daily Autonomous Digest",
-                  desc: "Morning recap of yesterday's sales revenue, inventory changes, and upcoming tasks.",
-                },
-              ].map((item) => (
-                <div
-                  key={item.id}
-                  className="p-3.5 rounded-xl bg-[var(--bg-tertiary)]/50 border border-[var(--border-primary)] flex items-center justify-between"
-                >
-                  <div className="pr-4">
-                    <div className="text-[13px] font-semibold text-white">
-                      {item.label}
+                  <div className="flex items-start gap-3 min-w-0">
+                    <div
+                      className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 transition-colors ${
+                        isActive
+                          ? "bg-emerald-700 text-white shadow-2xs"
+                          : "bg-slate-100 text-slate-500 group-hover:bg-slate-200/70 group-hover:text-slate-800"
+                      }`}
+                    >
+                      <Icon className="w-4 h-4" />
                     </div>
-                    <div className="text-[11px] text-[var(--text-tertiary)] mt-0.5">
-                      {item.desc}
-                    </div>
-                  </div>
-                  <input
-                    type="checkbox"
-                    checked={settings[item.id]}
-                    onChange={(e) => setSettings({ ...settings, [item.id]: e.target.checked })}
-                    className="w-4 h-4 accent-[var(--accent)] rounded cursor-pointer"
-                  />
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* Security & API Tab */}
-        {activeTab === "security" && (
-          <div className="space-y-4">
-            <div>
-              <h3 className="text-[16px] font-bold text-[var(--text-primary)]">
-                Integrations & API Connections
-              </h3>
-              <p className="text-[12px] text-[var(--text-tertiary)] mt-0.5">
-                Live status of external LLM engines and persistence databases.
-              </p>
-            </div>
-
-            <div className="space-y-3">
-              <div className="p-4 rounded-xl bg-[var(--bg-tertiary)]/50 border border-[var(--border-primary)] flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <div className="w-9 h-9 rounded-xl bg-orange-950/60 border border-orange-800/50 flex items-center justify-center text-orange-400">
-                    <Key className="w-4 h-4" />
-                  </div>
-                  <div>
-                    <div className="text-[13px] font-bold text-white flex items-center gap-2">
-                      Groq API Key (Llama 3.3 70B)
-                      <span className="text-[10px] font-mono px-1.5 py-0.2 rounded bg-emerald-950 text-emerald-400 border border-emerald-800">
-                        Connected
-                      </span>
-                    </div>
-                    <div className="text-[11px] text-[var(--text-tertiary)] mt-0.5">
-                      High-throughput LLM tool calling via OpenAI-compatible endpoint.
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div className="p-4 rounded-xl bg-[var(--bg-tertiary)]/50 border border-[var(--border-primary)] space-y-3">
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                  <div className="flex items-center gap-3">
-                    <div className="w-9 h-9 rounded-xl bg-emerald-950/60 border border-emerald-800/50 flex items-center justify-center text-emerald-400 shrink-0">
-                      <Database className="w-4 h-4" />
-                    </div>
-                    <div>
-                      <div className="text-[13px] font-bold text-white flex items-center gap-2">
-                        Persistent File Database
-                        <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-emerald-950 text-emerald-400 border border-emerald-800">
-                          Active & Saved
+                    <div className="min-w-0">
+                      <div className="flex items-center gap-1.5">
+                        <span className={`text-[13px] font-bold truncate ${isActive ? "text-emerald-950" : "text-slate-900"}`}>
+                          {tab.label}
                         </span>
                       </div>
-                      <div className="text-[11px] text-[var(--text-tertiary)] mt-0.5">
-                        Storage file: <code className="text-emerald-300 font-mono text-[10.5px]">data/nexops_db.json</code> (changes stay saved across restarts)
+                      <p className="text-[11px] text-slate-500 truncate mt-0.5 font-medium">
+                        {tab.sub}
+                      </p>
+                    </div>
+                  </div>
+
+                  <ChevronRight
+                    className={`w-4 h-4 shrink-0 transition-transform ${
+                      isActive ? "text-emerald-700 translate-x-0.5" : "text-slate-300 group-hover:text-slate-400"
+                    }`}
+                  />
+                </button>
+              );
+            })}
+          </div>
+
+          {/* System Telemetry & Persistence Card */}
+          <div className="pt-2">
+            <div className="p-4 rounded-xl border border-slate-200/90 bg-white shadow-2xs space-y-3">
+              <div className="flex items-center justify-between text-[11px] font-mono text-slate-400 font-bold uppercase tracking-wider">
+                <span>Persistence Status</span>
+                <span className="text-emerald-700 flex items-center gap-1 font-semibold">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-600 animate-pulse"></span>
+                  SYNCED
+                </span>
+              </div>
+              <div className="text-[12px] space-y-1.5 pt-0.5">
+                <div className="flex justify-between items-center">
+                  <span className="text-slate-500">Database:</span>
+                  <span className="font-mono text-[11px] font-semibold text-slate-700 bg-slate-100 px-1.5 py-0.5 rounded border border-slate-200/80">
+                    nexops_db.json
+                  </span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-slate-500">Orchestrator:</span>
+                  <span className="font-mono text-[11px] font-semibold text-slate-700">
+                    Llama 3.3 70B
+                  </span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-slate-500">Autonomy:</span>
+                  <span className="font-mono text-[11px] font-semibold text-emerald-700">
+                    {settings.aiAutonomyMode === "autonomous" ? "Autonomous" : "Supervised"}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Right Column: Configuration Details Form */}
+        <div className="lg:col-span-8 xl:col-span-9">
+          <form onSubmit={handleSave} className="linear-card p-6 sm:p-8 space-y-7">
+            {/* 1. Business Profile Tab */}
+            {activeTab === "profile" && (
+              <div className="space-y-6">
+                <div className="flex items-start justify-between pb-4 border-b border-slate-100">
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <h3 className="text-[18px] font-bold text-slate-900 tracking-tight">
+                        Business & Organization Details
+                      </h3>
+                      <span className="hash-badge">SECTION: PROFILE</span>
+                    </div>
+                    <p className="text-[13px] text-slate-500 mt-1 font-medium">
+                      Configures headers for generated invoices, purchase orders, financial reports, and workspace titles.
+                    </p>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                  <div>
+                    <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-1.5 font-mono">
+                      Business Entity Name
+                    </label>
+                    <input
+                      type="text"
+                      value={settings.businessName}
+                      onChange={(e) => setSettings({ ...settings, businessName: e.target.value })}
+                      placeholder="e.g. Brew & Bite Café"
+                      className="w-full h-11 px-3.5 rounded-xl bg-slate-50/80 border border-slate-200 text-[14px] text-slate-900 font-medium focus:bg-white focus:outline-none focus:border-emerald-600 focus:ring-2 focus:ring-emerald-500/10 transition-all"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-1.5 font-mono">
+                      Operator / Owner Name
+                    </label>
+                    <input
+                      type="text"
+                      value={settings.operatorName}
+                      onChange={(e) => setSettings({ ...settings, operatorName: e.target.value })}
+                      placeholder="e.g. Lead Operator"
+                      className="w-full h-11 px-3.5 rounded-xl bg-slate-50/80 border border-slate-200 text-[14px] text-slate-900 font-medium focus:bg-white focus:outline-none focus:border-emerald-600 focus:ring-2 focus:ring-emerald-500/10 transition-all"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-1.5 font-mono">
+                      Currency Symbol & Code
+                    </label>
+                    <select
+                      value={settings.currency}
+                      onChange={(e) => setSettings({ ...settings, currency: e.target.value })}
+                      className="w-full h-11 px-3.5 rounded-xl bg-slate-50/80 border border-slate-200 text-[14px] text-slate-900 font-medium focus:bg-white focus:outline-none focus:border-emerald-600 focus:ring-2 focus:ring-emerald-500/10 transition-all cursor-pointer"
+                    >
+                      <option value="INR (₹)">INR (₹) - Indian Rupee</option>
+                      <option value="USD ($)">USD ($) - US Dollar</option>
+                      <option value="EUR (€)">EUR (€) - Euro</option>
+                      <option value="GBP (£)">GBP (£) - British Pound</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-1.5 font-mono">
+                      Default Tax / GST Rate (%)
+                    </label>
+                    <input
+                      type="number"
+                      value={settings.taxRate}
+                      onChange={(e) => setSettings({ ...settings, taxRate: e.target.value })}
+                      className="w-full h-11 px-3.5 rounded-xl bg-slate-50/80 border border-slate-200 text-[14px] text-slate-900 font-medium focus:bg-white focus:outline-none focus:border-emerald-600 focus:ring-2 focus:ring-emerald-500/10 transition-all"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-1.5 font-mono">
+                      Operations Email
+                    </label>
+                    <input
+                      type="email"
+                      value={settings.email}
+                      onChange={(e) => setSettings({ ...settings, email: e.target.value })}
+                      placeholder="e.g. operations@brewandbite.com"
+                      className="w-full h-11 px-3.5 rounded-xl bg-slate-50/80 border border-slate-200 text-[14px] text-slate-900 font-medium focus:bg-white focus:outline-none focus:border-emerald-600 focus:ring-2 focus:ring-emerald-500/10 transition-all"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-1.5 font-mono">
+                      Contact Phone
+                    </label>
+                    <input
+                      type="text"
+                      value={settings.phone}
+                      onChange={(e) => setSettings({ ...settings, phone: e.target.value })}
+                      placeholder="e.g. +91 98765 43210"
+                      className="w-full h-11 px-3.5 rounded-xl bg-slate-50/80 border border-slate-200 text-[14px] text-slate-900 font-medium focus:bg-white focus:outline-none focus:border-emerald-600 focus:ring-2 focus:ring-emerald-500/10 transition-all"
+                    />
+                  </div>
+
+                  <div className="md:col-span-2">
+                    <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-1.5 font-mono">
+                      Operating Address
+                    </label>
+                    <input
+                      type="text"
+                      value={settings.address}
+                      onChange={(e) => setSettings({ ...settings, address: e.target.value })}
+                      placeholder="e.g. 12th Main, Indiranagar, Bangalore, Karnataka"
+                      className="w-full h-11 px-3.5 rounded-xl bg-slate-50/80 border border-slate-200 text-[14px] text-slate-900 font-medium focus:bg-white focus:outline-none focus:border-emerald-600 focus:ring-2 focus:ring-emerald-500/10 transition-all"
+                    />
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* 2. AI Autonomy Tab */}
+            {activeTab === "ai" && (
+              <div className="space-y-6">
+                <div className="flex items-start justify-between pb-4 border-b border-slate-100">
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <h3 className="text-[18px] font-bold text-slate-900 tracking-tight">
+                        Autonomous Agent Configuration
+                      </h3>
+                      <span className="hash-badge">SECTION: AI_ORCHESTRATOR</span>
+                    </div>
+                    <p className="text-[13px] text-slate-500 mt-1 font-medium">
+                      Tune the level of autonomy granted to the NexOps Llama 3.3 operations engine.
+                    </p>
+                  </div>
+                </div>
+
+                <div className="space-y-3.5">
+                  <div
+                    onClick={() => setSettings({ ...settings, aiAutonomyMode: "autonomous" })}
+                    className={`p-4 sm:p-5 rounded-xl border cursor-pointer transition-all flex items-start gap-3.5 ${
+                      settings.aiAutonomyMode === "autonomous"
+                        ? "bg-emerald-50/70 border-emerald-300 ring-1 ring-emerald-500/20 shadow-2xs"
+                        : "bg-white border-slate-200 hover:border-slate-300 hover:bg-slate-50/50"
+                    }`}
+                  >
+                    <input
+                      type="radio"
+                      name="autonomy"
+                      checked={settings.aiAutonomyMode === "autonomous"}
+                      onChange={() => setSettings({ ...settings, aiAutonomyMode: "autonomous" })}
+                      className="mt-1 accent-emerald-600"
+                    />
+                    <div className="space-y-1">
+                      <div className="text-[14px] font-bold text-slate-900 flex items-center gap-2">
+                        <span>Full Autonomous Execution (Recommended)</span>
+                        <span className="text-[10px] font-mono font-semibold px-2 py-0.5 rounded-md bg-emerald-100 text-emerald-800 border border-emerald-300">
+                          Active Mode
+                        </span>
+                      </div>
+                      <p className="text-[12.5px] text-slate-600 leading-relaxed font-normal">
+                        The agent automatically invokes inventory adjustments, drafts customer invoices, and updates order statuses when triggered by user commands.
+                      </p>
+                    </div>
+                  </div>
+
+                  <div
+                    onClick={() => setSettings({ ...settings, aiAutonomyMode: "confirmation" })}
+                    className={`p-4 sm:p-5 rounded-xl border cursor-pointer transition-all flex items-start gap-3.5 ${
+                      settings.aiAutonomyMode === "confirmation"
+                        ? "bg-emerald-50/70 border-emerald-300 ring-1 ring-emerald-500/20 shadow-2xs"
+                        : "bg-white border-slate-200 hover:border-slate-300 hover:bg-slate-50/50"
+                    }`}
+                  >
+                    <input
+                      type="radio"
+                      name="autonomy"
+                      checked={settings.aiAutonomyMode === "confirmation"}
+                      onChange={() => setSettings({ ...settings, aiAutonomyMode: "confirmation" })}
+                      className="mt-1 accent-emerald-600"
+                    />
+                    <div className="space-y-1">
+                      <div className="text-[14px] font-bold text-slate-900">
+                        Supervised Co-pilot Mode
+                      </div>
+                      <p className="text-[12.5px] text-slate-600 leading-relaxed font-normal">
+                        The agent proposes tool parameters and queries explicit operator confirmation before making database modifications or placing purchase orders.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="pt-2">
+                  <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-1.5 font-mono">
+                    Proactive Background Scanner Frequency
+                  </label>
+                  <select
+                    value={settings.proactiveInterval}
+                    onChange={(e) => setSettings({ ...settings, proactiveInterval: e.target.value })}
+                    className="w-full sm:w-80 h-11 px-3.5 rounded-xl bg-slate-50/80 border border-slate-200 text-[14px] text-slate-900 font-medium focus:bg-white focus:outline-none focus:border-emerald-600 focus:ring-2 focus:ring-emerald-500/10 transition-all cursor-pointer"
+                  >
+                    <option value="15m">Every 15 minutes</option>
+                    <option value="1h">Every 1 hour (Default)</option>
+                    <option value="6h">Every 6 hours</option>
+                    <option value="24h">Once daily at 08:00 AM</option>
+                  </select>
+                </div>
+              </div>
+            )}
+
+            {/* 3. Alert Triggers Tab */}
+            {activeTab === "notifications" && (
+              <div className="space-y-6">
+                <div className="flex items-start justify-between pb-4 border-b border-slate-100">
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <h3 className="text-[18px] font-bold text-slate-900 tracking-tight">
+                        Autonomous Alert Channels & Alarms
+                      </h3>
+                      <span className="hash-badge">SECTION: ALERTS</span>
+                    </div>
+                    <p className="text-[13px] text-slate-500 mt-1 font-medium">
+                      Configure when NexOps displays notification badges and triggers urgency cards.
+                    </p>
+                  </div>
+                </div>
+
+                <div className="space-y-3">
+                  {[
+                    {
+                      id: "notifyLowStock" as const,
+                      label: "Critical & Low Stock Notifications",
+                      desc: "Trigger urgent alerts when any inventory item drops at or below minimum threshold.",
+                    },
+                    {
+                      id: "notifyOverdue" as const,
+                      label: "Overdue Invoice Escalations",
+                      desc: "Generate warnings when client payment terms exceed assigned invoice due dates.",
+                    },
+                    {
+                      id: "notifyDailyDigest" as const,
+                      label: "Daily Autonomous Digest Recaps",
+                      desc: "Summary recap of revenue trends, inventory movements, and pending actions.",
+                    },
+                  ].map((item) => (
+                    <div
+                      key={item.id}
+                      className="p-4 rounded-xl bg-white border border-slate-200 flex items-center justify-between shadow-2xs hover:border-slate-300 transition-all"
+                    >
+                      <div className="pr-4 space-y-0.5">
+                        <div className="text-[13.5px] font-bold text-slate-900">
+                          {item.label}
+                        </div>
+                        <div className="text-[12px] text-slate-500">
+                          {item.desc}
+                        </div>
+                      </div>
+                      <input
+                        type="checkbox"
+                        checked={settings[item.id]}
+                        onChange={(e) => setSettings({ ...settings, [item.id]: e.target.checked })}
+                        className="w-4 h-4 accent-emerald-600 rounded cursor-pointer"
+                      />
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* 4. Integrations & Database Tab */}
+            {activeTab === "security" && (
+              <div className="space-y-6">
+                <div className="flex items-start justify-between pb-4 border-b border-slate-100">
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <h3 className="text-[18px] font-bold text-slate-900 tracking-tight">
+                        Integrations & Database Connections
+                      </h3>
+                      <span className="hash-badge">SECTION: INTEGRATIONS</span>
+                    </div>
+                    <p className="text-[13px] text-slate-500 mt-1 font-medium">
+                      Review live connectivity to AI orchestrator endpoints and reset demo fixtures.
+                    </p>
+                  </div>
+                </div>
+
+                <div className="space-y-4">
+                  <div className="p-4 sm:p-5 rounded-xl bg-white border border-slate-200 flex items-center justify-between shadow-2xs">
+                    <div className="flex items-center gap-3.5">
+                      <div className="w-10 h-10 rounded-xl bg-amber-50 border border-amber-200 flex items-center justify-center text-amber-700">
+                        <Key className="w-5 h-5" />
+                      </div>
+                      <div>
+                        <div className="text-[14px] font-bold text-slate-900 flex items-center gap-2">
+                          <span>Groq Llama 3.3 (70B) Orchestrator</span>
+                          <span className="text-[10px] font-mono font-semibold px-2 py-0.5 rounded-md bg-emerald-100 text-emerald-800 border border-emerald-300">
+                            Connected
+                          </span>
+                        </div>
+                        <div className="text-[12px] text-slate-500 mt-0.5 font-medium">
+                          High-speed tool execution endpoint with function-calling capabilities.
+                        </div>
                       </div>
                     </div>
                   </div>
 
-                  <button
-                    type="button"
-                    onClick={handleResetDb}
-                    disabled={isResetting}
-                    className="px-3 py-1.5 rounded-lg border border-red-900/60 bg-red-950/40 hover:bg-red-900/50 text-red-300 text-[11px] font-medium flex items-center gap-1.5 cursor-pointer transition-all self-start sm:self-auto shrink-0"
-                  >
-                    <RotateCcw className={`w-3.5 h-3.5 ${isResetting ? "animate-spin" : ""}`} />
-                    <span>{isResetting ? "Resetting..." : "Reset to Demo Data"}</span>
-                  </button>
-                </div>
+                  <div className="p-4 sm:p-5 rounded-xl bg-white border border-slate-200 space-y-4 shadow-2xs">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                      <div className="flex items-center gap-3.5">
+                        <div className="w-10 h-10 rounded-xl bg-emerald-50 border border-emerald-200 flex items-center justify-center text-emerald-700 shrink-0">
+                          <Database className="w-5 h-5" />
+                        </div>
+                        <div>
+                          <div className="text-[14px] font-bold text-slate-900 flex items-center gap-2">
+                            <span>Persistent Local File Database</span>
+                            <span className="text-[10px] font-mono font-semibold px-2 py-0.5 rounded-md bg-emerald-100 text-emerald-800 border border-emerald-300">
+                              Active & Saved
+                            </span>
+                          </div>
+                          <div className="text-[12px] text-slate-500 mt-0.5 font-medium">
+                            Storage target: <code className="text-emerald-700 font-mono text-[11px] font-semibold bg-emerald-50 px-1 py-0.5 rounded border border-emerald-200">data/nexops_db.json</code>
+                          </div>
+                        </div>
+                      </div>
 
-                {dbStats?.counts && (
-                  <div className="pt-2 border-t border-[var(--border-primary)]/50 flex flex-wrap items-center gap-2 text-[11px]">
-                    <span className="text-[var(--text-tertiary)]">Current Records:</span>
-                    <span className="px-2 py-0.5 rounded-md bg-[var(--bg-elevated)] text-[var(--text-primary)] border border-[var(--border-primary)]">
-                      {dbStats.counts.products} Products
-                    </span>
-                    <span className="px-2 py-0.5 rounded-md bg-[var(--bg-elevated)] text-[var(--text-primary)] border border-[var(--border-primary)]">
-                      {dbStats.counts.invoices} Invoices
-                    </span>
-                    <span className="px-2 py-0.5 rounded-md bg-[var(--bg-elevated)] text-[var(--text-primary)] border border-[var(--border-primary)]">
-                      {dbStats.counts.vendors} Vendors
-                    </span>
-                    <span className="px-2 py-0.5 rounded-md bg-[var(--bg-elevated)] text-[var(--text-primary)] border border-[var(--border-primary)]">
-                      {dbStats.counts.activities} AI Logs
-                    </span>
+                      <button
+                        type="button"
+                        onClick={handleResetDb}
+                        disabled={isResetting}
+                        className="px-3.5 py-2 rounded-xl border border-rose-200 bg-rose-50 hover:bg-rose-100 text-rose-700 text-[12px] font-semibold flex items-center gap-1.5 cursor-pointer transition-all self-start sm:self-auto shrink-0 shadow-2xs"
+                      >
+                        <RotateCcw className={`w-3.5 h-3.5 ${isResetting ? "animate-spin" : ""}`} />
+                        <span>{isResetting ? "Resetting..." : "Reset to Demo Sample Data"}</span>
+                      </button>
+                    </div>
+
+                    {dbStats?.counts && (
+                      <div className="pt-3 border-t border-slate-100 flex flex-wrap items-center gap-2 text-[11px]">
+                        <span className="text-slate-400 font-mono uppercase font-semibold">Active Records:</span>
+                        <span className="px-2 py-0.5 rounded-md bg-slate-50 text-slate-700 border border-slate-200 font-mono">
+                          {dbStats.counts.products} Products
+                        </span>
+                        <span className="px-2 py-0.5 rounded-md bg-slate-50 text-slate-700 border border-slate-200 font-mono">
+                          {dbStats.counts.invoices} Invoices
+                        </span>
+                        <span className="px-2 py-0.5 rounded-md bg-slate-50 text-slate-700 border border-slate-200 font-mono">
+                          {dbStats.counts.vendors} Vendors
+                        </span>
+                        <span className="px-2 py-0.5 rounded-md bg-slate-50 text-slate-700 border border-slate-200 font-mono">
+                          {dbStats.counts.activities} AI Logs
+                        </span>
+                      </div>
+                    )}
                   </div>
-                )}
+                </div>
+              </div>
+            )}
+
+            {/* Bottom Form Actions Bar */}
+            <div className="pt-5 border-t border-slate-200/80 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div className="text-[12px] text-slate-500 font-medium flex items-center gap-1.5">
+                <Sparkles className="w-3.5 h-3.5 text-emerald-600" />
+                <span>Changes will synchronize immediately across your workspace.</span>
+              </div>
+
+              <div className="flex items-center gap-2.5">
+                <button
+                  type="submit"
+                  disabled={isSaving}
+                  className="px-5 py-2.5 rounded-xl bg-emerald-700 hover:bg-emerald-800 disabled:opacity-50 text-white text-[13px] font-semibold shadow-2xs flex items-center gap-2 cursor-pointer transition-all"
+                >
+                  <Save className="w-4 h-4" />
+                  <span>{isSaving ? "Saving..." : "Save Preferences"}</span>
+                  <kbd className="kbd-badge bg-emerald-800/80 border-emerald-600/60 text-white ml-0.5">⌘S</kbd>
+                </button>
               </div>
             </div>
-          </div>
-        )}
-
-        {/* Submit */}
-        <div className="pt-4 border-t border-[var(--border-primary)]/70 flex justify-end">
-          <button
-            type="submit"
-            className="px-5 py-2.5 rounded-xl bg-[var(--accent)] hover:bg-[var(--accent-hover)] text-white text-[13px] font-semibold shadow-md shadow-[var(--accent)]/20 flex items-center gap-2 cursor-pointer transition-all"
-          >
-            <Save className="w-4 h-4" /> Save Preferences
-          </button>
+          </form>
         </div>
-      </form>
+      </div>
     </div>
   );
 }
